@@ -1,3 +1,5 @@
 <Solution>
-  <Project Path="Entities-DTOs/Entities-DTOs.csproj" />
+  <Folder Name="/0_Entities-DTOs/">
+    <Project Path="Entities-DTOs/Entities-DTOs.csproj" />
+  </Folder>
 </Solution>
