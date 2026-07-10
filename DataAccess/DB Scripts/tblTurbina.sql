@@ -1,0 +1,17 @@
+USE [TurboEnergia]
+GO
+
+CREATE TABLE dbo.tblTurbinas
+(
+    Id INT IDENTITY(1,1) PRIMARY KEY,
+    Created DATETIME NOT NULL DEFAULT GETDATE(),
+    Updated DATETIME DEFAULT GETDATE(),
+    Nombre NVARCHAR(150) NOT NULL,
+    Ubicacion NVARCHAR(250) NOT NULL,
+    Modelo NVARCHAR(100) NOT NULL,
+    Marca NVARCHAR(100) NOT NULL,
+    AnioFabricacion INT NOT NULL,
+    CapacidadKwh DECIMAL(18,2) NOT NULL,
+    Estado NVARCHAR(50) NOT NULL
+);
+GO
