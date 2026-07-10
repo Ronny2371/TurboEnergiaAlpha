@@ -8,8 +8,11 @@
 
   <ItemGroup>
     <Folder Include="CRUD\" />
-    <Folder Include="DAO\" />
     <Folder Include="DB Scripts\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.2" />
   </ItemGroup>
 
 </Project>
