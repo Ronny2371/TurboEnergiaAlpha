@@ -1,0 +1,10 @@
+CREATE PROCEDURE [dbo].[DEL_TURBINA_PR]
+    @P_ID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    DELETE FROM dbo.tblTurbinas
+    WHERE Id = @P_ID;
+END
+GO
