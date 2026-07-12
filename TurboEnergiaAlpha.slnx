@@ -2,11 +2,14 @@
   <Folder Name="/0_Entities-DTOs/">
     <Project Path="Entities-DTOs/Entities-DTOs.csproj" />
   </Folder>
-  <Folder Name="/1_ WebApp/">
-    <Project Path="WebApp/WebApp.csproj" Id="e1ca00c1-7030-4713-91ca-d89d3f8dc524" />
-  </Folder>
   <Folder Name="/1_DataAccess/">
     <Project Path="DataAccess/DataAccess.csproj" Id="f9124e06-e811-44fd-b1ac-11ef4f0b1b3b" />
+  </Folder>
+  <Folder Name="/2_CoreApp/">
+    <Project Path="CoreApp_/CoreApp_.csproj" Id="f7697ff6-5ac8-4b8b-a218-9f5a977d9989" />
+  </Folder>
+  <Folder Name="/4_ WebApp/">
+    <Project Path="WebApp/WebApp.csproj" Id="e1ca00c1-7030-4713-91ca-d89d3f8dc524" />
   </Folder>
   <Folder Name="/99_TestProgam/" />
 </Solution>
