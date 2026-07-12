@@ -1,0 +1,156 @@
+﻿@page
+@model WebApp.Pages.LoginModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Login";
+}
+
+<link rel="stylesheet" href="~/css/login.css" />
+
+<div class="login-split">
+
+    <!-- ===== LADO IZQUIERDO ===== -->
+    <div class="login-left">
+
+        <div class="login-header">
+
+            <div class="login-logo">
+                <div class="brand">
+                    ALPHA <span>DEVELOPERS</span>
+                </div>
+            </div>
+
+            <div class="login-title">
+                Inicio de sesión
+            </div>
+
+            <p class="login-desc">
+                Aquí puede ingresar a su cuenta de Alpha Energy.
+            </p>
+
+        </div>
+
+        <!-- ===== TABS ===== -->
+        <div class="tab-row">
+            <button class="tab-item">¿Es nuevo? Regístrese</button>
+            <button class="tab-item tab-active">Iniciar sesión</button>
+        </div>
+
+        <!-- ===== FORMULARIO ===== -->
+        <div class="form-group">
+
+            <label class="field-label">
+                Correo electrónico
+            </label>
+
+            <input type="email"
+                   class="field-input"
+                   placeholder="Ingrese su correo" />
+
+        </div>
+
+        <div class="form-group">
+
+            <label class="field-label">
+                Contraseña
+            </label>
+
+            <input type="password"
+                   class="field-input"
+                   placeholder="Ingrese su contraseña" />
+
+            <div class="field-hint">Al menos 8 caracteres</div>
+
+        </div>
+
+        <div class="btn-row">
+            <button class="btn-primary">
+                Ingresar
+            </button>
+
+            <button class="btn-outline">
+                ¿Olvidó su contraseña?
+            </button>
+        </div>
+
+        <hr class="wf-divider" />
+
+        <div class="social-row">
+            <div class="social-circle">G</div>
+            <div class="social-circle">F</div>
+            <div class="social-circle">M</div>
+        </div>
+
+        <div class="section-note" style="text-align:center;margin-top:6px;">
+            <span class="ann">Iconos de redes sociales — pendiente de definir</span>
+        </div>
+
+    </div>
+
+    <!-- ===== LADO DERECHO (OTP) ===== -->
+    <div class="login-right">
+
+        <div class="otp-step-label">
+            Paso 2 &mdash; Código OTP
+        </div>
+
+        <div class="otp-title">Verificación de Identidad</div>
+        <div class="otp-sub">Ingrese el código de 6 dígitos enviado a su correo</div>
+
+        <div class="otp-label">Código OTP</div>
+
+        <div class="otp-row">
+            <div class="otp-box"><input type="text" maxlength="1" placeholder="_" /></div>
+            <div class="otp-box"><input type="text" maxlength="1" placeholder="_" /></div>
+            <div class="otp-box"><input type="text" maxlength="1" placeholder="_" /></div>
+            <div class="otp-box"><input type="text" maxlength="1" placeholder="_" /></div>
+            <div class="otp-box"><input type="text" maxlength="1" placeholder="_" /></div>
+            <div class="otp-box"><input type="text" maxlength="1" placeholder="_" /></div>
+        </div>
+
+        <div class="otp-hint">El código expira en 5 minutos</div>
+
+        <div class="otp-actions">
+            <button class="btn-primary" style="text-align:center;">Verificar</button>
+            <div style="text-align:center;margin-top:8px;">
+                <button class="btn-ghost" style="font-size:10px;">Reenviar código</button>
+            </div>
+        </div>
+
+        <hr class="wf-divider" style="width:100%;margin-top:18px;" />
+
+        <span class="ann">OTP enviado por correo o app autenticadora</span>
+
+    </div>
+
+</div>
+
+<!-- ===== JAVASCRIPT PARA OTP ===== -->
+<script>
+    // Auto-focus entre campos OTP
+    document.querySelectorAll('.otp-box input').forEach((input, index, arr) => {
+        input.addEventListener('input', (e) => {
+            const val = e.target.value;
+            if (val.length > 1) {
+                e.target.value = val.slice(0, 1);
+            }
+            if (val.length === 1 && index < arr.length - 1) {
+                arr[index + 1].focus();
+            }
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && input.value === '' && index > 0) {
+                arr[index - 1].focus();
+            }
+        });
+
+        // Permitir solo números
+        input.addEventListener('keypress', (e) => {
+            if (!/[0-9]/.test(e.key)) {
+                e.preventDefault();
+            }
+        });
+    });
+</script>
