@@ -40,7 +40,7 @@ namespace CoreApp_
 
             ValidateFields(u);
 
-            if (EmailTaken(u.Correo))
+            if (EmailTaken(u.Correo, u.Id))
             {
                 throw new Exception("Ya existe un usuario registrado con ese correo.");
             }
@@ -50,7 +50,7 @@ namespace CoreApp_
                 throw new Exception("El formato del correo no es válido.");
             }
 
-            if (IdentificacionTaken(u.Identificacion))
+            if (IdentificacionTaken(u.Identificacion, u.Id))
             {
                 throw new Exception("Ya existe un usuario registrado con esa identificación.");
             }
