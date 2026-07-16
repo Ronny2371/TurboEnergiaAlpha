@@ -8,6 +8,9 @@
   <Folder Name="/2_CoreApp/">
     <Project Path="CoreApp_/CoreApp_.csproj" Id="f7697ff6-5ac8-4b8b-a218-9f5a977d9989" />
   </Folder>
+  <Folder Name="/3_WebAPI/">
+    <Project Path="WebAPI/WebAPI.csproj" Id="7aea03df-b89f-4ea8-949e-62df5452f284" />
+  </Folder>
   <Folder Name="/4_ WebApp/">
     <Project Path="WebApp/WebApp.csproj" Id="e1ca00c1-7030-4713-91ca-d89d3f8dc524" />
   </Folder>
