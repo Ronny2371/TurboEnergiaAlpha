@@ -2,7 +2,9 @@
 using Entities_DTOs;
 using System;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using System.Text;
+using System.Xml.Linq;
 
 namespace DataAccess.CRUD
 {
@@ -21,26 +23,113 @@ namespace DataAccess.CRUD
             var sqlOperation = new SqlOperation();
             sqlOperation.ProcedureName = "CRE_USER_PR";
 
+            sqlOperation.AddIntParameter("P_IDENTIFICACION", user.Identificacion);
+            sqlOperation.AddStringParameter("P_NOMBRE", user.Nombre);
+            sqlOperation.AddStringParameter("P_APELLIDO1", user.Apellido1);
+            sqlOperation.AddStringParameter("P_APELLIDO2", user.Apellido2);
+            sqlOperation.AddStringParameter("P_CORREO", user.Correo);
+            sqlOperation.AddIntParameter("P_TELEFONO", user.Telefono);
+            sqlOperation.AddDateTimeParameter("P_FECHA_NACIMIENTO", user.FechaNacimiento.ToDateTime(TimeOnly.MinValue));
+            sqlOperation.AddStringParameter("P_FOTO_PERFIL", user.FotoPerfil);
+            sqlOperation.AddStringParameter("P_CONTRASENA", user.Contrasena);
+
+            sqlDao.ExecuteProcedure(sqlOperation);
+
         }
 
         public override void Delete(BaseDTO baseDTO)
         {
-            throw new NotImplementedException();
+            var user = baseDTO as User;
+
+            var sqlOperation = new SqlOperation();
+            sqlOperation.ProcedureName = "DEL_USER_PR";
+
+            sqlOperation.AddIntParameter("P_ID", user.Id);
+
+            sqlDao.ExecuteProcedure(sqlOperation);
         }
 
         public override List<T> RetrieveAll<T>()
         {
-            throw new NotImplementedException();
+            var lstUsers = new List<T>();
+
+            var operation = new SqlOperation();
+            operation.ProcedureName = "RET_ALL_USERS_PR";
+
+            var lstResults = sqlDao.ExecuteQueryProcedure(operation);
+
+            if (lstResults.Count > 0)
+            {
+                foreach (var result in lstResults)
+                {
+                    var user = BuildUser(result);
+
+                    lstUsers.Add((T)Convert.ChangeType(user, typeof(T)));
+                }
+            }
+
+            return lstUsers;
         }
 
         public override T RetrieveById<T>(int id)
         {
-            throw new NotImplementedException();
+            var operation = new SqlOperation();
+            operation.ProcedureName = "RET_USER_BY_ID_PR";
+            operation.AddIntParameter("P_ID", id);
+
+            var lstResults = sqlDao.ExecuteQueryProcedure(operation);
+
+            if (lstResults.Count > 0)
+            {
+                var user = BuildUser(lstResults[0]);
+                return (T)Convert.ChangeType(user, typeof(T));
+            }
+
+            return default(T);
         }
 
         public override void Update(BaseDTO baseDTO)
         {
-            throw new NotImplementedException();
+            var user = baseDTO as User;
+
+            var sqlOperation = new SqlOperation();
+            sqlOperation.ProcedureName = "UPD_USER_PR";
+
+            sqlOperation.AddIntParameter("P_ID", user.Id);
+            sqlOperation.AddIntParameter("P_IDENTIFICACION", user.Identificacion);
+            sqlOperation.AddStringParameter("P_NOMBRE", user.Nombre);
+            sqlOperation.AddStringParameter("P_APELLIDO1", user.Apellido1);
+            sqlOperation.AddStringParameter("P_APELLIDO2", user.Apellido2);
+            sqlOperation.AddStringParameter("P_CORREO", user.Correo);
+            sqlOperation.AddIntParameter("P_TELEFONO", user.Telefono);
+            sqlOperation.AddDateTimeParameter("P_FECHA_NACIMIENTO", user.FechaNacimiento.ToDateTime(TimeOnly.MinValue));
+            sqlOperation.AddStringParameter("P_FOTO_PERFIL", user.FotoPerfil);
+            sqlOperation.AddStringParameter("P_CONTRASENA", user.Contrasena);
+
+            sqlDao.ExecuteProcedure(sqlOperation);
         }
+
+        private User BuildUser(Dictionary<string, object> row)
+        {
+            var user = new User()
+            {
+                Id = (int)row["Id"],
+                Created = (DateTime)row["Created"],
+                Identificacion = (int)row["Identificacion"],
+                Nombre = (string)row["Nombre"],
+                Apellido1 = (string)row["Apellido1"],
+                Apellido2 = (string)row["Apellido2"],
+                Telefono = (int)row["Telefono"],
+                Correo = (string)row["Correo"],
+                FechaNacimiento = DateOnly.FromDateTime((DateTime)row["FechaNacimiento"]),
+                FotoPerfil = (string)row["FotoPerfil"],
+                Contrasena = (string)row["Contrasena"],
+                Rol = new Rol() { Id = (int)row["RolId"] }
+            };
+
+            return user;
+        }
+
+
     }
 }
