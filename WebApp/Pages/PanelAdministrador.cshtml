@@ -1,0 +1,167 @@
+﻿@page
+@model WebApp.Pages.PanelAdministradorModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Panel Administrador";
+}
+
+<link rel="stylesheet" href="~/css/paneladministrador.css" />
+
+<div class="dashboard-container">
+
+    <!-- ===== header ===== -->
+    <div class="app-header">
+        <div class="logo-mark">ALPHA <span>ENERGY</span></div>
+        <div class="user-chip">
+            <div class="avatar-circle">AD</div>
+            <div>
+                <div class="user-name">Admin Principal</div>
+                <div class="user-role">Administrador</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== layout ===== -->
+    <div class="app-layout">
+
+        <!-- ===== sidebar ===== -->
+        <nav class="app-sidebar">
+            <div class="s-label">Menu</div>
+            <button class="s-item active-s">Inicio / Dashboard</button>
+            <button class="s-item">Usuarios</button>
+            <button class="s-item">Turbinas</button>
+            <button class="s-item">Mantenimiento</button>
+            <button class="s-item">Distribución</button>
+            <button class="s-item">Reportes</button>
+            <button class="s-item">Auditoría</button>
+            <div class="s-item logout">Cerrar sesión</div>
+        </nav>
+
+        <!-- ===== content ===== -->
+        <div class="app-content">
+
+            <!-- ===== título ===== -->
+            <div class="page-title-row">
+                <div>
+                    <div class="page-title">Dashboard General</div>
+                    <div class="page-sub">Vista consolidada del sistema energético</div>
+                </div>
+                <div class="period-badge">Agosto 2026</div>
+            </div>
+
+            <!-- ===== kpis ===== -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label">Producción Hoy</div>
+                    <div class="kpi-value">842 <span>MWh</span></div>
+                    <div class="kpi-delta">+12% vs ayer</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Almacén</div>
+                    <div class="kpi-value">2,150 <span>MWh</span></div>
+                    <div class="kpi-delta gray">capacidad total</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Turbinas Operativas</div>
+                    <div class="kpi-value">18 <span style="font-size:11px;color:#9ca3af;">/ 20</span></div>
+                    <div class="kpi-delta">2 en mantenimiento</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Ventas del Mes</div>
+                    <div class="kpi-value">$124k</div>
+                    <div class="kpi-delta">+8% vs mes ant.</div>
+                </div>
+            </div>
+
+            <!-- ===== distribuidores ===== -->
+            <div class="distribuidores-strip">
+                <div class="distribuidores-label">Distribuidores Activos</div>
+                <div class="distribuidores-value">34</div>
+                <span class="ann" style="font-size:9px;">Valor actualizado en tiempo real</span>
+            </div>
+
+            <!-- ===== gráficos ===== -->
+            <div class="charts-grid">
+
+                <!-- gráfico barras -->
+                <div class="chart-card">
+                    <div class="chart-title">
+                        Producción Mensual
+                        <span class="ann" style="font-size:8px;">Gráfico de barras</span>
+                    </div>
+                    <svg viewBox="0 0 320 130" width="100%" style="display:block;">
+                        <line x1="30" y1="10" x2="30" y2="110" stroke="#e5e7eb" stroke-width="1" />
+                        <line x1="30" y1="110" x2="315" y2="110" stroke="#e5e7eb" stroke-width="1" />
+                        <text x="25" y="14" text-anchor="end" font-size="7" fill="#9ca3af">900</text>
+                        <text x="25" y="44" text-anchor="end" font-size="7" fill="#9ca3af">600</text>
+                        <text x="25" y="74" text-anchor="end" font-size="7" fill="#9ca3af">300</text>
+                        <text x="25" y="110" text-anchor="end" font-size="7" fill="#9ca3af">0</text>
+                        <line x1="30" y1="13" x2="315" y2="13" stroke="#f3f4f6" stroke-width="1" />
+                        <line x1="30" y1="43" x2="315" y2="43" stroke="#f3f4f6" stroke-width="1" />
+                        <line x1="30" y1="73" x2="315" y2="73" stroke="#f3f4f6" stroke-width="1" />
+                        <g font-size="7" fill="#9ca3af" text-anchor="middle">
+                            <rect x="38" y="55" width="20" height="55" fill="#2563eb" rx="2" />
+                            <text x="48" y="120">Ene</text>
+                            <rect x="68" y="45" width="20" height="65" fill="#2563eb" rx="2" opacity="0.8" />
+                            <text x="78" y="120">Feb</text>
+                            <rect x="98" y="38" width="20" height="72" fill="#2563eb" rx="2" opacity="0.9" />
+                            <text x="108" y="120">Mar</text>
+                            <rect x="128" y="60" width="20" height="50" fill="#2563eb" rx="2" opacity="0.7" />
+                            <text x="138" y="120">Abr</text>
+                            <rect x="158" y="42" width="20" height="68" fill="#2563eb" rx="2" opacity="0.85" />
+                            <text x="168" y="120">May</text>
+                            <rect x="188" y="50" width="20" height="60" fill="#2563eb" rx="2" opacity="0.75" />
+                            <text x="198" y="120">Jun</text>
+                            <rect x="218" y="30" width="20" height="80" fill="#111" rx="2" />
+                            <text x="228" y="120" fill="#111" font-weight="700">Jul</text>
+                            <rect x="248" y="48" width="20" height="62" fill="#d1d5db" rx="2" />
+                            <text x="258" y="120">Ago</text>
+                        </g>
+                    </svg>
+                    <div class="chart-note">[Gráfico de barras — Producción mensual en MWh]</div>
+                </div>
+
+                <!-- gráfico pastel -->
+                <div class="chart-card">
+                    <div class="chart-title">
+                        Distribución Energía
+                        <span class="ann" style="font-size:8px;">Gráfico de pastel</span>
+                    </div>
+                    <svg viewBox="0 0 130 130" width="100%" style="display:block;margin:0 auto;">
+                        <path d="M65,65 L65,15 A50,50 0 0,1 115,65 Z" fill="#2563eb" />
+                        <path d="M65,65 L115,65 A50,50 0 0,1 41,108 Z" fill="#6b7280" />
+                        <path d="M65,65 L41,108 A50,50 0 0,1 65,15 Z" fill="#d1d5db" />
+                        <circle cx="65" cy="65" r="28" fill="#fff" />
+                        <text x="65" y="62" text-anchor="middle" font-size="9" font-weight="700" fill="#111">Total</text>
+                        <text x="65" y="73" text-anchor="middle" font-size="7" fill="#9ca3af">100%</text>
+                    </svg>
+                    <div class="legend-row">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background:#2563eb;"></div>
+                            Industrial 45%
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background:#6b7280;"></div>
+                            Comercial 30%
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background:#d1d5db;"></div>
+                            Residencial 25%
+                        </div>
+                    </div>
+                    <div class="chart-note">[Gráfico de pastel — Distribución por tipo]</div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===== footer ===== -->
+    <div class="wf-footer">
+        &copy; 2026 Alpha Energy. Todos los derechos reservados.
+    </div>
+
+</div>
