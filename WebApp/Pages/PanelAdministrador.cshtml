@@ -28,18 +28,18 @@
         <!-- ===== sidebar ===== -->
         <nav class="app-sidebar">
             <div class="s-label">Menu</div>
-            <button class="s-item active-s">Inicio / Dashboard</button>
-            <button class="s-item">Usuarios</button>
-            <button class="s-item">Turbinas</button>
-            <button class="s-item">Mantenimiento</button>
-            <button class="s-item">Distribución</button>
-            <button class="s-item">Reportes</button>
-            <button class="s-item">Auditoría</button>
+            <a class="s-item" asp-page="/PanelAdministrador">  Dashboard</a>
+            <a class="s-item">Usuarios</a>
+            <a class="s-item" asp-page="/GestionDeTurbinas">Turbinas</a>
+            <a class="s-item">Mantenimiento</a>
+            <a class="s-item">Distribución</a>
+            <a class="s-item">Reportes</a>
+            <a class="s-item">Auditoría</a>
             <div class="s-item logout">Cerrar sesión</div>
         </nav>
 
         <!-- ===== content ===== -->
-        <div class="app-content">
+        <div class="app-content"> 
 
             <!-- ===== título ===== -->
             <div class="page-title-row">
