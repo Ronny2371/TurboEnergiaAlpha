@@ -25,6 +25,15 @@ namespace CoreApp_
             Validate(t);
 
             var tCrud = new TurbinaCrudFactory();
+
+            // Verificar si ya existe una turbina con ese nombre
+            var turbinaExistente = tCrud.RetrieveByNombre(t.Nombre);
+
+            if (turbinaExistente != null)
+            {
+                throw new Exception("Ya existe una turbina registrada con ese nombre.");
+            }
+
             tCrud.Create(t);
         }
         public void UpdateTurbina(Turbina t)

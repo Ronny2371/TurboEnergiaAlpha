@@ -96,6 +96,23 @@ namespace DataAccess.CRUD
             sqlDao.ExecuteProcedure(sqlOperation);
         }
 
+        //Retrieve by nombre lo usamos para chequear que no haya otra turbina con el mismo nombre, ya que el nombre es unico!
+        public Turbina RetrieveByNombre(string nombre)
+        {
+            SqlOperation sqlOperation = new SqlOperation();
+            sqlOperation.ProcedureName = "RET_TURBINA_NOMBRE_PR";
+            sqlOperation.AddStringParameter("P_NOMBRE", nombre);
+
+            var lstResults = SqlDao.GetInstance().ExecuteQueryProcedure(sqlOperation);
+
+            if (lstResults.Count > 0)
+            {
+                return BuildTurbina(lstResults[0]);
+            }
+
+            return null;
+        }
+
 
 
         //Build Turbina - - - - - -
