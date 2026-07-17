@@ -104,6 +104,35 @@ namespace WebAPI.Controllers
             }
         }
 
+        [HttpPost("GenerarOtp/{id}")]
+        public IActionResult GenerarOtp(int id)
+        {
+            try
+            {
+                var um = new UserManager();
+                um.GenerarOtp(id);
+                return Ok("Se generó un código OTP para el usuario.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpPost("ValidarOtp/{userId}/{otp}")]
+        public IActionResult ValidarOtp(int userId, string otp)
+        {
+            try
+            {
+                var um = new UserManager();
+                um.ValidarOtp(userId, otp);
+                return Ok(new { valido = true, mensaje = "OTP validado correctamente." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { valido = false, mensaje = ex.Message });
+            }
+        }
 
     }
  }

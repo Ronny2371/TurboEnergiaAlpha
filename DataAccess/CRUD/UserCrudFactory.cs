@@ -124,11 +124,37 @@ namespace DataAccess.CRUD
                 FechaNacimiento = DateOnly.FromDateTime((DateTime)row["FechaNacimiento"]),
                 FotoPerfil = (string)row["FotoPerfil"],
                 Contrasena = (string)row["Contrasena"],
-                Rol = new Rol() { Id = (int)row["RolId"] }
+                Rol = new Rol() { Id = (int)row["RolId"] },
+                Otp = row["Otp"] != DBNull.Value ? (string)row["Otp"] : null,
+                OtpExpiracion = row["OtpExpiracion"] != DBNull.Value ? (DateTime)row["OtpExpiracion"] : (DateTime?)null
             };
 
             return user;
         }
+
+        public void SetOtp(int userId, string otp, DateTime expiracion)
+        {
+            var sqlOperation = new SqlOperation();
+            sqlOperation.ProcedureName = "SET_OTP_PR";
+
+            sqlOperation.AddIntParameter("P_ID", userId);
+            sqlOperation.AddStringParameter("P_OTP", otp);
+            sqlOperation.AddDateTimeParameter("P_OTP_EXPIRACION", expiracion);
+
+            sqlDao.ExecuteProcedure(sqlOperation);
+        }
+
+        public void ClearOtp(int userId)
+        {
+            var sqlOperation = new SqlOperation();
+            sqlOperation.ProcedureName = "CLEAR_OTP_PR";
+
+            sqlOperation.AddIntParameter("P_ID", userId);
+
+            sqlDao.ExecuteProcedure(sqlOperation);
+        }
+
+        
 
 
     }

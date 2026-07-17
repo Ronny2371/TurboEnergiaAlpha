@@ -127,6 +127,37 @@ namespace CoreApp_
                 throw new Exception("La fecha de nacimiento es obligatoria.");
         }
 
+        public void GenerarOtp(int userId)
+        {
+            var uCrud = new UserCrudFactory();
 
+            var otp = new Random().Next(100000, 999999).ToString();
+            var expiracion = DateTime.Now.AddMinutes(5);
+
+            uCrud.SetOtp(userId, otp, expiracion);
+
+            //Hace falta llamar al servico de correos
+        }
+
+        public bool ValidarOtp(int userId, string otpIngresado)
+        {
+            var uCrud = new UserCrudFactory();
+            var user = uCrud.RetrieveById<User>(userId);
+
+            if (user.Otp == null || user.OtpExpiracion == null)
+                throw new Exception("No hay un código OTP activo. Solicita uno nuevo.");
+
+            if (DateTime.Now > user.OtpExpiracion)
+            {
+                uCrud.ClearOtp(userId);
+                throw new Exception("El código OTP ha expirado. Solicita uno nuevo.");
+            }
+
+            if (user.Otp != otpIngresado)
+                throw new Exception("El código OTP ingresado es incorrecto.");
+
+            uCrud.ClearOtp(userId);
+            return true;
+        }
     }
 }
