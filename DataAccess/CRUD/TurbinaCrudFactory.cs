@@ -44,7 +44,7 @@ namespace DataAccess.CRUD
             sqlOperation.AddStringParameter("P_MARCA", turbina.Marca);
             sqlOperation.AddIntParameter("P_ANIO_FABRICACION", turbina.anioFabricacion);
             sqlOperation.AddDecimalParameter("P_CAPACIDAD_KWH", turbina.capacidadKwh);
-            sqlOperation.AddStringParameter("P_ESTADO", turbina.Estado.ToString());
+            sqlOperation.AddStringParameter("P_ESTADO", turbina.Estado);
 
             //Ejecutamos el SP
             sqlDao.ExecuteProcedure(sqlOperation);
@@ -108,9 +108,9 @@ namespace DataAccess.CRUD
                 Nombre = (string)row["Nombre"],
                 Modelo = (string)row["Modelo"],
                 Marca = (string)row["Marca"],
-                anioFabricacion = (int)row["anioFabricacion"],
-                capacidadKwh = (decimal)row["capacidadKwh"],
-                Estado = (EstadoTurbina)row["Estado"],
+                anioFabricacion = (int)row["AnioFabricacion"],
+                capacidadKwh = (decimal)row["CapacidadKwh"],
+                Estado = (string)row["Estado"],
             };
             return turbina;
 

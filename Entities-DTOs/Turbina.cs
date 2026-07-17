@@ -11,7 +11,7 @@ namespace Entities_DTOs
         public string Marca { get; set; }
         public int anioFabricacion { get; set; }
         public decimal capacidadKwh { get; set; }
-        public EstadoTurbina Estado { get; set; }
+        public string Estado { get; set; }
 
         //Metodos
 
@@ -19,10 +19,7 @@ namespace Entities_DTOs
         {
             return capacidadKwh * hora;
         }
-        public void CambiarEstado(EstadoTurbina nuevoEstado)
-        {
-            Estado = nuevoEstado;
-        }
+
 
     }
 }

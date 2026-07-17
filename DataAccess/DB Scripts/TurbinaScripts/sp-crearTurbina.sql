@@ -14,7 +14,7 @@ BEGIN
         Nombre,
         Modelo,
         Marca,
-        AnioFabricacion,
+        anioFabricacion,
         CapacidadKwh,
         Estado
     )
