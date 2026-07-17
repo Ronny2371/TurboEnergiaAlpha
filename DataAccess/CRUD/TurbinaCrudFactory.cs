@@ -22,7 +22,6 @@ namespace DataAccess.CRUD
             var sqlOperation = new SqlOperation();
             sqlOperation.ProcedureName = "CRE_TURBINA_PR";
             sqlOperation.AddStringParameter("P_NOMBRE", turbina.Nombre);
-            sqlOperation.AddStringParameter("P_UBICACION", turbina.Ubicacion);
             sqlOperation.AddStringParameter("P_MODELO", turbina.Modelo);
             sqlOperation.AddStringParameter("P_MARCA", turbina.Marca);
             sqlOperation.AddIntParameter("P_ANIO_FABRICACION", turbina.anioFabricacion);
@@ -41,12 +40,11 @@ namespace DataAccess.CRUD
 
             sqlOperation.ProcedureName = "UPD_TURBINA_PR";
             sqlOperation.AddStringParameter("P_NOMBRE", turbina.Nombre);
-            sqlOperation.AddStringParameter("P_UBICACION", turbina.Ubicacion);
             sqlOperation.AddStringParameter("P_MODELO", turbina.Modelo);
             sqlOperation.AddStringParameter("P_MARCA", turbina.Marca);
             sqlOperation.AddIntParameter("P_ANIO_FABRICACION", turbina.anioFabricacion);
             sqlOperation.AddDecimalParameter("P_CAPACIDAD_KWH", turbina.capacidadKwh);
-            sqlOperation.AddStringParameter("P_ESTADO", turbina.Estado.ToString());
+            sqlOperation.AddStringParameter("P_ESTADO", turbina.Estado);
 
             //Ejecutamos el SP
             sqlDao.ExecuteProcedure(sqlOperation);
@@ -98,6 +96,23 @@ namespace DataAccess.CRUD
             sqlDao.ExecuteProcedure(sqlOperation);
         }
 
+        //Retrieve by nombre lo usamos para chequear que no haya otra turbina con el mismo nombre, ya que el nombre es unico!
+        public Turbina RetrieveByNombre(string nombre)
+        {
+            SqlOperation sqlOperation = new SqlOperation();
+            sqlOperation.ProcedureName = "RET_TURBINA_NOMBRE_PR";
+            sqlOperation.AddStringParameter("P_NOMBRE", nombre);
+
+            var lstResults = SqlDao.GetInstance().ExecuteQueryProcedure(sqlOperation);
+
+            if (lstResults.Count > 0)
+            {
+                return BuildTurbina(lstResults[0]);
+            }
+
+            return null;
+        }
+
 
 
         //Build Turbina - - - - - -
@@ -108,12 +123,11 @@ namespace DataAccess.CRUD
                 Id = (int)row["Id"],
                 Created = (DateTime)row["Created"],
                 Nombre = (string)row["Nombre"],
-                Ubicacion = (string)row["Ubicacion"],
                 Modelo = (string)row["Modelo"],
                 Marca = (string)row["Marca"],
-                anioFabricacion = (int)row["anioFabricacion"],
-                capacidadKwh = (decimal)row["capacidadKwh"],
-                Estado = (EstadoTurbina)row["Estado"],
+                anioFabricacion = (int)row["AnioFabricacion"],
+                capacidadKwh = (decimal)row["CapacidadKwh"],
+                Estado = (string)row["Estado"],
             };
             return turbina;
 

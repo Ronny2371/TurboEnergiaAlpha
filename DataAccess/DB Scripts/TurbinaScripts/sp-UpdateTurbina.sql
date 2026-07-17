@@ -15,7 +15,6 @@ BEGIN
     SET
         Updated = GETDATE(),
         Nombre = @P_NOMBRE,
-        Ubicacion = @P_UBICACION,
         Modelo = @P_MODELO,
         Marca = @P_MARCA,
         AnioFabricacion = @P_ANIO_FABRICACION,

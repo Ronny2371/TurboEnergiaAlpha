@@ -7,12 +7,11 @@ namespace Entities_DTOs
     public class Turbina : BaseDTO
     {
         public string Nombre { get; set; }
-        public string Ubicacion { get; set; }
         public string Modelo { get; set; }
         public string Marca { get; set; }
         public int anioFabricacion { get; set; }
         public decimal capacidadKwh { get; set; }
-        public EstadoTurbina Estado { get; set; }
+        public string Estado { get; set; }
 
         //Metodos
 
@@ -20,10 +19,7 @@ namespace Entities_DTOs
         {
             return capacidadKwh * hora;
         }
-        public void CambiarEstado(EstadoTurbina nuevoEstado)
-        {
-            Estado = nuevoEstado;
-        }
+
 
     }
 }

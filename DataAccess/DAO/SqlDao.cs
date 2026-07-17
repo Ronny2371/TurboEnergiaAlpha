@@ -23,7 +23,7 @@ namespace DataAccess.DAO
         //Paso 2: Redefinir el constructor default de la clase
         private SqlDao()
         {
-            connectionString = @"Data Source=turboenergia.database.windows.net;Initial Catalog=TurboEnergia;User ID=Cenfotec;Password=***********";
+            connectionString = @"Data Source=turboenergia.database.windows.net;Initial Catalog=TurboEnergia;Persist Security Info=True;User ID=Cenfotec;Password=Universidad12;Trust Server Certificate=True";
         }
 
         //Paso 3: Definir un metodo estatico que expone la instancia

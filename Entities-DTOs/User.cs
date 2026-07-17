@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Entities_DTOs
+﻿namespace Entities_DTOs
 {
     public class User : BaseDTO
     {
@@ -16,5 +12,7 @@ namespace Entities_DTOs
         public string FotoPerfil { get; set; }
         public string Contrasena { get; set; }
         public Rol Rol { get; set; }
+        public string Otp { get; set; }
+        public DateTime? OtpExpiracion { get; set; }
     }
 }

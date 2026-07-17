@@ -8,7 +8,6 @@ BEGIN
         Created,
         Updated,
         Nombre,
-        Ubicacion,
         Modelo,
         Marca,
         AnioFabricacion,
