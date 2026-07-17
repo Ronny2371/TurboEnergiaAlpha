@@ -1,6 +1,5 @@
 CREATE PROCEDURE [dbo].[CRE_TURBINA_PR]
     @P_NOMBRE NVARCHAR(150),
-    @P_UBICACION NVARCHAR(250),
     @P_MODELO NVARCHAR(100),
     @P_MARCA NVARCHAR(100),
     @P_ANIO_FABRICACION INT,
@@ -13,7 +12,6 @@ BEGIN
     INSERT INTO dbo.tblTurbinas
     (
         Nombre,
-        Ubicacion,
         Modelo,
         Marca,
         AnioFabricacion,
@@ -23,7 +21,6 @@ BEGIN
     VALUES
     (
         @P_NOMBRE,
-        @P_UBICACION,
         @P_MODELO,
         @P_MARCA,
         @P_ANIO_FABRICACION,

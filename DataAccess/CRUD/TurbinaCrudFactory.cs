@@ -22,7 +22,6 @@ namespace DataAccess.CRUD
             var sqlOperation = new SqlOperation();
             sqlOperation.ProcedureName = "CRE_TURBINA_PR";
             sqlOperation.AddStringParameter("P_NOMBRE", turbina.Nombre);
-            sqlOperation.AddStringParameter("P_UBICACION", turbina.Ubicacion);
             sqlOperation.AddStringParameter("P_MODELO", turbina.Modelo);
             sqlOperation.AddStringParameter("P_MARCA", turbina.Marca);
             sqlOperation.AddIntParameter("P_ANIO_FABRICACION", turbina.anioFabricacion);
@@ -41,7 +40,6 @@ namespace DataAccess.CRUD
 
             sqlOperation.ProcedureName = "UPD_TURBINA_PR";
             sqlOperation.AddStringParameter("P_NOMBRE", turbina.Nombre);
-            sqlOperation.AddStringParameter("P_UBICACION", turbina.Ubicacion);
             sqlOperation.AddStringParameter("P_MODELO", turbina.Modelo);
             sqlOperation.AddStringParameter("P_MARCA", turbina.Marca);
             sqlOperation.AddIntParameter("P_ANIO_FABRICACION", turbina.anioFabricacion);
@@ -108,7 +106,6 @@ namespace DataAccess.CRUD
                 Id = (int)row["Id"],
                 Created = (DateTime)row["Created"],
                 Nombre = (string)row["Nombre"],
-                Ubicacion = (string)row["Ubicacion"],
                 Modelo = (string)row["Modelo"],
                 Marca = (string)row["Marca"],
                 anioFabricacion = (int)row["anioFabricacion"],

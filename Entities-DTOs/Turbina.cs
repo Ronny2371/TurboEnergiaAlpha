@@ -7,7 +7,6 @@ namespace Entities_DTOs
     public class Turbina : BaseDTO
     {
         public string Nombre { get; set; }
-        public string Ubicacion { get; set; }
         public string Modelo { get; set; }
         public string Marca { get; set; }
         public int anioFabricacion { get; set; }
