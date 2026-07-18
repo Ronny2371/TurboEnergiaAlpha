@@ -1,0 +1,130 @@
+﻿@page
+@model WebApp.Pages.RegistroModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Registro de Usuario";
+}
+
+<link rel="stylesheet" href="~/css/registrodeusuario.css" />
+
+<div class="registro-container">
+
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+        <div class="logo-mark">ALPHA <span>ENERGY</span></div>
+        <div class="user-chip">
+            <a href="/Login" class="login-link">¿Ya tienes cuenta? Iniciar sesión</a>
+        </div>
+    </header>
+
+    <!-- ===== CONTENIDO ===== -->
+    <main class="registro-content">
+
+        <div class="registro-card">
+
+            <div class="registro-header">
+                <h1 class="registro-title">Crear cuenta</h1>
+                <p class="registro-desc">Regístrate para acceder al sistema de gestión energética</p>
+            </div>
+
+            <!-- ===== FORMULARIO ===== -->
+            <form method="post" class="registro-form" enctype="multipart/form-data">
+
+                <!-- Identificación -->
+                <div class="form-group">
+                    <label class="field-label">Identificación <span class="required">*</span></label>
+                    <input type="text" class="field-input" placeholder="Cédula física o jurídica" />
+                    <div class="field-hint">Ej: 1-2345-6789 (cédula física)</div>
+                </div>
+
+                <!-- Nombre -->
+                <div class="form-group">
+                    <label class="field-label">Nombre <span class="required">*</span></label>
+                    <input type="text" class="field-input" placeholder="Ingrese su nombre" />
+                </div>
+
+                <!-- Apellido 1 -->
+                <div class="form-group">
+                    <label class="field-label">Primer apellido <span class="required">*</span></label>
+                    <input type="text" class="field-input" placeholder="Ingrese su primer apellido" />
+                </div>
+
+                <!-- Apellido 2 -->
+                <div class="form-group">
+                    <label class="field-label">Segundo apellido <span class="required">*</span></label>
+                    <input type="text" class="field-input" placeholder="Ingrese su segundo apellido" />
+                </div>
+
+                <!-- Teléfono -->
+                <div class="form-group">
+                    <label class="field-label">Teléfono <span class="required">*</span></label>
+                    <input type="tel" class="field-input" placeholder="+506 8888-8888" />
+                </div>
+
+                <!-- Correo electrónico -->
+                <div class="form-group">
+                    <label class="field-label">Correo electrónico <span class="required">*</span></label>
+                    <input type="email" class="field-input" placeholder="ejemplo@correo.com" />
+                </div>
+
+                <!-- Fecha de nacimiento -->
+                <div class="form-group">
+                    <label class="field-label">Fecha de nacimiento <span class="required">*</span></label>
+                    <input type="date" class="field-input" />
+                    <div class="field-hint">La edad se calcula automáticamente</div>
+                </div>
+
+                <!-- Edad (solo lectura) -->
+                <div class="form-group">
+                    <label class="field-label">Edad</label>
+                    <input type="text" class="field-input" value="25 años" readonly style="background: #f3f4f6; color: #6b7280; cursor: not-allowed;" />
+                </div>
+
+                <!-- Foto de perfil -->
+                <div class="form-group">
+                    <label class="field-label">Foto de perfil</label>
+                    <input type="file" class="field-input" accept="image/*" style="padding: 8px 14px;" />
+                    <div class="field-hint">Formatos: JPG, PNG, GIF (máx 5MB)</div>
+                </div>
+
+                <!-- ===== CONTRASEÑA ===== -->
+                <div class="form-group" style="margin-top: 24px;">
+                    <label class="field-label">Contraseña <span class="required">*</span></label>
+                    <input type="password" class="field-input" placeholder="Cree una contraseña segura" />
+                    <div class="field-hint">Mínimo 8 caracteres</div>
+                </div>
+
+                <div class="form-group">
+                    <label class="field-label">Confirmar contraseña <span class="required">*</span></label>
+                    <input type="password" class="field-input" placeholder="Repita su contraseña" />
+                </div>
+
+                <button type="submit" class="btn-primary">Registrarse</button>
+
+                <div class="divider">
+                    <span>O regístrate con</span>
+                </div>
+
+                <div class="social-row">
+                    <button type="button" class="social-circle">G</button>
+                    <button type="button" class="social-circle">F</button>
+                    <button type="button" class="social-circle">M</button>
+                </div>
+
+                <div class="login-link-bottom">
+                    ¿Ya tienes cuenta? <a href="/Login">Inicia sesión aquí</a>
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="wf-footer">
+        <p>&copy; 2026 Alpha Energy. Todos los derechos reservados.</p>
+    </footer>
+
+</div>
