@@ -1,0 +1,133 @@
+﻿@page
+@model WebApp.Pages.RegistroDeMantenimientoModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Registro de Mantenimiento";
+}
+
+<link rel="stylesheet" href="~/css/registrodemantenimiento.css" />
+
+<div class="mantenimiento-container">
+
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+        <div class="logo-mark">ALPHA <span>ENERGY</span></div>
+        <div class="user-chip">
+            <div class="avatar-circle">IO</div>
+            <div>
+                <div class="user-name">Ing. Operaciones</div>
+                <div class="user-role">Ingeniero</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== CONTENIDO (sin sidebar) ===== -->
+    <main class="mantenimiento-content-full">
+
+        <div class="mantenimiento-card">
+
+            <div class="mantenimiento-header">
+                <h1 class="mantenimiento-title">Nuevo Mantenimiento</h1>
+                <p class="mantenimiento-desc">Complete los campos para registrar el evento</p>
+            </div>
+
+            <!-- Breadcrumb -->
+            <div class="breadcrumb">
+                Mantenimiento / <span class="breadcrumb-active">Nuevo registro</span>
+            </div>
+
+            <!-- ===== FORMULARIO ===== -->
+            <form method="post" class="mantenimiento-form">
+
+                <!-- ===== SECCIÓN TURBINA ===== -->
+                <div class="form-group">
+                    <label class="field-label">Turbina</label>
+                    <select class="field-input">
+                        <option value="">Seleccionar turbina...</option>
+                        <option value="1">TG-101 - Viento Norte</option>
+                        <option value="2">TG-102 - Solar Este</option>
+                        <option value="3">TG-103 - Hidro Sur</option>
+                        <option value="4">TG-104 - Eólica Oeste</option>
+                        <option value="5">TG-105 - Geotérmica Central</option>
+                        <option value="6">TG-106 - Biomasa Norte</option>
+                    </select>
+                    <div class="field-hint">Seleccione la turbina a intervenir</div>
+                    <div class="field-rule">
+                        <span class="ann">Regla:</span> Mínimo 1 mantenimiento por mes por turbina.
+                        <span class="turbina-count">Turbina seleccionada: <strong>1/1</strong> este mes</span>
+                    </div>
+                </div>
+
+                <!-- ===== SECCIÓN TIPO DE MANTENIMIENTO ===== -->
+                <div class="form-group">
+                    <label class="field-label">Tipo de Mantenimiento</label>
+                    <div class="radio-row">
+                        <label class="radio-item">
+                            <input type="radio" name="tipo" checked />
+                            <span>Planificado</span>
+                        </label>
+                        <label class="radio-item">
+                            <input type="radio" name="tipo" />
+                            <span>No planificado (Emergencia)</span>
+                        </label>
+                    </div>
+                    <div class="field-hint">Planificado: se registra con anticipación (otro día, semana o mes). No planificado: se registra al detectar una falla.</div>
+                </div>
+
+                <hr class="wf-divider">
+
+                <!-- ===== SECCIÓN FECHAS ===== -->
+                <div class="form-group">
+                    <label class="field-label">Fecha y Hora de Inicio</label>
+                    <div class="date-row">
+                        <input type="date" class="field-input" placeholder="DD / MM / AAAA" />
+                        <input type="time" class="field-input" placeholder="HH : MM" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="field-label">Fecha y Hora de Fin (estimada)</label>
+                    <div class="date-row">
+                        <input type="date" class="field-input" placeholder="DD / MM / AAAA" />
+                        <input type="time" class="field-input" placeholder="HH : MM" />
+                    </div>
+                </div>
+
+                <hr class="wf-divider">
+
+                <!-- ===== SECCIÓN DESCRIPCIÓN ===== -->
+                <div class="form-group">
+                    <label class="field-label">Descripción del Trabajo</label>
+                    <textarea class="field-input textarea-field" placeholder="Describa los trabajos a realizar..."></textarea>
+                    <div class="field-hint">Máximo 500 caracteres</div>
+                </div>
+
+                <!-- ===== ANOTACIONES ===== -->
+                <div class="annotation-group">
+                    <div class="annotation-item">
+                        <span class="ann">Campos validados antes de guardar. Fechas deben ser coherentes.</span>
+                    </div>
+                    <div class="annotation-item">
+                        <span class="ann">No pueden coincidir dos mantenimientos en la misma ventana de tiempo (mismo día y misma hora) en la misma turbina.</span>
+                    </div>
+                </div>
+
+                <!-- ===== BOTONES ===== -->
+                <div class="buttons-row">
+                    <button type="submit" class="btn-primary">Guardar</button>
+                    <button type="reset" class="btn-outline">Cancelar</button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="wf-footer">
+        <p>&copy; 2026 Alpha Energy. Todos los derechos reservados.</p>
+    </footer>
+
+</div>

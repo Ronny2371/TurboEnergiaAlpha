@@ -1,0 +1,498 @@
+﻿/* ===== reset ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #f0f0f0;
+    color: #1a1a1a;
+    min-height: 100vh;
+    padding: 0;
+}
+
+/* ===== contenedor ===== */
+.facturacion-container {
+    background: #fff;
+    border: 1.5px solid #d0d0d0;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    max-width: 100%;
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== header ===== */
+.app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 36px;
+    border-bottom: 1px solid #e5e5e5;
+    background: #fff;
+    flex-shrink: 0;
+}
+
+.logo-mark {
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: #1a1a1a;
+    text-transform: uppercase;
+}
+
+    .logo-mark span {
+        color: #2563eb;
+    }
+
+.user-chip {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    color: #555;
+}
+
+.avatar-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #e5e7eb;
+    border: 1px solid #d1d5db;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: #555;
+}
+
+.user-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #111;
+}
+
+.user-role {
+    font-size: 13px;
+    color: #9ca3af;
+}
+
+/* ===== contenido full width ===== */
+.facturacion-content-full {
+    flex: 1;
+    background: #f7f8fa;
+    padding: 50px 30px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.facturacion-card {
+    background: #fff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 50px 56px;
+    max-width: 1200px;
+    width: 100%;
+}
+
+.facturacion-header {
+    margin-bottom: 24px;
+}
+
+.facturacion-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: #111;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+}
+
+.facturacion-desc {
+    font-size: 16px;
+    color: #6b7280;
+}
+
+/* ===== action bar ===== */
+.action-bar {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 24px;
+    justify-content: flex-end;
+}
+
+.btn-outline {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: #fff;
+    color: #333;
+    border: 1.5px solid #d0d0d0;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+    .btn-outline svg {
+        flex-shrink: 0;
+    }
+
+    /* ===== HOVER PARA BOTONES ===== */
+    .btn-outline.btn-pdf:hover {
+        background: #f5f5f5;
+        border-color: #2563eb;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+        color: #2563eb;
+    }
+
+        .btn-outline.btn-pdf:hover svg path {
+            stroke: #2563eb;
+        }
+
+    .btn-outline.btn-print:hover {
+        background: #f5f5f5;
+        border-color: #10b981;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+        color: #10b981;
+    }
+
+        .btn-outline.btn-print:hover svg rect,
+        .btn-outline.btn-print:hover svg path {
+            stroke: #10b981;
+        }
+
+/* ===== report header card ===== */
+.report-header-card {
+    background: #fff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px 28px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.report-period {
+    font-size: 26px;
+    font-weight: 800;
+    color: #111;
+    letter-spacing: -0.5px;
+}
+
+.report-period-sub {
+    font-size: 14px;
+    color: #9ca3af;
+    margin-top: 4px;
+}
+
+.report-meta {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    text-align: center;
+}
+
+.meta-label {
+    font-size: 11px;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    font-weight: 600;
+    display: block;
+}
+
+.meta-value {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111;
+    margin-top: 4px;
+}
+
+    .meta-value.code {
+        font-family: 'Courier New', monospace;
+    }
+
+/* ===== badges ===== */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 14px;
+    border-radius: 20px;
+}
+
+.badge-blue {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.badge-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.badge-dot-blue {
+    background: #3b82f6;
+}
+
+/* ===== report grid ===== */
+.report-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 24px;
+    align-items: start;
+}
+
+/* ===== invoice card ===== */
+.invoice-card {
+    background: #fff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 28px 32px;
+}
+
+.invoice-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111;
+    padding-bottom: 14px;
+    border-bottom: 1.5px solid #f0f0f0;
+    margin-bottom: 16px;
+}
+
+.invoice-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 15px;
+}
+
+    .invoice-row:last-child {
+        border-bottom: none;
+    }
+
+    .invoice-row .lbl {
+        color: #6b7280;
+    }
+
+    .invoice-row .val {
+        font-weight: 700;
+        color: #111;
+    }
+
+    .invoice-row.subtotal {
+        padding: 14px 0;
+    }
+
+        .invoice-row.subtotal .val {
+            font-size: 17px;
+        }
+
+    .invoice-row .tax {
+        color: #ef4444;
+    }
+
+.invoice-total {
+    background: #111;
+    color: #fff;
+    border-radius: 6px;
+    padding: 18px 22px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.invoice-note {
+    margin-top: 14px;
+}
+
+/* ===== annotation ===== */
+.ann {
+    display: inline-block;
+    background: #fffbf0;
+    border: 1px dashed #f59e0b;
+    color: #92400e;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-style: italic;
+}
+
+/* ===== chart card ===== */
+.chart-card {
+    background: #fff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 22px 26px;
+    margin-bottom: 16px;
+}
+
+.chart-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    margin-bottom: 12px;
+}
+
+.chart-note {
+    font-size: 11px;
+    color: #9ca3af;
+    font-style: italic;
+    margin-top: 8px;
+    text-align: center;
+}
+
+/* ===== notes card ===== */
+.notes-card {
+    background: #fff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 22px 26px;
+}
+
+.notes-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    margin-bottom: 12px;
+}
+
+.notes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.note-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    color: #374151;
+}
+
+.note-icon {
+    font-weight: 700;
+    font-size: 16px;
+}
+
+    .note-icon.check {
+        color: #10b981;
+    }
+
+    .note-icon.warning {
+        color: #f59e0b;
+    }
+
+/* ===== footer ===== */
+.wf-footer {
+    text-align: center;
+    padding: 16px 28px;
+    font-size: 13px;
+    color: #aaa;
+    border-top: 1px solid #e5e7eb;
+    background: #fff;
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+}
+
+/* ===== responsive ===== */
+@media (max-width: 820px) {
+    .facturacion-card {
+        padding: 28px 24px;
+    }
+
+    .facturacion-title {
+        font-size: 26px;
+    }
+
+    .app-header {
+        padding: 16px 20px;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .report-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .report-header-card {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .report-meta {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .action-bar {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 480px) {
+    .facturacion-content-full {
+        padding: 16px 10px;
+    }
+
+    .facturacion-card {
+        padding: 16px 12px;
+    }
+
+    .report-meta {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .meta-item {
+        text-align: left;
+        width: 100%;
+    }
+
+    .invoice-total {
+        font-size: 16px;
+        flex-direction: column;
+        gap: 6px;
+        text-align: center;
+    }
+
+    .action-bar {
+        flex-direction: column;
+    }
+
+    .btn-outline {
+        justify-content: center;
+    }
+}
