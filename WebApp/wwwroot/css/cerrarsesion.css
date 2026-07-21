@@ -1,0 +1,26 @@
+﻿.s-item.logout {
+    margin-top: 20px;
+    padding: 12px 10px;
+    border: 2px solid #2563eb;
+    font-size: 13px;
+    font-weight: 600;
+    color: #ffffff;
+    background: #2563eb;
+    border-radius: 6px;
+    text-align: center;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: block;
+    white-space: normal;
+    word-break: break-word;
+}
+
+    .s-item.logout:hover {
+        background: #1d4ed8;
+        border-color: #1d4ed8;
+        transform: scale(1.03);
+        box-shadow: 0 4px 16px rgba(37, 99, 235, 0.3);
+    }

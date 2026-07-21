@@ -6,7 +6,9 @@
     ViewData["Title"] = "Panel Administrador";
 }
 
+
 <link rel="stylesheet" href="~/css/paneladministrador.css" />
+<link rel="stylesheet" href="~/css/botoncessarsesion.css" />
 
 <div class="dashboard-container">
 
@@ -28,14 +30,15 @@
         <!-- ===== sidebar ===== -->
         <nav class="app-sidebar">
             <div class="s-label">Menu</div>
-            <a class="s-item" asp-page="/PanelAdministrador">  Dashboard</a>
-            <a class="s-item">Usuarios</a>
+            <a class="s-item" asp-page="/PanelAdministrador">Dashboard</a>
+            <a class="s-item" asp-page="/RegistroDeUsuario">Usuarios</a>
             <a class="s-item" asp-page="/GestionDeTurbinas">Turbinas</a>
-            <a class="s-item">Mantenimiento</a>
-            <a class="s-item">Distribución</a>
-            <a class="s-item">Reportes</a>
-            <a class="s-item">Auditoría</a>
-            <div class="s-item logout">Cerrar sesión</div>
+            <a class="s-item" asp-page="/RegistroDeMantenimiento">Mantenimiento</a>
+            <a class="s-item" asp-page="/PortalDistribuidor">Distribución</a>
+            <a class="s-item" asp-page="/ReporteDeFacturacion">Reportes</a>
+            <a class="s-item" asp-page="/Auditoria">Auditoría</a>
+            <a class="s-item logout" href="/Login">Cerrar sesión</a>
+
         </nav>
 
         <!-- ===== content ===== -->
@@ -44,8 +47,6 @@
             <!-- ===== título ===== -->
             <div class="page-title-row">
                 <div>
-                    <div class="page-title">Dashboard General</div>
-                    <div class="page-sub">Vista consolidada del sistema energético</div>
                 </div>
                 <div class="period-badge">Agosto 2026</div>
             </div>
