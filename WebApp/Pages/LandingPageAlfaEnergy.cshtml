@@ -1,0 +1,171 @@
+﻿@page
+@model WebApp.Pages.LandingPageAlfaEnergyModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<link href="./css/LandingPageAlfaEnergy.css" rel="stylesheet" />
+
+<div class="ElBody">
+
+    <!-- ===== 1. HERO ===== -->
+    <section class="s1">
+        <div class="s1-overlay"></div>
+
+        <div class="s1-content">
+            <h1>Energía limpia que impulsa el futuro.</h1>
+            <p>
+                En Alpha Energy transformamos la fuerza del agua en energía renovable,
+                suministrando electricidad confiable a distribuidores y empresas que
+                impulsan el desarrollo del país.
+            </p>
+        </div>
+    </section>
+
+    <!-- ===== 2. QUIÉNES SOMOS ===== -->
+    <section class="s2">
+        <div class="s2-grid">
+            <div class="s2-text">
+                <span class="eyebrow">¿Quiénes Somos?</span>
+                <h2>Nuestra Empresa</h2>
+                <p>
+                    Alpha Energy es una empresa especializada en la generación de energía
+                    hidroeléctrica mediante el aprovechamiento responsable de los recursos
+                    hídricos. Nuestro compromiso es producir electricidad limpia, estable
+                    y sostenible para abastecer a distribuidores energéticos, industrias y
+                    comunidades.
+                </p>
+                <p>
+                    Con infraestructura moderna y un equipo altamente capacitado, trabajamos
+                    para garantizar un suministro energético eficiente mientras protegemos
+                    el entorno natural y promovemos el desarrollo sostenible.
+                </p>
+            </div>
+
+            <div class="s2-tags">
+                <div class="tag-card">
+                    <span class="tag-dot"></span>
+                    <p>Electricidad limpia, estable y sostenible</p>
+                </div>
+                <div class="tag-card">
+                    <span class="tag-dot"></span>
+                    <p>Infraestructura moderna</p>
+                </div>
+                <div class="tag-card">
+                    <span class="tag-dot"></span>
+                    <p>Equipo altamente capacitado</p>
+                </div>
+                <div class="tag-card">
+                    <span class="tag-dot"></span>
+                    <p>Compromiso con el desarrollo sostenible</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 3. QUÉ HACEMOS ===== -->
+    <section class="s3">
+        <div class="s3-header">
+            <span class="eyebrow">Qué Hacemos</span>
+            <h2>Nuestros Servicios</h2>
+        </div>
+
+        <div class="s3-grid">
+            <div class="service-card">
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2c3 4 5.5 7.2 5.5 10.5a5.5 5.5 0 1 1-11 0C6.5 9.2 9 6 12 2Z" />
+                    </svg>
+                </div>
+                <h3>Generación Hidroeléctrica</h3>
+                <p>Producción de energía renovable mediante centrales hidroeléctricas de alta eficiencia.</p>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M4 8h13M17 8l-3-3M17 8l-3 3" />
+                        <path d="M20 16H7M7 16l3-3M7 16l3 3" />
+                    </svg>
+                </div>
+                <h3>Comercialización de Energía</h3>
+                <p>Suministro de electricidad a distribuidores autorizados mediante solicitudes.</p>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3" />
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
+                    </svg>
+                </div>
+                <h3>Gestión de Infraestructura</h3>
+                <p>Operación, monitoreo y mantenimiento de instalaciones hidroeléctricas para garantizar un servicio continuo.</p>
+            </div>
+
+            <div class="service-card">
+                <div class="service-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 3v18h18" />
+                        <path d="M7 15l3.5-4 3 3L19 8" />
+                    </svg>
+                </div>
+                <h3>Monitoreo Energético</h3>
+                <p>Supervisión del desempeño de las plantas y de la producción energética.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== 4. NUESTRO PROCESO ===== -->
+    <section class="s4">
+        <div class="s4-header">
+            <span class="eyebrow">Nuestro Proceso</span>
+            <h2>De la Fuente al Hogar</h2>
+        </div>
+
+        <div class="s4-steps">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3>Captación del agua</h3>
+                <p>El agua es conducida desde el embalse hacia las turbinas mediante sistemas de alta eficiencia.</p>
+            </div>
+
+            <div class="step-arrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3>Generación</h3>
+                <p>Las turbinas convierten la energía hidráulica en energía mecánica, que posteriormente es transformada en electricidad.</p>
+            </div>
+
+            <div class="step-arrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h3>Transmisión</h3>
+                <p>La energía producida es enviada al sistema eléctrico nacional mediante infraestructura de alta tensión.</p>
+            </div>
+
+            <div class="step-arrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+            </div>
+
+            <div class="step-card">
+                <div class="step-number">4</div>
+                <h3>Distribución</h3>
+                <p>Los distribuidores energéticos suministran la electricidad a hogares, industrias y comercios.</p>
+            </div>
+        </div>
+    </section>
+
+</div>
