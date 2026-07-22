@@ -1,0 +1,209 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: #f0f0f0;
+    color: #1a1a1a;
+    min-height: 100vh;
+}
+
+.page-container {
+    background: #fff;
+    min-height: 100vh;
+}
+
+.hero {
+    position: relative;
+    padding: 70px 20px 60px;
+    text-align: center;
+    background: linear-gradient(135deg, #0f1420 0%, #1a1a1a 60%, #111827 100%);
+    background-image: radial-gradient(circle, rgba(96,165,250,0.15) 1px, transparent 1px), linear-gradient(135deg, #0f1420 0%, #1a1a1a 60%, #111827 100%);
+    background-size: 22px 22px, cover;
+    border-bottom: 1px solid #2a2a2a;
+    color: #fff;
+}
+
+    .hero h1 {
+        font-size: 32px;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        color: #FFFFFF;
+    }
+
+        .hero h1 span {
+            color: #60a5fa;
+        }
+
+    .hero p {
+        font-size: 15px;
+        color: #9ca3af;
+        margin-top: 12px;
+        font-style: italic;
+    }
+
+section {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 56px 20px;
+}
+
+.section-title {
+    font-size: 19px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 6px;
+    text-align: center;
+}
+
+.section-sub {
+    font-size: 13px;
+    color: #9ca3af;
+    margin-bottom: 26px;
+    text-align: center;
+    max-width: 680px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+.mvv-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+.mvv-card {
+    background: #fff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 24px 22px;
+    min-height: 170px;
+}
+
+    .mvv-card .kpi-label {
+        font-size: 11px;
+        font-weight: 600;
+        color: #2563eb;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 10px;
+    }
+
+    .mvv-card p {
+        font-size: 14px;
+        color: #555;
+        line-height: 1.65;
+    }
+
+.valores-block {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.valores-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.valor-pill {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 9px 20px;
+    border-radius: 24px;
+}
+
+    .valor-pill.c1, .valor-pill.c2, .valor-pill.c3, .valor-pill.c4, .valor-pill.c5 {
+        color: #2563eb;
+        background: #eff4ff;
+        border: 1px solid #dbe6fd;
+    }
+
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.team-card {
+    background: #fff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 24px 16px;
+    text-align: center;
+}
+
+.avatar-circle {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    margin: 0 auto 14px;
+    background: #e5e7eb;
+    border: 1px solid #d1d5db;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    font-weight: 700;
+    color: #555;
+}
+
+.team-card h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 4px;
+}
+
+.team-card .rol {
+    font-size: 12px;
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.producto-strip {
+    background: #1a1a1a;
+    color: #fff;
+    text-align: center;
+    padding: 56px 20px;
+}
+
+    .producto-strip h2 {
+        font-size: 22px;
+        font-weight: 800;
+        margin-bottom: 14px;
+    }
+
+        .producto-strip h2 span {
+            color: #60a5fa;
+        }
+
+    .producto-strip p {
+        font-size: 14px;
+        color: #9ca3af;
+        max-width: 520px;
+        margin: 0 auto 24px;
+        line-height: 1.7;
+    }
+
+.producto-btn {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1a1a1a;
+    background: #fff;
+    padding: 12px 28px;
+    border-radius: 6px;
+    text-decoration: none;
+}
+
+@media (max-width: 720px) {
+    .mvv-grid-2, .team-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
