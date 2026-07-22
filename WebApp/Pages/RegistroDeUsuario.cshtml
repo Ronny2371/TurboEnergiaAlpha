@@ -6,8 +6,9 @@
     ViewData["Title"] = "Registro de Usuario";
 }
 
-
 <link href="~/css/registrodeusuario.css" rel="stylesheet" />
+<script src="~/js/pages-controllers/UserViewController.js"></script>
+
 <div class="registro-container">
 
     <!-- ===== HEADER ===== -->
@@ -34,87 +35,87 @@
             </div>
 
             <!-- ===== FORMULARIO ===== -->
-            <form method="post" class="registro-form" enctype="multipart/form-data">
+            <form  class="registro-form" enctype="multipart/form-data">
+                <fieldset>
+                    <!-- Identificación -->
+                    <div class="form-group">
+                        <label class="field-label">Identificación <span class="required">*</span></label>
+                        <input id="txtIdentificacion" type="text" class="field-input" placeholder="Cédula física o jurídica" />
+                        <div class="field-hint">Ej: 1-2345-6789 (cédula física)</div>
+                    </div>
 
-                <!-- Identificación -->
-                <div class="form-group">
-                    <label class="field-label">Identificación <span class="required">*</span></label>
-                    <input id="txtIdentificacion" type="text" class="field-input" placeholder="Cédula física o jurídica" />
-                    <div class="field-hint">Ej: 1-2345-6789 (cédula física)</div>
-                </div>
+                    <!-- Nombre -->
+                    <div class="form-group">
+                        <label class="field-label">Nombre <span class="required">*</span></label>
+                        <input id="txtNombre" type="text" class="field-input" placeholder="Ingrese su nombre" />
+                    </div>
 
-                <!-- Nombre -->
-                <div class="form-group">
-                    <label class="field-label">Nombre <span class="required">*</span></label>
-                    <input id="txtNombre" type="text" class="field-input" placeholder="Ingrese su nombre" />
-                </div>
+                    <!-- Apellido 1 -->
+                    <div class="form-group">
+                        <label class="field-label">Primer apellido <span class="required">*</span></label>
+                        <input id="txtApellido1" type="text" class="field-input" placeholder="Ingrese su primer apellido" />
+                    </div>
 
-                <!-- Apellido 1 -->
-                <div class="form-group">
-                    <label class="field-label">Primer apellido <span class="required">*</span></label>
-                    <input id="txtApellido1" type="text" class="field-input" placeholder="Ingrese su primer apellido" />
-                </div>
+                    <!-- Apellido 2 -->
+                    <div class="form-group">
+                        <label class="field-label">Segundo apellido <span class="required">*</span></label>
+                        <input id="txtApellido2" type="text" class="field-input" placeholder="Ingrese su segundo apellido" />
+                    </div>
 
-                <!-- Apellido 2 -->
-                <div class="form-group">
-                    <label class="field-label">Segundo apellido <span class="required">*</span></label>
-                    <input id="txtApellido2" type="text" class="field-input" placeholder="Ingrese su segundo apellido" />
-                </div>
+                    <!-- Teléfono -->
+                    <div class="form-group">
+                        <label class="field-label">Teléfono <span class="required">*</span></label>
+                        <input id="txtTelefono" type="tel" class="field-input" placeholder="+506 8888-8888" />
+                    </div>
 
-                <!-- Teléfono -->
-                <div class="form-group">
-                    <label class="field-label">Teléfono <span class="required">*</span></label>
-                    <input id="txtTelefono" type="tel" class="field-input" placeholder="+506 8888-8888" />
-                </div>
+                    <!-- Correo electrónico -->
+                    <div class="form-group">
+                        <label class="field-label">Correo electrónico <span class="required">*</span></label>
+                        <input id="txtCorreo" type="email" class="field-input" placeholder="ejemplo@correo.com" />
+                    </div>
 
-                <!-- Correo electrónico -->
-                <div class="form-group">
-                    <label class="field-label">Correo electrónico <span class="required">*</span></label>
-                    <input id="txtCorreo" type="email" class="field-input" placeholder="ejemplo@correo.com" />
-                </div>
+                    <!-- Fecha de nacimiento -->
+                    <div class="form-group">
+                        <label class="field-label">Fecha de nacimiento <span class="required">*</span></label>
+                        <input id="txtFechaNacimiento" type="date" class="field-input" />
+                        <div class="field-hint">La edad se calcula automáticamente</div>
+                    </div>
 
-                <!-- Fecha de nacimiento -->
-                <div class="form-group">
-                    <label class="field-label">Fecha de nacimiento <span class="required">*</span></label>
-                    <input id="txtFechaNacimiento" type="date" class="field-input" />
-                    <div class="field-hint">La edad se calcula automáticamente</div>
-                </div>
+                    <!-- ===== FOTO DE PERFIL ===== -->
+                    <div class="form-group">
+                        <label class="field-label">Foto de perfil</label>
+                        <input id="txtFotoPerfil" type="file" class="field-input" accept="image/*" style="padding: 8px 14px;" />
+                        <div class="field-hint">Formatos permitidos: JPG, PNG, GIF (máx 5MB)</div>
+                    </div>
 
-                <!-- ===== FOTO DE PERFIL ===== -->
-                <div class="form-group">
-                    <label class="field-label">Foto de perfil</label>
-                    <input type="file" class="field-input" accept="image/*" style="padding: 8px 14px;" />
-                    <div class="field-hint">Formatos permitidos: JPG, PNG, GIF (máx 5MB)</div>
-                </div>
+                    <!-- ===== CONTRASEÑA ===== -->
+                    <div class="form-group" style="margin-top: 24px;">
+                        <label class="field-label">Contraseña <span class="required">*</span></label>
+                        <input id="txtContrasena" type="password" class="field-input" placeholder="Cree una contraseña segura" />
+                        <div class="field-hint">Mínimo 8 caracteres</div>
+                    </div>
 
-                <!-- ===== CONTRASEÑA ===== -->
-                <div class="form-group" style="margin-top: 24px;">
-                    <label class="field-label">Contraseña <span class="required">*</span></label>
-                    <input id="txtContrasena" type="password" class="field-input" placeholder="Cree una contraseña segura" />
-                    <div class="field-hint">Mínimo 8 caracteres</div>
-                </div>
+                    <div class="form-group">
+                        <label class="field-label">Confirmar contraseña <span class="required">*</span></label>
+                        <input type="password" class="field-input" placeholder="Repita su contraseña" />
+                    </div>
 
-                <div class="form-group">
-                    <label class="field-label">Confirmar contraseña <span class="required">*</span></label>
-                    <input type="password" class="field-input" placeholder="Repita su contraseña" />
-                </div>
+                    <button id="btnCreate" type="submit" class="btn-primary">Registrarse</button>
 
-                <button id="btnCreate" type="submit" class="btn-primary">Registrarse</button>
+                    <div class="divider">
+                        <span>O regístrate con</span>
+                    </div>
 
-                <div class="divider">
-                    <span>O regístrate con</span>
-                </div>
+                    <div class="social-row">
+                        <button type="button" class="social-circle">G</button>
+                        <button type="button" class="social-circle">F</button>
+                        <button type="button" class="social-circle">M</button>
+                    </div>
 
-                <div class="social-row">
-                    <button type="button" class="social-circle">G</button>
-                    <button type="button" class="social-circle">F</button>
-                    <button type="button" class="social-circle">M</button>
-                </div>
-
-                <div class="login-link-bottom">
-                    ¿Ya tienes cuenta? <a href="/Login">Inicia sesión aquí</a>
-                </div>
-
+                    <div class="login-link-bottom">
+                        ¿Ya tienes cuenta? <a href="/Login">Inicia sesión aquí</a>
+                    </div>
+                </fieldset>
             </form>
 
         </div>

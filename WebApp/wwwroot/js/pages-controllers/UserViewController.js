@@ -6,12 +6,15 @@ function UserViewController() {
     this.API_ControllerName = "Users";
 
     this.InitView = function () {
-        this.LoadTable();
+        if ($('#tblUsers').length > 0) {
+            this.LoadTable();
+        }
 
-        $('#btnCreate').click(function () {
-            e.preventDefault();
-            var vc = new UserViewController();
-            vc.Create();
+        $('#btnCreate').click(function (e) {
+        e.preventDefault();
+        console.log("btnCreate fue clickeado");
+        var vc = new UserViewController();
+        vc.Create();
         })
 
         $('#btnUpdate').click(function () {
@@ -86,14 +89,14 @@ function UserViewController() {
         userDTO.correo = $('#txtCorreo').val();
         userDTO.telefono = $('#txtTelefono').val();
         userDTO.fechaNacimiento = $('#txtFechaNacimiento').val();
-        //userDTO.fotoPerfil = $('#txtFotoPerfil').val();
+        userDTO.fotoPerfil = $('#txtFotoPerfil').val();
         userDTO.contrasena = $('#txtContrasena').val();
 
         var ca = new ControlActions();
         var urlEndPoint = this.API_ControllerName + "/Create";
 
         ca.PostToAPI(urlEndPoint, userDTO, function () {
-            $('#tblUser').DataTable().ajax.reload();
+            window.location.href = "/Login";
         })
     }
 
