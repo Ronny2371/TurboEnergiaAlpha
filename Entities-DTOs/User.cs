@@ -11,8 +11,8 @@
         public DateOnly FechaNacimiento { get; set; }
         public string FotoPerfil { get; set; }
         public string Contrasena { get; set; }
-        public Rol Rol { get; set; }
-        public string Otp { get; set; }
+        public Rol? Rol { get; set; }
+        public string? Otp { get; set; }
         public DateTime? OtpExpiracion { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿function ControlActions() {
 	//Ruta base del API
-	this.URL_API = "https://localhost:7291/api/";
+	this.URL_API = "https://localhost:7190/api/";
 	//this.URL_API = "https://cenfocinemas-dcordoba-axhnembvfrema9b7.eastus2-01.azurewebsites.net/api/"
 
 
