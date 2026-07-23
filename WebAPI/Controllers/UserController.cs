@@ -117,6 +117,7 @@ namespace WebAPI.Controllers
         {
             try
             {
+                // Obtén la cadena de conexión desde la configuración
                 var connStr = _config["AzureCommunicationServices:ConnectionString"];
                 var um = new UserManager();
                 await um.GenerarOtp(id, connStr);
@@ -143,7 +144,7 @@ namespace WebAPI.Controllers
             }
         }
 
-
+        
         [HttpPost("Login/{correo}/{contrasena}")]
         public async Task<IActionResult> Login(string correo, string contrasena)
         {
@@ -169,5 +170,36 @@ namespace WebAPI.Controllers
             }
         }
 
+        [HttpPost("SolicitarCambioContrasena/{correo}")]
+        public async Task<IActionResult> SolicitarCambioContrasena(string correo)
+        {
+            try
+            {
+                var connStr = _config["AzureCommunicationServices:ConnectionString"];
+                var um = new UserManager();
+                await um.SolicitarCambioContrasena(correo, connStr);
+                return Ok("Se envió un código de verificación a tu correo.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
+        [HttpPost("ConfirmarCambioContrasena/{correo}/{otp}/{nuevaContrasena}")]
+        public IActionResult ConfirmarCambioContrasena(string correo, string otp, string nuevaContrasena)
+        {
+            try
+            {
+                var um = new UserManager();
+                um.ConfirmarCambioContrasena(correo, otp, nuevaContrasena);
+                return Ok(new { mensaje = "Contraseña actualizada correctamente." });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+        }
+
     }
- }
+}

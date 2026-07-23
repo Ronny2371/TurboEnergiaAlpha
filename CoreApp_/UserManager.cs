@@ -128,21 +128,27 @@ namespace CoreApp_
                 throw new Exception("La fecha de nacimiento es obligatoria.");
         }
 
+        //Se utiliza Async task para enviar la solicitud a Azure y esperar la respuesta sin bloquear el hilo principal de ejecución. Esto permite que la aplicación continúe respondiendo a otras solicitudes mientras se espera la respuesta del servicio de correo electrónico.
         public async Task GenerarOtp(int userId, string connectionString)
         {
             var uCrud = new UserCrudFactory();
 
+            // Generar un OTP de 6 dígitos y lo convierte a texto
             var otp = new Random().Next(100000, 999999).ToString();
             var expiracion = DateTime.Now.AddMinutes(5);
 
+            //Llama al método SetOtp del UserCrudFactory para guardar el OTP y su expiración en la base de datos
             uCrud.SetOtp(userId, otp, expiracion);
 
+            //Se llama al usurio para saber a qué correo enviar el OTP
             var user = uCrud.RetrieveById<User>(userId);
 
+            //Se crea una instancia de EmailService y se llama al método EnviarOtpAsync para enviar el OTP al correo del usuario
             var emailService = new EmailService(connectionString);
             await emailService.EnviarOtpAsync(user.Correo, otp);
         }
 
+        // Método para validar el OTP ingresado por el usuario
         public bool ValidarOtp(int userId, string otpIngresado)
         {
             var uCrud = new UserCrudFactory();
@@ -160,10 +166,12 @@ namespace CoreApp_
             if (user.Otp != otpIngresado)
                 throw new Exception("El código OTP ingresado es incorrecto.");
 
+            //Llama a ClearOtp para limpiar el OTP y su expiración después de una validación exitosa
             uCrud.ClearOtp(userId);
             return true;
         }
 
+        //Busca al usuario por correo y contraseña, si es correcto genera un OTP y lo envía al correo del usuario
         public async Task<User> ValidarCredenciales(string correo, string contrasena, string connectionString)
         {
             var uCrud = new UserCrudFactory();
@@ -178,6 +186,31 @@ namespace CoreApp_
             await GenerarOtp(user.Id, connectionString);
 
             return user;
+        }
+
+        public async Task SolicitarCambioContrasena(string correo, string connectionString)
+        {
+            var uCrud = new UserCrudFactory();
+            var user = uCrud.GetByEmail(correo);
+
+            if (user == null)
+                throw new Exception("No existe un usuario registrado con ese correo.");
+
+            await GenerarOtp(user.Id, connectionString);
+        }
+
+        public void ConfirmarCambioContrasena(string correo, string otp, string nuevaContrasena)
+        {
+            var uCrud = new UserCrudFactory();
+            var user = uCrud.GetByEmail(correo);
+
+            if (user == null)
+                throw new Exception("No existe un usuario registrado con ese correo.");
+
+            //Reutilizamos la misma validación de OTP que en el login
+            ValidarOtp(user.Id, otp);
+
+            uCrud.UpdatePassword(user.Id, nuevaContrasena);
         }
 
     }

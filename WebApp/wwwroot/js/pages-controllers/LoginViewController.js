@@ -3,6 +3,7 @@
     this.API_ControllerName = "Users";
     this.currentUserId = null;
 
+    //Se enlaza las funciones a los botones del HTML
     this.InitView = function () {
         var self = this;
 
@@ -23,12 +24,14 @@
     }
 
     this.ValidarCredenciales = function () {
+        // se guarda una referencia a la instancia actual del controlador
         var self = this;
 
         var correo = $('#txtCorreo').val();
         var contrasena = $('#txtContrasena').val();
 
         var ca = new ControlActions();
+        //Codifica el correo y contrasena para ser mas seguro
         var urlEndPoint = this.API_ControllerName + "/Login/" + encodeURIComponent(correo) + "/" + encodeURIComponent(contrasena);
 
         //Usamos GetToApi ya que es una consulta, no una creación/modificación
@@ -36,6 +39,7 @@
             type: "POST",
             url: ca.GetUrlApiService(urlEndPoint),
             success: function (response) {
+                //Guarda ID del usuario actual para usarlo en la validación del OTP
                 self.currentUserId = response.id;
 
                 //Mostramos el panel de OTP y ocultamos el de login
@@ -63,8 +67,10 @@
         });
 
         var ca = new ControlActions();
+        //Concatena los datos para ser validado en el Backend
         var urlEndPoint = this.API_ControllerName + "/ValidarOtp/" + self.currentUserId + "/" + otp;
 
+        //Mensajes de Error y exito usando SweetAlert2
         $.ajax({
             type: "POST",
             url: ca.GetUrlApiService(urlEndPoint),
@@ -88,6 +94,7 @@
         });
     }
 
+    //Reenvia el código OTP al correo del usuario en caso de que no lo haya recibido o haya expirado
     this.ReenviarOtp = function () {
         var self = this;
 

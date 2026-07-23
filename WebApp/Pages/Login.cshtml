@@ -2,12 +2,22 @@
 @model WebApp.Pages.LoginModel
 
 @{
-    //Layout = null;
+    Layout = null;
     ViewData["Title"] = "Login";
 }
 
-<script src="~/js/pages-controllers/loginviewcontroller.js"></script>
-<link rel="stylesheet" href="~/css/login.css" />
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Alpha Energy</title>
+    <link rel="stylesheet" href="~/css/login.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/ControlActions.js"></script>
+</head>
+
+
+
 
 <div class="login-split">
 
@@ -159,3 +169,5 @@
         });
     });
 </script>
+
+            <script src="~/js/pages-controllers/loginviewcontroller.js"></script>

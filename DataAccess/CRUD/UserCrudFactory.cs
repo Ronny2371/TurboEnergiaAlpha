@@ -132,6 +132,7 @@ namespace DataAccess.CRUD
             return user;
         }
 
+        //Recibe ID Usario, llama al SP y guarda el OTP y la fecha de expiración en la base de datos
         public void SetOtp(int userId, string otp, DateTime expiracion)
         {
             var sqlOperation = new SqlOperation();
@@ -144,6 +145,7 @@ namespace DataAccess.CRUD
             sqlDao.ExecuteProcedure(sqlOperation);
         }
 
+        //Pone Null en el campo OTP y OTP_EXPIRACION del usuario, para que no pueda volver a usar el mismo OTP
         public void ClearOtp(int userId)
         {
             var sqlOperation = new SqlOperation();
@@ -154,6 +156,7 @@ namespace DataAccess.CRUD
             sqlDao.ExecuteProcedure(sqlOperation);
         }
 
+        //Buscar usuario con el correo, si no existe devuelve null, si existe devuelve el usuario
         public User GetByEmail(string correo)
         {
             var sqlOperation = new SqlOperation();
@@ -168,6 +171,16 @@ namespace DataAccess.CRUD
             return BuildUser(results[0]);
         }
 
+        public void UpdatePassword(int userId, string nuevaContrasena)
+        {
+            var sqlOperation = new SqlOperation();
+            sqlOperation.ProcedureName = "UPD_PASSWORD_PR";
+
+            sqlOperation.AddIntParameter("P_ID", userId);
+            sqlOperation.AddStringParameter("P_CONTRASENA", nuevaContrasena);
+
+            sqlDao.ExecuteProcedure(sqlOperation);
+        }
 
     }
 }

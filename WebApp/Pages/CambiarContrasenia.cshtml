@@ -6,8 +6,18 @@
     ViewData["Title"] = "Cambiar Contraseña";
 }
 
-<link rel="stylesheet" href="~/css/cambiarcontrasenia.css" />
-<link rel="stylesheet" href="~/css/signicono.css" />
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Alpha Energy</title>
+    <link rel="stylesheet" href="~/css/cambiarcontrasenia.css" />
+    <link rel="stylesheet" href="~/css/signicono.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/ControlActions.js"></script>
+</head>
+
+
 
 <header class="app-header">
     <div class="logo-mark">ALPHA <span>ENERGY</span></div>
@@ -29,26 +39,42 @@
         <div class="cambiar-contrasenia-header">
             <div class="icono-candado">🔒</div>
             <h1 class="cambiar-contrasenia-title">Cambiar contraseña</h1>
-            <p class="cambiar-contrasenia-desc">Ingresa tu correo electrónico actual y luego la nueva contraseña</p>
+            <p class="cambiar-contrasenia-desc" id="descPaso">Ingresa tu correo electrónico para recibir un código de verificación</p>
         </div>
 
-        <!-- ===== FORMULARIO ===== -->
-        <form method="post" class="cambiar-contrasenia-form">
+        <!-- ===== PASO 1: SOLICITAR CÓDIGO ===== -->
+        <form id="formSolicitar" class="cambiar-contrasenia-form">
 
-            <!-- Correo electrónico actual -->
             <div class="form-group">
                 <label class="field-label">Correo electrónico <span class="required">*</span></label>
                 <div class="input-container">
-                    <input type="password" class="field-input" placeholder="Correo electrónico" />
-                    <button type="button" class="toggle-password" onclick="togglePassword(this)">👁️</button>
+                    <input type="email" id="txtCorreo" class="field-input" placeholder="Correo electrónico" />
                 </div>
+            </div>
+
+            <div class="buttons-row">
+                <button id="btnEnviarCodigo" type="submit" class="btn-primary">Enviar código</button>
+                <a href="/Login" class="btn-secondary">Cancelar</a>
+            </div>
+
+        </form>
+
+        <!-- ===== PASO 2: CÓDIGO OTP + NUEVA CONTRASEÑA ===== -->
+        <form id="formCambiar" class="cambiar-contrasenia-form" style="display:none;">
+
+            <div class="form-group">
+                <label class="field-label">Código de verificación <span class="required">*</span></label>
+                <div class="input-container">
+                    <input type="text" id="txtOtp" maxlength="6" class="field-input" placeholder="Ingresa el código de 6 dígitos" />
+                </div>
+                <div class="field-hint">El código expira en 5 minutos</div>
             </div>
 
             <!-- Nueva contraseña -->
             <div class="form-group">
                 <label class="field-label">Nueva contraseña <span class="required">*</span></label>
                 <div class="input-container">
-                    <input type="password" class="field-input" placeholder="Cree una nueva contraseña" />
+                    <input type="password" id="txtNuevaContrasena" class="field-input" placeholder="Cree una nueva contraseña" />
                     <button type="button" class="toggle-password" onclick="togglePassword(this)">👁️</button>
                 </div>
                 <div class="field-hint">Mínimo 8 caracteres, incluye mayúscula, minúscula y número</div>
@@ -58,7 +84,7 @@
             <div class="form-group">
                 <label class="field-label">Confirmar nueva contraseña <span class="required">*</span></label>
                 <div class="input-container">
-                    <input type="password" class="field-input" placeholder="Repita la nueva contraseña" />
+                    <input type="password" id="txtConfirmarContrasena" class="field-input" placeholder="Repita la nueva contraseña" />
                     <button type="button" class="toggle-password" onclick="togglePassword(this)">👁️</button>
                 </div>
             </div>
@@ -76,8 +102,12 @@
 
             <!-- ===== BOTONES ===== -->
             <div class="buttons-row">
-                <button type="submit" class="btn-primary">Cambiar contraseña</button>
+                <button id="btnCambiarContrasena" type="submit" class="btn-primary">Cambiar contraseña</button>
                 <a href="/Login" class="btn-secondary">Cancelar</a>
+            </div>
+
+            <div style="text-align:center; margin-top:10px;">
+                <button type="button" id="btnReenviarCodigo" class="btn-ghost" style="font-size:10px;">Reenviar código</button>
             </div>
 
         </form>
@@ -105,19 +135,14 @@
     }
 
     // ===== VALIDACIÓN DE CONTRASEÑA EN TIEMPO REAL =====
-    document.querySelector('.cambiar-contrasenia-form').addEventListener('input', function(e) {
-        const nuevaPass = document.querySelector('.form-group:nth-child(2) .field-input');
-        if (!nuevaPass) return;
+    document.getElementById('formCambiar').addEventListener('input', function (e) {
+        const pass = document.getElementById('txtNuevaContrasena').value;
 
-        const pass = nuevaPass.value;
-
-        // Validar requisitos
         const reqLongitud = document.getElementById('req-longitud');
         const reqMayuscula = document.getElementById('req-mayuscula');
         const reqMinuscula = document.getElementById('req-minuscula');
         const reqNumero = document.getElementById('req-numero');
 
-        // Longitud >= 8
         if (pass.length >= 8) {
             reqLongitud.textContent = '✅ Al menos 8 caracteres';
             reqLongitud.style.color = '#10b981';
@@ -126,7 +151,6 @@
             reqLongitud.style.color = '#ef4444';
         }
 
-        // Mayúscula
         if (/[A-Z]/.test(pass)) {
             reqMayuscula.textContent = '✅ Al menos una mayúscula';
             reqMayuscula.style.color = '#10b981';
@@ -135,7 +159,6 @@
             reqMayuscula.style.color = '#ef4444';
         }
 
-        // Minúscula
         if (/[a-z]/.test(pass)) {
             reqMinuscula.textContent = '✅ Al menos una minúscula';
             reqMinuscula.style.color = '#10b981';
@@ -144,7 +167,6 @@
             reqMinuscula.style.color = '#ef4444';
         }
 
-        // Número
         if (/[0-9]/.test(pass)) {
             reqNumero.textContent = '✅ Al menos un número';
             reqNumero.style.color = '#10b981';
@@ -154,3 +176,7 @@
         }
     });
 </script>
+
+@section Scripts {
+    <script src="~/js/pages-controllers/CambiarContraseniaViewController.js"></script>
+}

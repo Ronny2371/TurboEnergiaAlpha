@@ -250,6 +250,17 @@ body {
         border-color: #9ca3af;
     }
 
+
+.btn-ghost {
+    background: transparent;
+    color: #2563eb;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+    text-decoration: underline;
+    transition: all 0.3s ease;
+}
+
 /* ===== FOOTER ===== */
 .wf-footer {
     text-align: center;
