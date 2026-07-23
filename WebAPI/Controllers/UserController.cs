@@ -9,6 +9,14 @@ namespace WebAPI.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
+
+        private readonly IConfiguration _config;
+
+        public UsersController(IConfiguration config)
+        {
+            _config = config;
+        }
+
         [HttpGet]
         [Route("RetrieveAll")]
 
@@ -105,12 +113,13 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("GenerarOtp/{id}")]
-        public IActionResult GenerarOtp(int id)
+        public async Task<IActionResult> GenerarOtp(int id)
         {
             try
             {
+                var connStr = _config["AzureCommunicationServices:ConnectionString"];
                 var um = new UserManager();
-                um.GenerarOtp(id);
+                await um.GenerarOtp(id, connStr);
                 return Ok("Se generó un código OTP para el usuario.");
             }
             catch (Exception ex)
@@ -120,7 +129,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("ValidarOtp/{userId}/{otp}")]
-        public IActionResult ValidarOtp(int userId, string otp)
+        public async Task<IActionResult> ValidarOtp(int userId, string otp)
         {
             try
             {
@@ -131,6 +140,32 @@ namespace WebAPI.Controllers
             catch (Exception ex)
             {
                 return BadRequest(new { valido = false, mensaje = ex.Message });
+            }
+        }
+
+
+        [HttpPost("Login/{correo}/{contrasena}")]
+        public async Task<IActionResult> Login(string correo, string contrasena)
+        {
+            try
+            {
+                var connStr = _config["AzureCommunicationServices:ConnectionString"];
+                var um = new UserManager();
+                var user = await um.ValidarCredenciales(correo, contrasena, connStr);
+
+                return Ok(new
+                {
+                    id = user.Id,
+                    nombre = user.Nombre,
+                    apellido1 = user.Apellido1,
+                    apellido2 = user.Apellido2,
+                    correo = user.Correo,
+                    rol = user.Rol
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
             }
         }
 

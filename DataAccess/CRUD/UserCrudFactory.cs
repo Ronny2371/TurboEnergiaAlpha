@@ -154,8 +154,20 @@ namespace DataAccess.CRUD
             sqlDao.ExecuteProcedure(sqlOperation);
         }
 
+        public User GetByEmail(string correo)
+        {
+            var sqlOperation = new SqlOperation();
+            sqlOperation.ProcedureName = "GET_USER_BY_EMAIL_PR";
+            sqlOperation.AddStringParameter("P_CORREO", correo);
 
-       
+            var results = sqlDao.ExecuteQueryProcedure(sqlOperation);
+
+            if (results.Count == 0)
+                return null;
+
+            return BuildUser(results[0]);
+        }
+
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using DataAccess.CRUD;
+﻿using CoreApp_.Services;
+using DataAccess.CRUD;
 using Entities_DTOs;
 using System;
 using System.Collections.Generic;
@@ -127,7 +128,7 @@ namespace CoreApp_
                 throw new Exception("La fecha de nacimiento es obligatoria.");
         }
 
-        public void GenerarOtp(int userId)
+        public async Task GenerarOtp(int userId, string connectionString)
         {
             var uCrud = new UserCrudFactory();
 
@@ -136,7 +137,10 @@ namespace CoreApp_
 
             uCrud.SetOtp(userId, otp, expiracion);
 
-            //Hace falta llamar al servico de correos
+            var user = uCrud.RetrieveById<User>(userId);
+
+            var emailService = new EmailService(connectionString);
+            await emailService.EnviarOtpAsync(user.Correo, otp);
         }
 
         public bool ValidarOtp(int userId, string otpIngresado)
@@ -159,5 +163,22 @@ namespace CoreApp_
             uCrud.ClearOtp(userId);
             return true;
         }
+
+        public async Task<User> ValidarCredenciales(string correo, string contrasena, string connectionString)
+        {
+            var uCrud = new UserCrudFactory();
+            var user = uCrud.GetByEmail(correo);
+
+            if (user == null)
+                throw new Exception("Correo o contraseña incorrectos.");
+
+            if (user.Contrasena != contrasena)
+                throw new Exception("Correo o contraseña incorrectos.");
+
+            await GenerarOtp(user.Id, connectionString);
+
+            return user;
+        }
+
     }
 }

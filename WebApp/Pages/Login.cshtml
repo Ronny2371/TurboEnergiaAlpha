@@ -2,10 +2,11 @@
 @model WebApp.Pages.LoginModel
 
 @{
-    Layout = null;
+    //Layout = null;
     ViewData["Title"] = "Login";
 }
 
+<script src="~/js/pages-controllers/loginviewcontroller.js"></script>
 <link rel="stylesheet" href="~/css/login.css" />
 
 <div class="login-split">
@@ -45,6 +46,7 @@
             </label>
 
             <input type="email"
+                   id="txtCorreo"
                    class="field-input"
                    placeholder="Ingrese su correo" />
 
@@ -57,6 +59,7 @@
             </label>
 
             <input type="password"
+                   id="txtContrasena"
                    class="field-input"
                    placeholder="Ingrese su contraseña" />
 
@@ -66,9 +69,9 @@
 
         <!-- ===== Botones ingresa ala pagina o cambio de contrasenia ===== -->
         <div class="btn-row">
-            <a href="/PanelAdministrador" class="btn-primary" style="display:flex; align-items:center; justify-content:center; text-decoration:none; width:100%;">
+            <button id="btnIngresar" class="btn-primary" style="display:flex; align-items:center; justify-content:center; width:100%;">
                 Ingresar
-            </a>
+            </button>
 
             <a href="/CambiarContrasenia" class="btn-outline" style="display:flex; align-items:center; justify-content:center; text-decoration:none; width:100%;">
                 ¿Olvidó su contraseña?
@@ -91,7 +94,7 @@
     </div>
 
     <!-- ===== LADO DERECHO (OTP) ===== -->
-    <div class="login-right">
+    <div class="login-right" id="panelOtp" style="display:none;">
 
         <div class="otp-step-label">
             Paso 2 &mdash; Código OTP
@@ -114,9 +117,9 @@
         <div class="otp-hint">El código expira en 5 minutos</div>
 
         <div class="otp-actions">
-            <button class="btn-primary" style="text-align:center;">Verificar</button>
+            <button id="btnVerificarOtp" class="btn-primary" style="text-align:center;">Verificar</button>
             <div style="text-align:center;margin-top:8px;">
-                <button class="btn-ghost" style="font-size:10px;">Reenviar código</button>
+                <button id="btnReenviarOtp" class="btn-ghost" style="font-size:10px;">Reenviar código</button>
             </div>
         </div>
 
