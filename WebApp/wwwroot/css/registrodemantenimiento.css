@@ -1,98 +1,4 @@
-﻿/* ===== reset ===== */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    background: #f0f0f0;
-    color: #1a1a1a;
-    min-height: 100vh;
-    padding: 0;
-}
-
-/* ===== contenedor ===== */
-.mantenimiento-container {
-    background: #fff;
-    border: 1.5px solid #d0d0d0;
-    border-radius: 0;
-    overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-    max-width: 100%;
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-/* ===== header ===== */
-.app-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 28px;
-    border-bottom: 1px solid #e5e5e5;
-    background: #fff;
-    flex-shrink: 0;
-}
-
-.logo-mark {
-    font-size: 14px;
-    font-weight: 900;
-    letter-spacing: 2px;
-    color: #1a1a1a;
-    text-transform: uppercase;
-}
-
-    .logo-mark span {
-        color: #2563eb;
-    }
-
-.user-chip {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13px;
-    color: #555;
-}
-
-.avatar-circle {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: #e5e7eb;
-    border: 1px solid #d1d5db;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    font-weight: 700;
-    color: #555;
-}
-
-.user-name {
-    font-size: 14px;
-    font-weight: 600;
-    color: #111;
-}
-
-.user-role {
-    font-size: 11px;
-    color: #9ca3af;
-}
-
-/* ===== contenido full width (sin sidebar) ===== */
-.mantenimiento-content-full {
-    flex: 1;
-    background: #f7f8fa;
-    padding: 40px 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
+﻿/* ===== mantenimiento card ===== */
 .mantenimiento-card {
     background: #fff;
     border: 1.5px solid #e5e7eb;
@@ -314,18 +220,6 @@ body {
     margin-top: 4px;
 }
 
-/* ===== footer ===== */
-.wf-footer {
-    text-align: center;
-    padding: 14px 24px;
-    font-size: 11px;
-    color: #aaa;
-    border-top: 1px solid #e5e7eb;
-    background: #fff;
-    letter-spacing: 0.3px;
-    flex-shrink: 0;
-}
-
 /* ===== responsive ===== */
 @media (max-width: 768px) {
     .mantenimiento-card {
@@ -353,12 +247,6 @@ body {
         font-size: 22px;
     }
 
-    .app-header {
-        padding: 12px 16px;
-        flex-direction: column;
-        gap: 8px;
-    }
-
     .date-row {
         grid-template-columns: 1fr;
     }
@@ -372,4 +260,9 @@ body {
     .turbina-count {
         margin-left: 0;
     }
+}
+
+.app-content-centered {
+    display: flex;
+    justify-content: center;
 }

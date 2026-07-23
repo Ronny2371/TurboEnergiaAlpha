@@ -23,6 +23,8 @@ body {
     max-width: 100%;
     margin: 0;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* ===== app header ===== */
@@ -30,13 +32,13 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 12px 20px;
+    padding: 12px 28px;
     border-bottom: 1px solid #e5e5e5;
     background: #fff;
 }
 
 .logo-mark {
-    font-size: 11px;
+    font-size: 18px;
     font-weight: 900;
     letter-spacing: 2px;
     color: #1a1a1a;
@@ -83,60 +85,62 @@ body {
 /* ===== layout ===== */
 .app-layout {
     display: flex;
-    min-height: calc(100vh - 120px);
+    flex: 1;
 }
 
 /* ===== sidebar ===== */
 .app-sidebar {
-    width: 170px;
-    min-width: 170px;
-    background: #1a1a1a;
-    padding: 16px 0;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    width: 220px;
+    min-width: 220px;
+    max-width: 220px;
+    flex-shrink: 0;
+    padding-top: 8px;
+    background-color: #14141f;
 }
 
 .s-label {
-    font-size: 8px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    color: #555;
-    padding: 8px 14px 4px;
-    text-transform: uppercase;
-}
-
-.s-item {
     font-size: 11px;
-    color: #aaa;
-    padding: 7px 14px;
-    border-left: 3px solid transparent;
-    cursor: default;
-    background: none;
-    border-top: none;
-    border-right: none;
-    border-bottom: none;
-    text-align: left;
-    width: 100%;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    color: #6b7280;
+    text-transform: uppercase;
+    padding: 12px 20px 8px 20px;
+    margin: 0;
+    text-align: center;
 }
 
-    .s-item.active-s {
-        color: #fff;
-        background: #252525;
-        border-left-color: #2563eb;
+.app-sidebar a.s-item {
+    display: block;
+    margin: 2px 12px;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #cbd5e1;
+    text-decoration: none;
+    border-radius: 8px;
+    border-left: 3px solid transparent;
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+    .app-sidebar a.s-item:hover {
+        background-color: rgba(255, 255, 255, 0.06);
+        color: #ffffff;
     }
 
-    .s-item:hover {
-        color: #ddd;
+    /* ===== ÍTEM ACTIVO (página actual) ===== */
+    .app-sidebar a.s-item.active {
+        background-color: rgba(37, 99, 235, 0.18);
+        color: #60a5fa;
+        font-weight: 600;
+        border-left: 3px solid #2563eb;
     }
 
-    .s-item.logout {
-        margin-top: auto;
-        padding: 12px 14px;
-        border-top: 1px solid #333;
-        font-size: 10px;
-        color: #555;
-    }
+        .app-sidebar a.s-item.active:hover {
+            background-color: rgba(37, 99, 235, 0.22);
+            color: #93c5fd;
+        }
 
 /* ===== content ===== */
 .app-content {
@@ -336,6 +340,7 @@ body {
     .app-sidebar {
         width: 100%;
         min-width: unset;
+        max-width: unset;
         flex-direction: row;
         flex-wrap: wrap;
         padding: 8px 12px;
@@ -346,23 +351,17 @@ body {
         display: none;
     }
 
-    .s-item {
+    .app-sidebar a.s-item {
         padding: 6px 10px;
-        font-size: 10px;
+        font-size: 12px;
+        margin: 2px 4px;
         border-left: none;
         border-bottom: 3px solid transparent;
-        width: auto;
     }
 
-        .s-item.active-s {
+        .app-sidebar a.s-item.active {
             border-left-color: transparent;
             border-bottom-color: #2563eb;
-        }
-
-        .s-item.logout {
-            margin-top: 0;
-            border-top: none;
-            border-left: none;
         }
 
     .kpi-grid {

@@ -6,42 +6,42 @@
     ViewData["Title"] = "Gestión de Turbinas";
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Alpha Energy</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/WebApp.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/signicono.css" />
-    <link rel="stylesheet" href="~/css/gestiondeturbinas.css" />
-    <link rel="stylesheet" href="~/css/botoncessarsesion.css" />
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <link href="https://cdn.datatables.net/2.3.8/css/dataTables.dataTables.min.css" rel="stylesheet" />
-    <script src="https://cdn.datatables.net/2.3.8/js/dataTables.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="~/js/ControlActions.js"></script>
-</head>
-<body>
+<link rel="stylesheet" href="~/css/paneladministrador.css" />
+<link rel="stylesheet" href="~/css/cerrarsesion.css" />
+<link rel="stylesheet" href="~/css/gestiondeturbinas.css" />
 
-    <div class="turbinas-container">
+<div class="dashboard-container">
 
-        <!-- ===== HEADER (igual que Dashboard) ===== -->
-        <div class="app-header">
-            <div class="logo-mark">ALPHA <span>ENERGY</span></div>
-            <div class="user-chip">
-                <div class="avatar-circle">AD</div>
-                <div>
-                    <div class="user-name">Admin Principal</div>
-                    <div class="user-role">Administrador</div>
-                </div>
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+        <div class="logo-mark">ALPHA <span>ENERGY</span></div>
+        <div class="user-chip">
+            <div class="avatar-circle">AD</div>
+            <div>
+                <div class="user-name">Admin Principal</div>
+                <div class="user-role">Administrador</div>
             </div>
         </div>
+    </header>
+
+    <!-- ===== LAYOUT (sidebar + contenido) ===== -->
+    <div class="app-layout">
+
+        <!-- ===== sidebar ===== -->
+        <nav class="app-sidebar">
+            <div class="s-label">Menu</div>
+            <a class="s-item" asp-page="/PanelAdministrador">Dashboard</a>
+            <a class="s-item" asp-page="/RegistroDeUsuario">Usuarios</a>
+            <a class="s-item active" asp-page="/GestionDeTurbinas">Turbinas</a>
+            <a class="s-item" asp-page="/RegistroDeMantenimiento">Mantenimiento</a>
+            <a class="s-item" asp-page="/PortalDistribuidor">Distribución</a>
+            <a class="s-item" asp-page="/ReporteDeFacturacion">Reportes</a>
+            <a class="s-item" asp-page="/Auditoria">Auditoría</a>
+            <a class="s-item logout" href="/Login">Cerrar sesión</a>
+        </nav>
 
         <!-- ===== CONTENIDO ===== -->
-        <div class="app-content-full">
+        <main class="app-content">
 
             <!-- ===== TÍTULO ===== -->
             <div class="page-title-row">
@@ -210,17 +210,13 @@
                 <span class="ann">⚡ Las turbinas con estado "Mantenimiento" requieren revisión técnica</span>
             </div>
 
-        </div>
-
-        <!-- ===== FOOTER ===== -->
+        </main>
 
     </div>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-</body>
-</html>
-<div class="wf-footer">
-    <p>&copy; 2026 Alpha Energy. Todos los derechos reservados.</p>
+    <!-- ===== FOOTER ===== -->
+    <footer class="wf-footer">
+        <p>&copy; 2026 Alpha Energy. Todos los derechos reservados.</p>
+    </footer>
+
 </div>
