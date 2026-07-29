@@ -9,6 +9,12 @@
 <link rel="stylesheet" href="~/css/paneladministrador.css" />
 <link rel="stylesheet" href="~/css/cerrarsesion.css" />
 <link rel="stylesheet" href="~/css/gestiondeturbinas.css" />
+<link rel="stylesheet" href="~/css/registrodeusuario.css" />
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="~/js/ControlActions.js"></script>
+<script src="~/js/pages-controllers/TurbinaViewController.js"></script>
+
 
 <div class="dashboard-container">
 
@@ -46,49 +52,48 @@
             <!-- ===== TÍTULO ===== -->
             <div class="page-title-row">
                 <div>
-                    <div class="page-title">Parque de Turbinas</div>
+                    <div class="page-title">Gestión de Turbinas</div>
                     <div class="page-sub">Gestión y monitoreo de unidades generadoras</div>
                 </div>
-                <button class="btn-primary">+ Agregar Turbina</button>
+                <button class="btn-primary" id="btnAgregarTurbina">+ Agregar Turbina</button>
             </div>
 
             <!-- ===== ESTADÍSTICAS ===== -->
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-label">Total Turbinas</div>
-                    <div class="stat-value">24</div>
+                    <div class="stat-value" id="statTotal">0</div>
                     <div class="stat-delta">+2 este año</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">En Operación</div>
-                    <div class="stat-value">19</div>
+                    <div class="stat-value" id="statOperacion">0</div>
                     <div class="stat-delta green">79% del total</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Mantenimiento</div>
-                    <div class="stat-value">3</div>
+                    <div class="stat-value" id="statMantenimiento">0</div>
                     <div class="stat-delta yellow">12.5% del total</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Capacidad Total</div>
-                    <div class="stat-value">8.4 <span>MW</span></div>
+                    <div class="stat-value" id="statCapacidad">0 <span>MW</span></div>
                     <div class="stat-delta">+0.8 MW vs 2025</div>
                 </div>
             </div>
 
             <!-- ===== FILTROS ===== -->
             <div class="filters-row">
-                <div class="search-box">
-                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+                <div class="search-box-wrapper">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="search-icon">
                         <circle cx="7" cy="7" r="5" stroke="#aaa" stroke-width="1.5" />
                         <path d="M11 11l3 3" stroke="#aaa" stroke-width="1.5" stroke-linecap="round" />
                     </svg>
-                    <span>Buscar por nombre, código o ubicación...</span>
+                    <input id="searchInput" type="text" placeholder="Buscar por modelo o código..." />
                 </div>
                 <button class="filter-btn">Estado ▼</button>
-                <button class="filter-btn">Planta ▼</button>
                 <button class="filter-btn">Potencia ▼</button>
-                <button class="filter-btn">Fecha Instalación ▼</button>
+                <button class="filter-btn">Instalación ▼</button>
             </div>
 
             <!-- ===== TABLA ===== -->
@@ -96,113 +101,21 @@
                 <thead>
                     <tr>
                         <th>Código</th>
-                        <th>Nombre</th>
-                        <th>Ubicación</th>
-                        <th>Potencia</th>
+                        <th>Modelo</th>
+                        <th>Marca</th>
+                        <th>Cap. Nominal</th>
                         <th>Estado</th>
                         <th>Instalación</th>
                         <th>Acciones</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td><strong>TG-101</strong></td>
-                        <td>Viento Norte</td>
-                        <td>Planta A - Sector Norte</td>
-                        <td>450 kW</td>
-                        <td><span class="badge badge-green">● Activa</span></td>
-                        <td>15/03/2021</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="action-btn edit">✎</button>
-                                <button class="action-btn view">👁</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>TG-102</strong></td>
-                        <td>Solar Este</td>
-                        <td>Planta B - Sector Este</td>
-                        <td>380 kW</td>
-                        <td><span class="badge badge-yellow">● Mantenimiento</span></td>
-                        <td>22/07/2020</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="action-btn edit">✎</button>
-                                <button class="action-btn view">👁</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>TG-103</strong></td>
-                        <td>Hidro Sur</td>
-                        <td>Planta C - Sector Sur</td>
-                        <td>620 kW</td>
-                        <td><span class="badge badge-green">● Activa</span></td>
-                        <td>03/11/2022</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="action-btn edit">✎</button>
-                                <button class="action-btn view">👁</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>TG-104</strong></td>
-                        <td>Eólica Oeste</td>
-                        <td>Planta A - Sector Oeste</td>
-                        <td>520 kW</td>
-                        <td><span class="badge badge-red">● Fuera de Servicio</span></td>
-                        <td>12/09/2019</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="action-btn edit">✎</button>
-                                <button class="action-btn view">👁</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>TG-105</strong></td>
-                        <td>Geotérmica Central</td>
-                        <td>Planta D - Sector Centro</td>
-                        <td>750 kW</td>
-                        <td><span class="badge badge-green">● Activa</span></td>
-                        <td>28/06/2023</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="action-btn edit">✎</button>
-                                <button class="action-btn view">👁</button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><strong>TG-106</strong></td>
-                        <td>Biomasa Norte</td>
-                        <td>Planta E - Sector Noroeste</td>
-                        <td>300 kW</td>
-                        <td><span class="badge badge-yellow">● Mantenimiento</span></td>
-                        <td>07/02/2020</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="action-btn edit">✎</button>
-                                <button class="action-btn view">👁</button>
-                            </div>
-                        </td>
-                    </tr>
+                <tbody id="tbodyTurbinas">
                 </tbody>
             </table>
 
             <!-- ===== PAGINACIÓN ===== -->
             <div class="pagination-row">
-                <span class="pagination-info">Mostrando 6 de 24 turbinas</span>
-                <div class="pagination-buttons">
-                    <button class="page-btn">‹</button>
-                    <button class="page-btn active">1</button>
-                    <button class="page-btn">2</button>
-                    <button class="page-btn">3</button>
-                    <button class="page-btn">4</button>
-                    <button class="page-btn">›</button>
-                </div>
+                <span class="pagination-info" id="paginationInfo">Mostrando 0 de 0 turbinas</span>
             </div>
 
             <!-- ===== ANOTACIÓN ===== -->
@@ -218,5 +131,44 @@
     <footer class="wf-footer">
         <p>&copy; 2026 Alpha Energy. Todos los derechos reservados.</p>
     </footer>
+    <div class="modal-overlay" id="modalOverlay" style="display:none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <button type="button" class="modal-close" id="btnCerrarModal">x</button>
+                <h2>Agregar Turbina</h2>
+            </div>
+            <div class="form-group">
+                <label class="field-label">Nombre <span class="required">*</span></label>
+                <input id="txtNombre" type="text" class="field-input" placeholder="Nombre de la turbina" />
+            </div>
+            <div class="form-group">
+                <label class="field-label">Modelo <span class="required">*</span></label>
+                <input id="txtModelo" type="text" class="field-input" placeholder="Modelo" />
+            </div>
+            <div class="form-group">
+                <label class="field-label">Marca <span class="required">*</span></label>
+                <input id="txtMarca" type="text" class="field-input" placeholder="Marca" />
+            </div>
+            <div class="form-group">
+                <label class="field-label">Año de Fabricación <span class="required">*</span></label>
+                <input id="txtAnio" type="number" class="field-input" placeholder="Ej: 2023" />
+            </div>
+            <div class="form-group">
+                <label class="field-label">Capacidad (kWh) <span class="required">*</span></label>
+                <input id="txtCapacidad" type="number" step="0.01" class="field-input" placeholder="Ej: 450" />
+            </div>
+            <div class="form-group">
+                <label class="field-label">Estado <span class="required">*</span></label>
+                <select id="selEstado" class="field-input">
+                    <option value="Activa">Activa</option>
+                    <option value="Mantenimiento">Mantenimiento</option>
+                    <option value="Fuera de Servicio">Fuera de Servicio</option>
+                </select>
+            </div>
+
+            <button type="button" class="btn-primary" id="btnCrearTurbina">Crear</button>
+        </div>
+    </div>
 
 </div>
+
