@@ -411,5 +411,11 @@
     margin-top: 4px;
 }
 
-/*Prueba commit*/
+/*Estilo boton filtro seleccionado*/
+
+.filter-btn.active {
+    border-color: #2563eb;
+    color: #2563eb;
+    background: #eff6ff;
+}
 

@@ -1,8 +1,21 @@
+
+var estadoMode = 0;
+var potenciaMode = 0;
 function TurbinaViewController() {
 
     this.API_ControllerName = "Turbina";
     this.InitView = function () {
         this.LoadTable();
+        //==============================Botones con Filtros=================
+
+        $('#btnFilterEstado').click(function () {
+            estadoMode = (estadoMode + 1) % 2;
+            ApplyFilters()
+        });
+        $('#btnFilterPotencia').click(function () {
+            potenciaMode = (potenciaMode + 1) % 3;
+            ApplyFilters();
+        });
 
         //==============================Barra de Busqueda=================
         $('#searchInput').on('keyup', function () {
@@ -43,6 +56,31 @@ function TurbinaViewController() {
             });
         });
 
+        //=================================Boton de editar===================
+
+        $('#tbodyTurbinas').on('click', '.action-btn.edit', function () {
+            var id = $(this).data('id');
+            var turbina = window.turbinasList.find(function (t) { return t.id === id; });
+
+            if (!turbina) return;
+
+            $('#txtNombre').val(turbina.nombre);
+            $('#txtModelo').val(turbina.modelo);
+            $('#txtMarca').val(turbina.marca);
+            $('#txtAnio').val(turbina.anioFabricacion);
+            $('#txtCapacidad').val(turbina.capacidadKwh);
+            $('#selEstado').val(turbina.estado);
+
+            $('#modalTitle').text('Editar Turbina');
+            $('#btnCrearTurbina').text('Actualizar');
+            $('#btnCrearTurbina').data('turbina-id', id);
+
+            $('#modalOverlay').css('display', 'flex');
+
+        });
+
+        //===================================================================
+
         $('#btnAgregarTurbina').click(function () {
             $('#modalOverlay').css('display', 'flex');
         });
@@ -50,9 +88,9 @@ function TurbinaViewController() {
             CerrarModalTurbina();
         });
 
-    $('#btnCrearTurbina').click(function () {
-        CrearTurbina();
-    });
+        $('#btnCrearTurbina').click(function () {
+            CrearTurbina();
+        });
 
 
     }
@@ -78,6 +116,38 @@ function TurbinaViewController() {
             }
         })
     }
+}
+
+function ApplyFilters() {
+    var sorted = window.turbinasList.slice();
+    if (potenciaMode === 1) {
+        sorted.sort(function (a, b) { return b.capacidadKwh - a.capacidadKwh; });
+    } else if (potenciaMode === 2) {
+        sorted.sort(function (a, b) { return a.capacidadKwh - b.capacidadKwh; });
+    } else {
+		sorted.sort(function (a, b) { return a.id - b.id; });
+    }
+
+    if (estadoMode === 1) {
+        sorted.sort(function (a, b) {
+            var order = { "Activa": 1, "Mantenimiento": 2, "Fuera de Servicio": 3 };
+            return (order[a.estado] || 999) - (order[b.estado] || 999);
+        });
+    }
+
+    var simbolo = '▽';  
+    if (potenciaMode === 1) simbolo = '▼';  
+    if (potenciaMode === 2) simbolo = '▲'; 
+
+    $('#btnFilterPotencia').text('Potencia ' + simbolo);
+
+    if (estadoMode === 1) {
+        $('#btnFilterEstado').addClass('active');
+    } else {
+        $('#btnFilterEstado').removeClass('active');
+    }
+
+	RenderTabla(sorted);
 }
 
 function RenderTabla(lstTurbinas) {
@@ -158,6 +228,10 @@ function CerrarModalTurbina() {
     $('#txtCapacidad').val('');
     $('#selEstado').val('');
 
+    $('#modalTitle').text('Agregar Turbina');
+    $('#btnCrearTurbina').text('Crear');
+    $('#btnCrearTurbina').data('turbina-id', '');
+
 }
 
 function CrearTurbina() {
@@ -186,27 +260,55 @@ function CrearTurbina() {
         estado: estado
     };
 
-    var ca = new ControlActions();
-    ca.PostToAPI("Turbina/Create", turbinaDTO, function () {
+    var isEditing = $('#btnCrearTurbina').data('turbina-id');
 
-        CerrarModalTurbina();
+    if (isEditing) {
+        turbinaDTO.id = isEditing;
+        ActualizarTurbina(turbinaDTO);
+    } else {
+        var ca = new ControlActions();
+        ca.PostToAPI("Turbina/Create", turbinaDTO, function () {
 
-        var vc = new TurbinaViewController();
-        vc.LoadTable();
-    });
+            CerrarModalTurbina();
+
+            var vc = new TurbinaViewController();
+            vc.LoadTable();
+            ApplyFilters();
+        });
+    }
+
+
 
 
 }
 
+
+function ActualizarTurbina(turbinaDTO) {
+    turbinaDTO.id = parseInt(turbinaDTO.id);
+
+    var ca = new ControlActions();
+    var urlEndPoint = "Turbina/Update";
+
+    ca.PutToAPI(urlEndPoint, turbinaDTO, function () {
+        CerrarModalTurbina();
+        var vc = new TurbinaViewController();
+        vc.LoadTable();
+        ApplyFilters();
+    });
+}
 
 function RenderStats(lstTurbinas) {
     var total = lstTurbinas.length;
     var enOperacion = 0;
     var enMantenimiento = 0;
     var capacidadTotalKwh = 0;
+    var capacidadActivasKwh = 0;
 
     $.each(lstTurbinas, function (i, turbina) {
-        if (turbina.estado === "Activa") enOperacion++;
+        if (turbina.estado === "Activa") {
+            enOperacion++;
+            capacidadActivasKwh += turbina.capacidadKwh;
+        }
         if (turbina.estado === "Mantenimiento") enMantenimiento++;
         capacidadTotalKwh += turbina.capacidadKwh;
     });
@@ -215,6 +317,21 @@ function RenderStats(lstTurbinas) {
     $('#statOperacion').text(enOperacion);
     $('#statMantenimiento').text(enMantenimiento);
     $('#statCapacidad').html((capacidadTotalKwh / 1000).toFixed(1) + ' <span>MW</span>');
+
+    if (enOperacion === total) {
+        $('#statCapacidadDelta').text('');
+        $('#statOperacionDelta').text('');
+        $('#statMantenimientoDelta').text('');
+    } else {
+        var capacidadActualMW = (capacidadActivasKwh / 1000).toFixed(1);
+        var porcentajeOperacion = Math.round((enOperacion / total) * 100);
+        var porcentajeMantenimiento = Math.round((enMantenimiento / total) * 100);
+        $('#statCapacidadDelta').text('Capacidad actual: ' + capacidadActualMW + ' MW').css('color', '#9ca3af');
+        $('#statOperacionDelta').text(porcentajeOperacion + '% del Total');
+        $('#statMantenimientoDelta').text(porcentajeMantenimiento + '% del Total');
+    }
+
+
 }
 
 

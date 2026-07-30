@@ -63,22 +63,21 @@
                 <div class="stat-card">
                     <div class="stat-label">Total Turbinas</div>
                     <div class="stat-value" id="statTotal">0</div>
-                    <div class="stat-delta">+2 este año</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">En Operación</div>
                     <div class="stat-value" id="statOperacion">0</div>
-                    <div class="stat-delta green">79% del total</div>
+                    <div class="stat-delta green" id="statOperacionDelta">79% del total</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Mantenimiento</div>
                     <div class="stat-value" id="statMantenimiento">0</div>
-                    <div class="stat-delta yellow">12.5% del total</div>
+                    <div class="stat-delta yellow" id="statMantenimientoDelta">12.5% del total</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-label">Capacidad Total</div>
                     <div class="stat-value" id="statCapacidad">0 <span>MW</span></div>
-                    <div class="stat-delta">+0.8 MW vs 2025</div>
+                    <div class="stat-delta" id="statCapacidadDelta">+0.8 MW vs 2025</div>
                 </div>
             </div>
 
@@ -91,9 +90,8 @@
                     </svg>
                     <input id="searchInput" type="text" placeholder="Buscar por modelo o código..." />
                 </div>
-                <button class="filter-btn">Estado ▼</button>
-                <button class="filter-btn">Potencia ▼</button>
-                <button class="filter-btn">Instalación ▼</button>
+                <button class="filter-btn" id="btnFilterEstado">Estado ☰</button>
+                <button class="filter-btn" id="btnFilterPotencia">Potencia ▽</button>
             </div>
 
             <!-- ===== TABLA ===== -->
@@ -135,7 +133,7 @@
         <div class="modal-card">
             <div class="modal-header">
                 <button type="button" class="modal-close" id="btnCerrarModal">x</button>
-                <h2>Agregar Turbina</h2>
+                <h2 id="modalTitle">Agregar Turbina</h2>
             </div>
             <div class="form-group">
                 <label class="field-label">Nombre <span class="required">*</span></label>
@@ -161,7 +159,6 @@
                 <label class="field-label">Estado <span class="required">*</span></label>
                 <select id="selEstado" class="field-input">
                     <option value="Activa">Activa</option>
-                    <option value="Mantenimiento">Mantenimiento</option>
                     <option value="Fuera de Servicio">Fuera de Servicio</option>
                 </select>
             </div>

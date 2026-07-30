@@ -39,6 +39,7 @@ namespace DataAccess.CRUD
             var sqlOperation = new SqlOperation();
 
             sqlOperation.ProcedureName = "UPD_TURBINA_PR";
+            sqlOperation.AddIntParameter("P_ID", turbina.Id);
             sqlOperation.AddStringParameter("P_NOMBRE", turbina.Nombre);
             sqlOperation.AddStringParameter("P_MODELO", turbina.Modelo);
             sqlOperation.AddStringParameter("P_MARCA", turbina.Marca);
