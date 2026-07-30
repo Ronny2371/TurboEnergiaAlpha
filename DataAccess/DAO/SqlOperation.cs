@@ -42,6 +42,21 @@ namespace DataAccess.DAO
             Parameters.Add(new SqlParameter(parameterName, value));
         }
 
+        public void AddDateParameter(string parameterName, DateOnly value)
+        {
+            Parameters.Add(new SqlParameter(parameterName, value.ToDateTime(TimeOnly.MinValue)));
+        }
+
+        public void AddTimeParameter(string parameterName, TimeOnly value)
+        {
+            Parameters.Add(new SqlParameter(parameterName, value.ToTimeSpan()));
+        }
+        //====== Esto lo cree para poder poner la fechaFin y horaFin null en el mantenimiento cuando esta no este definida 
+        public void AddNullParameter(string parameterName)
+        {
+            Parameters.Add(new SqlParameter(parameterName, DBNull.Value));
+        }
+
 
 
     }

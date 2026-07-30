@@ -1,0 +1,79 @@
+-- Borrar SPs si existen
+DROP PROCEDURE IF EXISTS [dbo].[CRE_MANTENIMIENTO_PR];
+DROP PROCEDURE IF EXISTS [dbo].[UPD_MANTENIMIENTO_PR];
+DROP PROCEDURE IF EXISTS [dbo].[RET_ALL_MANTENIMIENTOS_PR];
+DROP PROCEDURE IF EXISTS [dbo].[RET_MANTENIMIENTO_BY_ID_PR];
+DROP PROCEDURE IF EXISTS [dbo].[DEL_MANTENIMIENTO_PR];
+GO
+
+-- CREATE SP
+CREATE PROCEDURE [dbo].[CRE_MANTENIMIENTO_PR]
+    @P_TURBINA_ID INT,
+    @P_USUARIO_ID INT,
+    @P_FECHA_INICIO DATE,
+    @P_HORA_INICIO TIME(7),
+    @P_FECHA_FIN DATE,
+    @P_HORA_FIN TIME(7),
+    @P_TIPO NVARCHAR(50),
+    @P_ESTADO NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    INSERT INTO dbo.tblMantenimiento (TurbinaId, UsuarioId, FechaInicio, HoraInicio, FechaFin, HoraFin, Tipo, Estado)
+    VALUES (@P_TURBINA_ID, @P_USUARIO_ID, @P_FECHA_INICIO, @P_HORA_INICIO, @P_FECHA_FIN, @P_HORA_FIN, @P_TIPO, @P_ESTADO);
+END
+GO
+
+-- UPDATE SP
+CREATE PROCEDURE [dbo].[UPD_MANTENIMIENTO_PR]
+    @P_ID INT,
+    @P_TURBINA_ID INT,
+    @P_USUARIO_ID INT,
+    @P_FECHA_INICIO DATE,
+    @P_HORA_INICIO TIME(7),
+    @P_FECHA_FIN DATE,
+    @P_HORA_FIN TIME(7),
+    @P_TIPO NVARCHAR(50),
+    @P_ESTADO NVARCHAR(50)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    UPDATE dbo.tblMantenimiento
+    SET TurbinaId = @P_TURBINA_ID, UsuarioId = @P_USUARIO_ID, FechaInicio = @P_FECHA_INICIO, HoraInicio = @P_HORA_INICIO, 
+        FechaFin = @P_FECHA_FIN, HoraFin = @P_HORA_FIN, Tipo = @P_TIPO, Estado = @P_ESTADO
+    WHERE Id = @P_ID;
+END
+GO
+
+-- RETRIEVE ALL SP
+CREATE PROCEDURE [dbo].[RET_ALL_MANTENIMIENTOS_PR]
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT Id, Created, Updated, TurbinaId, UsuarioId, FechaInicio, HoraInicio, FechaFin, HoraFin, Tipo, Estado
+    FROM dbo.tblMantenimiento;
+END
+GO
+
+-- RETRIEVE BY ID SP
+CREATE PROCEDURE [dbo].[RET_MANTENIMIENTO_BY_ID_PR]
+    @P_ID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT Id, Created, Updated, TurbinaId, UsuarioId, FechaInicio, HoraInicio, FechaFin, HoraFin, Tipo, Estado
+    FROM dbo.tblMantenimiento
+    WHERE Id = @P_ID;
+END
+GO
+
+-- DELETE SP
+CREATE PROCEDURE [dbo].[DEL_MANTENIMIENTO_PR]
+    @P_ID INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+    DELETE FROM dbo.tblMantenimiento
+    WHERE Id = @P_ID;
+END
+GO
