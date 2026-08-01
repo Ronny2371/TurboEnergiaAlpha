@@ -39,6 +39,12 @@ namespace CoreApp_
         {
             var uCrud = new UserCrudFactory();
 
+            if (string.IsNullOrWhiteSpace(u.Contrasena))
+            {
+                var existente = uCrud.RetrieveById<User>(u.Id);
+                u.Contrasena = existente.Contrasena;
+            }
+
             ValidateFields(u);
 
             if (EmailTaken(u.Correo, u.Id))
@@ -135,7 +141,7 @@ namespace CoreApp_
 
             // Generar un OTP de 6 dígitos y lo convierte a texto
             var otp = new Random().Next(100000, 999999).ToString();
-            var expiracion = DateTime.Now.AddMinutes(5);
+            var expiracion = DateTime.Now.AddMinutes(1);
 
             //Llama al método SetOtp del UserCrudFactory para guardar el OTP y su expiración en la base de datos
             uCrud.SetOtp(userId, otp, expiracion);

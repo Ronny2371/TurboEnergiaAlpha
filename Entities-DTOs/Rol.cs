@@ -8,6 +8,6 @@ namespace Entities_DTOs
     {
         public int Id { get; set; }
 
-        public string NombreRol { get; set; }
+        public string? NombreRol { get; set; }
     }
 }
