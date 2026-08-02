@@ -20,7 +20,7 @@ namespace CoreApp_
             return tCrud.RetrieveById<Turbina>(id);
         }
 
-        public void CreateTurbina(Turbina t)
+        public void CreateTurbina(Turbina t, int usuarioAccionId)
         {
             Validate(t);
 
@@ -35,16 +35,49 @@ namespace CoreApp_
             }
 
             tCrud.Create(t);
+
+            new LogAuditoriaManager().RegistrarEvento(usuarioAccionId, "Turbina", "Creación", "", t.Nombre);
         }
-        public void UpdateTurbina(Turbina t)
+        public void UpdateTurbina(Turbina t, int usuarioAccionId)
         {
             var tCrud = new TurbinaCrudFactory();
+            var anterior = tCrud.RetrieveById<Turbina>(t.Id);
+
             tCrud.Update(t);
+
+            RegistrarCambios(anterior, t, usuarioAccionId);
         }
-        public void DeleteTurbina(Turbina t)
+        public void DeleteTurbina(Turbina t, int usuarioAccionId)
         {
             var uCrud = new TurbinaCrudFactory();
             uCrud.Delete(t);
+
+            new LogAuditoriaManager().RegistrarEvento(usuarioAccionId, "Turbina", "Eliminación", t.Nombre, "");
+        }
+
+        private void RegistrarCambios(Turbina anterior, Turbina nuevo, int usuarioAccionId)
+        {
+            if (anterior == null) return;
+
+            var logManager = new LogAuditoriaManager();
+
+            if (anterior.Nombre != nuevo.Nombre)
+                logManager.RegistrarEvento(usuarioAccionId, "Turbina", "Nombre", anterior.Nombre, nuevo.Nombre);
+
+            if (anterior.Modelo != nuevo.Modelo)
+                logManager.RegistrarEvento(usuarioAccionId, "Turbina", "Modelo", anterior.Modelo, nuevo.Modelo);
+
+            if (anterior.Marca != nuevo.Marca)
+                logManager.RegistrarEvento(usuarioAccionId, "Turbina", "Marca", anterior.Marca, nuevo.Marca);
+
+            if (anterior.anioFabricacion != nuevo.anioFabricacion)
+                logManager.RegistrarEvento(usuarioAccionId, "Turbina", "AnioFabricacion", anterior.anioFabricacion.ToString(), nuevo.anioFabricacion.ToString());
+
+            if (anterior.capacidadKwh != nuevo.capacidadKwh)
+                logManager.RegistrarEvento(usuarioAccionId, "Turbina", "CapacidadKwh", anterior.capacidadKwh.ToString(), nuevo.capacidadKwh.ToString());
+
+            if (anterior.Estado != nuevo.Estado)
+                logManager.RegistrarEvento(usuarioAccionId, "Turbina", "Estado", anterior.Estado, nuevo.Estado);
         }
 
         private void Validate(Turbina turbina)

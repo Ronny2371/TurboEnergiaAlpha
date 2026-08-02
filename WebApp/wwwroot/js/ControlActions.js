@@ -9,6 +9,19 @@
 		return this.URL_API + service;
 	}
 
+	//Devuelve el Id del usuario logueado (guardado en sessionStorage tras validar el OTP en el login), o 0 si no hay sesión
+	this.GetUsuarioActualId = function () {
+		var data = sessionStorage.getItem('usuarioActual');
+		if (!data) return 0;
+
+		try {
+			var usuario = JSON.parse(data);
+			return usuario.id || 0;
+		} catch (e) {
+			return 0;
+		}
+	}
+
 	this.GetTableColumsDataName = function (tableId) {
 		var val = $('#' + tableId).attr("ColumnsDataName");
 

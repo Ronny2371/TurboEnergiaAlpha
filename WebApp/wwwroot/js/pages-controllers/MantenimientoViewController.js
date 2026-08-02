@@ -124,7 +124,7 @@ function SincronizarEstados(callback) {
             pendientes.push(
                 $.ajax({
                     type: "PUT",
-                    url: ca.GetUrlApiService("Mantenimiento/Update"),
+                    url: ca.GetUrlApiService("Mantenimiento/Update?usuarioAccionId=" + ca.GetUsuarioActualId()),
                     data: JSON.stringify(mantenimientoDTO),
                     contentType: "application/json; charset=utf-8"
                 }).fail(function (jqXHR) {
@@ -180,7 +180,7 @@ function ActualizarEstadoTurbina(turbina) {
     };
     return $.ajax({
         type: "PUT",
-        url: ca.GetUrlApiService("Turbina/Update"),
+        url: ca.GetUrlApiService("Turbina/Update?usuarioAccionId=" + ca.GetUsuarioActualId()),
         data: JSON.stringify(turbinaDTO),
         contentType: "application/json; charset=utf-8"
     });
@@ -335,13 +335,13 @@ function GuardarMantenimiento() {
     var ca = new ControlActions();
     if (isEditing) {
         mantenimientoDTO.id = isEditing;
-        ca.PutToAPI("Mantenimiento/Update", mantenimientoDTO, function () {
+        ca.PutToAPI("Mantenimiento/Update?usuarioAccionId=" + ca.GetUsuarioActualId(), mantenimientoDTO, function () {
             CerrarModalMantenimiento();
             var vc = new MantenimientoViewController();
             vc.LoadTable();
         });
     } else {
-        ca.PostToAPI("Mantenimiento/Create", mantenimientoDTO, function () {
+        ca.PostToAPI("Mantenimiento/Create?usuarioAccionId=" + ca.GetUsuarioActualId(), mantenimientoDTO, function () {
             CerrarModalMantenimiento();
             var vc = new MantenimientoViewController();
             vc.LoadTable();
@@ -351,9 +351,10 @@ function GuardarMantenimiento() {
 function EliminarMantenimiento(id) {
     var m = window.mantenimientosList.find(function (x) { return x.id === id; });
     if (!m) return;
+    var ca = new ControlActions();
     $.ajax({
         type: "DELETE",
-        url: new ControlActions().GetUrlApiService("Mantenimiento/Delete"),
+        url: ca.GetUrlApiService("Mantenimiento/Delete?usuarioAccionId=" + ca.GetUsuarioActualId()),
         data: JSON.stringify(m),
         contentType: "application/json; charset=utf-8",
         success: function () {

@@ -11,7 +11,7 @@ namespace CoreApp_
     public class UserManager
     {
 
-        public void Create(User u)
+        public void Create(User u, int? usuarioAccionId = null)
         {
             var uCrud = new UserCrudFactory();
 
@@ -33,16 +33,22 @@ namespace CoreApp_
             }
 
             uCrud.Create(u);
+
+            //Si nadie identificado hizo el alta (registro público), el propio usuario creado es el actor
+            var creado = uCrud.GetByEmail(u.Correo);
+            var actorId = usuarioAccionId ?? creado.Id;
+            new LogAuditoriaManager().RegistrarEvento(actorId, "Usuario", "Creación", "", creado.Correo);
         }
 
-        public void Update(User u)
+        public void Update(User u, int usuarioAccionId)
         {
             var uCrud = new UserCrudFactory();
 
+            var anterior = uCrud.RetrieveById<User>(u.Id);
+
             if (string.IsNullOrWhiteSpace(u.Contrasena))
             {
-                var existente = uCrud.RetrieveById<User>(u.Id);
-                u.Contrasena = existente.Contrasena;
+                u.Contrasena = anterior.Contrasena;
             }
 
             ValidateFields(u);
@@ -63,12 +69,51 @@ namespace CoreApp_
             }
 
             uCrud.Update(u);
+
+            RegistrarCambios(anterior, u, usuarioAccionId);
         }
 
-        public void Delete(User u)
+        public void Delete(User u, int usuarioAccionId)
         {
             var uCrud = new UserCrudFactory();
             uCrud.Delete(u);
+
+            new LogAuditoriaManager().RegistrarEvento(usuarioAccionId, "Usuario", "Eliminación", u.Correo, "");
+        }
+
+        private void RegistrarCambios(User anterior, User nuevo, int usuarioAccionId)
+        {
+            if (anterior == null) return;
+
+            var logManager = new LogAuditoriaManager();
+
+            if (anterior.Identificacion != nuevo.Identificacion)
+                logManager.RegistrarEvento(usuarioAccionId, "Usuario", "Identificacion", anterior.Identificacion.ToString(), nuevo.Identificacion.ToString());
+
+            if (anterior.Nombre != nuevo.Nombre)
+                logManager.RegistrarEvento(usuarioAccionId, "Usuario", "Nombre", anterior.Nombre, nuevo.Nombre);
+
+            if (anterior.Apellido1 != nuevo.Apellido1)
+                logManager.RegistrarEvento(usuarioAccionId, "Usuario", "Apellido1", anterior.Apellido1, nuevo.Apellido1);
+
+            if (anterior.Apellido2 != nuevo.Apellido2)
+                logManager.RegistrarEvento(usuarioAccionId, "Usuario", "Apellido2", anterior.Apellido2, nuevo.Apellido2);
+
+            if (anterior.Correo != nuevo.Correo)
+                logManager.RegistrarEvento(usuarioAccionId, "Usuario", "Correo", anterior.Correo, nuevo.Correo);
+
+            if (anterior.Telefono != nuevo.Telefono)
+                logManager.RegistrarEvento(usuarioAccionId, "Usuario", "Telefono", anterior.Telefono.ToString(), nuevo.Telefono.ToString());
+
+            if (anterior.FechaNacimiento != nuevo.FechaNacimiento)
+                logManager.RegistrarEvento(usuarioAccionId, "Usuario", "FechaNacimiento", anterior.FechaNacimiento.ToString(), nuevo.FechaNacimiento.ToString());
+
+            if (anterior.FotoPerfil != nuevo.FotoPerfil)
+                logManager.RegistrarEvento(usuarioAccionId, "Usuario", "FotoPerfil", anterior.FotoPerfil, nuevo.FotoPerfil);
+
+            //La contraseña nunca se audita con su valor real, solo se deja constancia de que cambió
+            if (anterior.Contrasena != nuevo.Contrasena)
+                logManager.RegistrarEvento(usuarioAccionId, "Usuario", "Contrasena", "(oculto)", "(oculto)");
         }
 
 

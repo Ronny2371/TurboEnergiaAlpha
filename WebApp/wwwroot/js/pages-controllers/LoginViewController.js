@@ -2,6 +2,7 @@
 
     this.API_ControllerName = "Users";
     this.currentUserId = null;
+    this.currentUser = null;
 
     //Se enlaza las funciones a los botones del HTML
     this.InitView = function () {
@@ -41,6 +42,8 @@
             success: function (response) {
                 //Guarda ID del usuario actual para usarlo en la validación del OTP
                 self.currentUserId = response.id;
+                //Guarda la respuesta completa (id, nombre, rol, etc.) para la sesión ligera en sessionStorage
+                self.currentUser = response;
 
                 //Mostramos el panel de OTP y ocultamos el de login
                 $('#panelLogin').hide();
@@ -75,6 +78,9 @@
             type: "POST",
             url: ca.GetUrlApiService(urlEndPoint),
             success: function (response) {
+                //Guarda la sesión ligera en sessionStorage para que el resto de la app sepa quién está logueado
+                sessionStorage.setItem('usuarioActual', JSON.stringify(self.currentUser));
+
                 Swal.fire({
                     icon: 'success',
                     title: '¡Bienvenido!',
