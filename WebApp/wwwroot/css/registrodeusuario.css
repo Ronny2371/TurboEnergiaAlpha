@@ -150,6 +150,62 @@ body {
     margin-top: 4px;
 }
 
+/* ===== contraseña (mostrar/ocultar) ===== */
+.input-container {
+    position: relative;
+    width: 100%;
+}
+
+    .input-container .field-input {
+        padding-right: 44px;
+    }
+
+.toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+    .toggle-password:hover {
+        opacity: 1;
+    }
+
+/* ===== requisitos de contraseña ===== */
+.requisitos-contrasenia {
+    background: #f9fafb;
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 4px 0 20px;
+    border: 1px solid #e5e7eb;
+}
+
+.requisitos-titulo {
+    font-size: 12px;
+    font-weight: 600;
+    color: #4b5563;
+    margin-bottom: 6px;
+}
+
+.requisitos-lista {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 13px;
+}
+
+    .requisitos-lista li {
+        padding: 2px 0;
+        transition: all 0.3s ease;
+    }
+
 /* ===== botón ===== */
 .btn-primary {
     width: 100%;
