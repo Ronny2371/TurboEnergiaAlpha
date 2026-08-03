@@ -48,12 +48,12 @@ namespace WebAPI.Controllers
         //Crear Turbina
         [HttpPost]
         [Route("Create")]
-        public ActionResult Create(Turbina turbina)
+        public ActionResult Create(Turbina turbina, int usuarioAccionId)
         {
             try
             {
                 var tm = new TurbinaManager();
-                tm.CreateTurbina(turbina);
+                tm.CreateTurbina(turbina, usuarioAccionId);
                 return Ok(tm);
             }
             catch (Exception ex)
@@ -65,12 +65,12 @@ namespace WebAPI.Controllers
         //Actualizar Turbina
         [HttpPut]
         [Route("Update")]
-        public ActionResult Update(Turbina turbina)
+        public ActionResult Update(Turbina turbina, int usuarioAccionId)
         {
             try
             {
                 var tm = new TurbinaManager();
-                tm.UpdateTurbina(turbina);
+                tm.UpdateTurbina(turbina, usuarioAccionId);
                 return Ok(turbina);
             }
             catch (Exception ex)
@@ -81,12 +81,12 @@ namespace WebAPI.Controllers
         //Eliminar Turbina
         [HttpDelete]
         [Route("Delete")]
-        public ActionResult Delete(Turbina turbina)
+        public ActionResult Delete(Turbina turbina, int usuarioAccionId)
         {
             try
             {
                 var tm = new TurbinaManager();
-                tm.DeleteTurbina(turbina);
+                tm.DeleteTurbina(turbina, usuarioAccionId);
                 return Ok(turbina);
             }
             catch (Exception ex)

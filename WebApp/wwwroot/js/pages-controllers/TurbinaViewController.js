@@ -198,10 +198,11 @@ function RenderTabla(lstTurbinas) {
 function EliminarTurbina(id) {
 
     var turbina = window.turbinasList.find(function (t) {return t.id === id });
+    var ca = new ControlActions();
 
     $.ajax({
         type: "DELETE",
-        url: new ControlActions().GetUrlApiService("Turbina/Delete"),
+        url: ca.GetUrlApiService("Turbina/Delete?usuarioAccionId=" + ca.GetUsuarioActualId()),
         data: JSON.stringify(turbina),
         contentType: "application/json; charset=utf-8",
         success: function () {
@@ -275,7 +276,7 @@ function CrearTurbina() {
         ActualizarTurbina(turbinaDTO);
     } else {
         var ca = new ControlActions();
-        ca.PostToAPI("Turbina/Create", turbinaDTO, function () {
+        ca.PostToAPI("Turbina/Create?usuarioAccionId=" + ca.GetUsuarioActualId(), turbinaDTO, function () {
 
             CerrarModalTurbina();
 
@@ -295,7 +296,7 @@ function ActualizarTurbina(turbinaDTO) {
     turbinaDTO.id = parseInt(turbinaDTO.id);
 
     var ca = new ControlActions();
-    var urlEndPoint = "Turbina/Update";
+    var urlEndPoint = "Turbina/Update?usuarioAccionId=" + ca.GetUsuarioActualId();
 
     ca.PutToAPI(urlEndPoint, turbinaDTO, function () {
         CerrarModalTurbina();

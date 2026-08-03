@@ -197,7 +197,7 @@
         userDTO.contrasena = $('#txtContrasena').val();
 
         var ca = new ControlActions();
-        var urlEndPoint = this.API_ControllerName + "/Create";
+        var urlEndPoint = this.API_ControllerName + "/Create?usuarioAccionId=" + ca.GetUsuarioActualId();
 
         ca.PostToAPI(urlEndPoint, userDTO, function () {
             if ($('#tblUsers').length > 0) {
@@ -224,7 +224,7 @@
         userDTO.contrasena = $('#txtContrasena').val();
 
         var ca = new ControlActions();
-        var urlEndPoint = this.API_ControllerName + "/Update";
+        var urlEndPoint = this.API_ControllerName + "/Update?usuarioAccionId=" + ca.GetUsuarioActualId();
 
         ca.PutToAPI(urlEndPoint, userDTO, function () {
             $('#modalOverlay').hide();
@@ -234,7 +234,7 @@
 
     this.Delete = function (userDTO) {
         var ca = new ControlActions();
-        var urlEndPoint = this.API_ControllerName + "/Delete";
+        var urlEndPoint = this.API_ControllerName + "/Delete?usuarioAccionId=" + ca.GetUsuarioActualId();
 
         ca.DeleteToAPI(urlEndPoint, userDTO, function () {
             $('#tblUsers').DataTable().ajax.reload();

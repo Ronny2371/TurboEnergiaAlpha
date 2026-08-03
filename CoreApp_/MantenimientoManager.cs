@@ -21,26 +21,67 @@ namespace CoreApp_
             return mCrud.RetrieveById<Mantenimiento>(id);
         }
 
-        public void CreateMantenimiento(Mantenimiento m)
+        public void CreateMantenimiento(Mantenimiento m, int usuarioAccionId)
         {
             Validate(m);
 
             var mCrud = new MantenimientoCrudFactory();
             mCrud.Create(m);
+
+            var identificador = $"Turbina {m.TurbinaId} - {m.FechaInicio}";
+            new LogAuditoriaManager().RegistrarEvento(usuarioAccionId, "Mantenimiento", "Creación", "", identificador);
         }
 
-        public void UpdateMantenimiento(Mantenimiento m)
+        public void UpdateMantenimiento(Mantenimiento m, int usuarioAccionId)
         {
             Validate(m);
 
             var mCrud = new MantenimientoCrudFactory();
+            var anterior = mCrud.RetrieveById<Mantenimiento>(m.Id);
+
             mCrud.Update(m);
+
+            RegistrarCambios(anterior, m, usuarioAccionId);
         }
 
-        public void DeleteMantenimiento(Mantenimiento m)
+        public void DeleteMantenimiento(Mantenimiento m, int usuarioAccionId)
         {
             var mCrud = new MantenimientoCrudFactory();
             mCrud.Delete(m);
+
+            var identificador = $"Turbina {m.TurbinaId} - {m.FechaInicio}";
+            new LogAuditoriaManager().RegistrarEvento(usuarioAccionId, "Mantenimiento", "Eliminación", identificador, "");
+        }
+
+        private void RegistrarCambios(Mantenimiento anterior, Mantenimiento nuevo, int usuarioAccionId)
+        {
+            if (anterior == null) return;
+
+            var logManager = new LogAuditoriaManager();
+
+            if (anterior.TurbinaId != nuevo.TurbinaId)
+                logManager.RegistrarEvento(usuarioAccionId, "Mantenimiento", "TurbinaId", anterior.TurbinaId.ToString(), nuevo.TurbinaId.ToString());
+
+            if (anterior.UsuarioId != nuevo.UsuarioId)
+                logManager.RegistrarEvento(usuarioAccionId, "Mantenimiento", "UsuarioId", anterior.UsuarioId.ToString(), nuevo.UsuarioId.ToString());
+
+            if (anterior.FechaInicio != nuevo.FechaInicio)
+                logManager.RegistrarEvento(usuarioAccionId, "Mantenimiento", "FechaInicio", anterior.FechaInicio.ToString(), nuevo.FechaInicio.ToString());
+
+            if (anterior.HoraInicio != nuevo.HoraInicio)
+                logManager.RegistrarEvento(usuarioAccionId, "Mantenimiento", "HoraInicio", anterior.HoraInicio.ToString(), nuevo.HoraInicio.ToString());
+
+            if (anterior.FechaFin != nuevo.FechaFin)
+                logManager.RegistrarEvento(usuarioAccionId, "Mantenimiento", "FechaFin", anterior.FechaFin?.ToString() ?? "", nuevo.FechaFin?.ToString() ?? "");
+
+            if (anterior.HoraFin != nuevo.HoraFin)
+                logManager.RegistrarEvento(usuarioAccionId, "Mantenimiento", "HoraFin", anterior.HoraFin?.ToString() ?? "", nuevo.HoraFin?.ToString() ?? "");
+
+            if (anterior.TipoMantenimiento != nuevo.TipoMantenimiento)
+                logManager.RegistrarEvento(usuarioAccionId, "Mantenimiento", "Tipo", anterior.TipoMantenimiento, nuevo.TipoMantenimiento);
+
+            if (anterior.EstadoMantenimiento != nuevo.EstadoMantenimiento)
+                logManager.RegistrarEvento(usuarioAccionId, "Mantenimiento", "Estado", anterior.EstadoMantenimiento, nuevo.EstadoMantenimiento);
         }
 
 

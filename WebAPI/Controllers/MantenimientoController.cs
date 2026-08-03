@@ -50,12 +50,12 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         [Route("Create")]
-        public ActionResult Create(Mantenimiento mantenimiento)
+        public ActionResult Create(Mantenimiento mantenimiento, int usuarioAccionId)
         {
             try
             {
                 var mm = new MantenimientoManager();
-                mm.CreateMantenimiento(mantenimiento);
+                mm.CreateMantenimiento(mantenimiento, usuarioAccionId);
                 return Ok(mantenimiento);
             }
             catch(Exception ex)
@@ -66,12 +66,12 @@ namespace WebAPI.Controllers
 
         [HttpPut]
         [Route("Update")]
-        public ActionResult Update(Mantenimiento mantenimiento)
+        public ActionResult Update(Mantenimiento mantenimiento, int usuarioAccionId)
         {
             try
             {
                 var mm = new MantenimientoManager();
-                mm.UpdateMantenimiento(mantenimiento);
+                mm.UpdateMantenimiento(mantenimiento, usuarioAccionId);
                 return Ok(mantenimiento);
             }
             catch(Exception ex)
@@ -82,12 +82,12 @@ namespace WebAPI.Controllers
 
         [HttpDelete]
         [Route("Delete")]
-        public ActionResult Delete(Mantenimiento mantenimiento)
+        public ActionResult Delete(Mantenimiento mantenimiento, int usuarioAccionId)
         {
             try
             {
                 var mm = new MantenimientoManager();
-                mm.DeleteMantenimiento(mantenimiento);
+                mm.DeleteMantenimiento(mantenimiento, usuarioAccionId);
                 return Ok(mantenimiento);
             }
             catch(Exception ex)

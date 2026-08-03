@@ -150,6 +150,21 @@
     color: #1e40af;
 }
 
+.badge-green {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.badge-yellow {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.badge-red {
+    background: #fecaca;
+    color: #991b1b;
+}
+
 .badge-dot {
     width: 8px;
     height: 8px;
@@ -159,6 +174,18 @@
 
 .badge-dot-blue {
     background: #3b82f6;
+}
+
+.badge-dot-green {
+    background: #10b981;
+}
+
+.badge-dot-yellow {
+    background: #f59e0b;
+}
+
+.badge-dot-red {
+    background: #ef4444;
 }
 
 /* ===== report grid ===== */

@@ -1,0 +1,92 @@
+@page
+@model WebApp.Pages.AuditoriaModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Auditoría";
+}
+
+<link rel="stylesheet" href="~/css/paneladministrador.css" />
+<link rel="stylesheet" href="~/css/cerrarsesion.css" />
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<link href="https://cdn.datatables.net/2.3.8/css/dataTables.dataTables.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="~/css/gestiondeusuarios.css" />
+<script src="https://cdn.datatables.net/2.3.8/js/dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="~/js/ControlActions.js"></script>
+<script src="~/js/pages-controllers/AuditoriaViewController.js"></script>
+
+<div class="dashboard-container">
+
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+        <div class="logo-mark">ALPHA <span>ENERGY</span></div>
+        <div class="user-chip">
+            <div class="avatar-circle">AD</div>
+            <div>
+                <div class="user-name">Admin Principal</div>
+                <div class="user-role">Administrador</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== LAYOUT (sidebar + contenido) ===== -->
+    <div class="app-layout">
+
+        <!-- ===== sidebar ===== -->
+        <nav class="app-sidebar">
+            <div class="s-label">Menu</div>
+            <a class="s-item" asp-page="/PanelAdministrador">Dashboard</a>
+            <a class="s-item" asp-page="/GestionDeUsuarios">Usuarios</a>
+            <a class="s-item" asp-page="/GestionDeTurbinas">Turbinas</a>
+            <a class="s-item" asp-page="/RegistroDeMantenimiento">Mantenimiento</a>
+            <a class="s-item" asp-page="/PortalDistribuidor">Distribución</a>
+            <a class="s-item" asp-page="/ReporteDeFacturacion">Reportes</a>
+            <a class="s-item active" asp-page="/Auditoria">Auditoría</a>
+            <a class="s-item logout" href="/Login">Cerrar sesión</a>
+        </nav>
+
+        <!-- ===== CONTENIDO ===== -->
+        <main class="app-content">
+
+            <!-- ===== TÍTULO ===== -->
+            <div class="page-title-row">
+                <div>
+                    <div class="page-title">Auditoría del Sistema</div>
+                    <div class="page-sub">Historial de cambios realizados en Turbinas, Mantenimientos y Usuarios</div>
+                </div>
+            </div>
+
+            <!-- ===== FILTROS ===== -->
+            <div class="filters-row">
+                <select id="selFiltroEntidad" class="filter-btn">
+                    <option value="">Todas las entidades</option>
+                    <option value="Turbina">Turbina</option>
+                    <option value="Mantenimiento">Mantenimiento</option>
+                    <option value="Usuario">Usuario</option>
+                </select>
+                <input id="txtFechaInicio" type="date" class="field-input" style="max-width:170px;" title="Desde" />
+                <input id="txtFechaFin" type="date" class="field-input" style="max-width:170px;" title="Hasta" />
+                <button class="btn-primary" id="btnAplicarFiltros">Aplicar filtros</button>
+                <button class="btn-outline" id="btnLimpiarFiltros">Limpiar</button>
+            </div>
+
+            <!-- ===== TABLA (DataTables construye thead/tbody automáticamente) ===== -->
+            <table id="tblAuditoria" class="wf-table">
+            </table>
+
+            <!-- ===== ANOTACIÓN ===== -->
+            <div class="annotation-section">
+                <span class="ann">📋 Los registros de auditoría son de solo lectura y no pueden editarse ni eliminarse</span>
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="wf-footer">
+        <p>&copy; 2026 Alpha Energy. Todos los derechos reservados.</p>
+    </footer>
+
+</div>

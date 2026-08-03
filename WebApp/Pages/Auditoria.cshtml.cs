@@ -3,15 +3,10 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace WebApp.Pages
 {
-    public class RegistroModel : PageModel
+    public class AuditoriaModel : PageModel
     {
         public void OnGet()
         {
-        }
-
-        public IActionResult OnPost()
-        {
-            return RedirectToPage("/Login");
         }
     }
 }

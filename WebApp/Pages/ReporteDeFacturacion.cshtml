@@ -9,6 +9,10 @@
 <link rel="stylesheet" href="~/css/reportedefacturacion.css" />
 <link rel="stylesheet" href="~/css/paneladministrador.css" />
 <link rel="stylesheet" href="~/css/cerrarsesion.css" />
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="~/js/ControlActions.js"></script>
+<script src="~/js/pages-controllers/ReporteFacturacionViewController.js"></script>
 
 <div class="dashboard-container">
 
@@ -72,23 +76,23 @@
                 <!-- ===== PERIOD HEADER CARD ===== -->
                 <div class="report-header-card">
                     <div>
-                        <div class="report-period">Julio 2026</div>
-                        <div class="report-period-sub">Período de facturación — Cerrado</div>
+                        <div class="report-period" id="lblPeriodo">—</div>
+                        <div class="report-period-sub">Período de facturación</div>
                     </div>
                     <div class="report-meta">
                         <div class="meta-item">
                             <span class="meta-label">Distribuidor</span>
-                            <span class="meta-value">Distribuidora del Sur S.A.</span>
+                            <span class="meta-value" id="lblDistribuidor">—</span>
                         </div>
                         <div class="meta-item">
                             <span class="meta-label">No. Factura</span>
-                            <span class="meta-value code">AE-2026-0074</span>
+                            <span class="meta-value code" id="lblNumeroFactura">—</span>
                         </div>
                         <div class="meta-item">
                             <span class="meta-label">Estado</span>
-                            <span class="badge badge-blue">
-                                <span class="badge-dot badge-dot-blue"></span>
-                                Emitida
+                            <span class="badge badge-blue" id="badgeEstado">
+                                <span class="badge-dot badge-dot-blue" id="badgeEstadoDot"></span>
+                                <span id="lblEstado">—</span>
                             </span>
                         </div>
                     </div>
@@ -97,30 +101,30 @@
                 <!-- ===== GRID ===== -->
                 <div class="report-grid">
 
-                    <!-- ===== INVOICE BREAKDOWN ===== -->
+                    <!-- ===== Factura ===== -->
                     <div class="invoice-card">
                         <div class="invoice-title">Desglose de Cobros</div>
 
                         <div class="invoice-row">
                             <span class="lbl">Energía Asignada</span>
-                            <span class="val">120 MWh</span>
+                            <span class="val" id="lblEnergiaAsignada">—</span>
                         </div>
                         <div class="invoice-row">
                             <span class="lbl">Precio por MWh</span>
-                            <span class="val">$ 145.50</span>
+                            <span class="val" id="lblPrecioMWh">—</span>
                         </div>
                         <div class="invoice-row subtotal">
                             <span class="lbl">Subtotal</span>
-                            <span class="val">$ 17,460.00</span>
+                            <span class="val" id="lblSubtotal">—</span>
                         </div>
                         <div class="invoice-row">
-                            <span class="lbl">Impuesto (13%)</span>
-                            <span class="val tax">$ 2,269.80</span>
+                            <span class="lbl" id="lblImpuestoLabel">Impuesto</span>
+                            <span class="val tax" id="lblImpuesto">—</span>
                         </div>
 
                         <div class="invoice-total">
                             <span>Total a Pagar</span>
-                            <span>$ 19,729.80</span>
+                            <span id="lblTotal">—</span>
                         </div>
 
                         <div class="invoice-note">
@@ -128,43 +132,23 @@
                         </div>
                     </div>
 
-                    <!-- ===== CONSUMPTION DETAIL ===== -->
+                    <!-- ===== DETAllE ===== -->
                     <div>
                         <div class="chart-card">
-                            <div class="chart-title">Consumo vs Asignado — Julio 2026</div>
-                            <svg viewBox="0 0 280 110" width="100%" style="display:block;">
-                                <line x1="40" y1="10" x2="40" y2="80" stroke="#e5e7eb" stroke-width="1" />
-                                <line x1="40" y1="80" x2="270" y2="80" stroke="#e5e7eb" stroke-width="1" />
-                                <line x1="40" y1="10" x2="270" y2="10" stroke="#f3f4f6" stroke-width="1" />
-                                <line x1="40" y1="45" x2="270" y2="45" stroke="#f3f4f6" stroke-width="1" />
-                                <text x="35" y="13" text-anchor="end" font-size="8" fill="#9ca3af">150</text>
-                                <text x="35" y="48" text-anchor="end" font-size="8" fill="#9ca3af">75</text>
-                                <text x="35" y="83" text-anchor="end" font-size="8" fill="#9ca3af">0</text>
-                                <rect x="80" y="14" width="50" height="66" fill="#d1d5db" rx="3" />
-                                <text x="105" y="95" text-anchor="middle" font-size="8" fill="#9ca3af">Asignado</text>
-                                <text x="105" y="9" text-anchor="middle" font-size="8" fill="#555" font-weight="700">120</text>
-                                <rect x="180" y="22" width="50" height="58" fill="#111" rx="3" />
-                                <text x="205" y="95" text-anchor="middle" font-size="8" fill="#9ca3af">Consumido</text>
-                                <text x="205" y="17" text-anchor="middle" font-size="8" fill="#555" font-weight="700">105</text>
+                            <div class="chart-title">Composición del Total</div>
+                            <svg viewBox="0 0 280 70" width="100%" style="display:block;">
+                                <rect x="10" y="20" width="260" height="24" rx="4" fill="#f3f4f6" />
+                                <rect id="barSubtotal" x="10" y="20" width="0" height="24" fill="#111" />
+                                <rect id="barImpuesto" x="10" y="20" width="0" height="24" fill="#ef4444" />
+                                <text x="10" y="60" font-size="9" fill="#6b7280">Subtotal <tspan id="lblChartSubtotalPct" font-weight="700" fill="#111">0%</tspan></text>
+                                <text x="270" y="60" text-anchor="end" font-size="9" fill="#6b7280">Impuesto <tspan id="lblChartImpuestoPct" font-weight="700" fill="#ef4444">0%</tspan></text>
                             </svg>
-                            <div class="chart-note">[Gráfico de barras — Asignado vs Consumido en MWh]</div>
+                            <div class="chart-note">Proporción de Subtotal e Impuesto dentro del Total a Pagar</div>
                         </div>
 
                         <div class="notes-card">
                             <div class="notes-title">Notas del Período</div>
-                            <div class="notes-list">
-                                <div class="note-item">
-                                    <span class="note-icon check">✓</span>
-                                    Solicitud aprobada el 25/06/2026
-                                </div>
-                                <div class="note-item">
-                                    <span class="note-icon check">✓</span>
-                                    Energía entregada dentro del período
-                                </div>
-                                <div class="note-item">
-                                    <span class="note-icon warning">!</span>
-                                    15 MWh no consumidos — sin penalización
-                                </div>
+                            <div class="notes-list" id="notasList">
                             </div>
                         </div>
                     </div>
@@ -190,10 +174,11 @@
 <script>
     function descargarPDF() {
         const elemento = document.getElementById('reporteContent');
+        const periodo = (window.distribucionActual ? $('#lblPeriodo').text() : 'Reporte').replace(/\s+/g, '');
 
         const opciones = {
             margin: 10,
-            filename: 'Reporte_Facturacion_Julio2026.pdf',
+            filename: 'Reporte_Distribucion_' + periodo + '.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2, useCORS: true },
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }

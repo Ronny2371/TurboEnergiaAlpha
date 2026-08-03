@@ -40,12 +40,12 @@ namespace WebAPI.Controllers
         [HttpPost]
         [Route("Create")]
 
-        public ActionResult Create(User user)
+        public ActionResult Create(User user, int? usuarioAccionId)
         {
             try
             {
                 var um = new UserManager();
-                um.Create(user);
+                um.Create(user, usuarioAccionId);
 
                 return Ok(um);
 
@@ -61,12 +61,12 @@ namespace WebAPI.Controllers
         [HttpPut]
         [Route("Update")]
 
-        public ActionResult Update(User user)
+        public ActionResult Update(User user, int usuarioAccionId)
         {
             try
             {
                 var um = new UserManager();
-                um.Update(user);
+                um.Update(user, usuarioAccionId);
 
                 return Ok(user);
             }
@@ -80,12 +80,12 @@ namespace WebAPI.Controllers
         [HttpDelete]
         [Route("Delete")]
 
-        public ActionResult Delete(User user)
+        public ActionResult Delete(User user, int usuarioAccionId)
         {
             try
             {
                 var um = new UserManager();
-                um.Delete(user);
+                um.Delete(user, usuarioAccionId);
 
                 return Ok(user);
 
