@@ -71,6 +71,14 @@ function TurbinaViewController() {
             $('#txtCapacidad').val(turbina.capacidadKwh);
             $('#selEstado').val(turbina.estado);
 
+            if (turbina.estado === "Mantenimiento") {
+                $('#selEstado').find('option[value="Mantenimiento"]').show();
+                $('#selEstado').prop('disabled', true);
+            } else {
+                $('#selEstado').find('option[value="Mantenimiento"]').hide();
+                $('#selEstado').prop('disabled', false);
+            }
+
             $('#modalTitle').text('Editar Turbina');
             $('#btnCrearTurbina').text('Actualizar');
             $('#btnCrearTurbina').data('turbina-id', id);

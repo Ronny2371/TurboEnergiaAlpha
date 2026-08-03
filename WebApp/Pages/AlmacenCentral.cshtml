@@ -1,0 +1,185 @@
+﻿@page
+@model WebApp.Pages.AlmacenCentralModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Almacén Central";
+}
+
+<link rel="stylesheet" href="~/css/paneladministrador.css" />
+<link rel="stylesheet" href="~/css/cerrarsesion.css" />
+<link rel="stylesheet" href="~/css/almacencentral.css" />
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="~/js/ControlActions.js"></script>
+<script src="~/js/pages-controllers/AlmacenCentralViewController.js"></script>
+
+<div class="dashboard-container">
+
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+        <div class="logo-mark">ALPHA <span>ENERGY</span></div>
+        <div class="user-chip">
+            <div class="avatar-circle">AD</div>
+            <div>
+                <div class="user-name">Admin Principal</div>
+                <div class="user-role">Administrador</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== LAYOUT ===== -->
+    <div class="app-layout">
+
+        <!-- ===== SIDEBAR ===== -->
+        <nav class="app-sidebar">
+            <div class="s-label">Menu</div>
+            <a class="s-item" asp-page="/PanelAdministrador">Dashboard</a>
+            <a class="s-item" asp-page="/GestionDeUsuarios">Usuarios</a>
+            <a class="s-item" asp-page="/GestionDeTurbinas">Turbinas</a>
+            <a class="s-item" asp-page="/RegistroDeMantenimiento">Mantenimiento</a>
+            <a class="s-item" asp-page="/PortalDistribuidor">Distribución</a>
+            <a class="s-item active" asp-page="/AlmacenCentral">Almacén Central</a>
+            <a class="s-item" asp-page="/ReporteDeFacturacion">Reportes</a>
+            <a class="s-item" asp-page="/Auditoria">Auditoría</a>
+            <a class="s-item logout" href="/Login">Cerrar sesión</a>
+        </nav>
+
+        <!-- ===== CONTENIDO ===== -->
+        <main class="app-content">
+
+            <!-- ===== TÍTULO ===== -->
+            <div class="page-title-row">
+                <div>
+                    <div class="page-title" id="AlmacenTitle">Almacén Central</div>
+                    <div class="page-sub" id="AlmacenSubtitle">Centro de acopio y distribución de energía generada</div>
+                </div>
+            </div>
+
+            <!-- ===== TARJETA ALMACENADO CON GRÁFICOS ===== -->
+            <div class="storage-card-wrapper">
+                <div class="storage-header">
+                    <div>
+                        <div class="storage-label">Energía Almacenada</div>
+                        <div class="storage-value">2,150 <span>MW</span></div>
+                    </div>
+                    <div class="storage-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Capacidad máxima</span>
+                            <span class="meta-value">3,000 MW</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Ocupación</span>
+                            <span class="meta-value">71.7%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="storage-charts-grid">
+                    <div class="chart-item">
+                        <div class="chart-title">Ocupación Actual</div>
+                        <div class="chart-wrapper-small">
+                            <canvas id="occupancyChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-item">
+                        <div class="chart-title">Dinámica — Últimos 3 meses</div>
+                        <div class="chart-wrapper">
+                            <canvas id="storageChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+
+            <!-- ===== SECCIÓN DE INFORMACIÓN ACTUAL ===== -->
+            <div class="current-section">
+                <div class="section-header">
+                    <h3 class="section-title">SITUACION ACTUAL</h3>
+                    <div class="toggle-group">
+                        <button class="toggle-btn active" data-view="dia">DÍA</button>
+                        <button class="toggle-btn" data-view="mes">MES</button>
+                    </div>
+                </div>
+
+                <!-- ===== 3 TARJETAS DE INFO ===== -->
+                <div class="info-cards-grid">
+                    <div class="info-card">
+                        <div class="card-label">Producción</div>
+                        <div class="card-value">760 <span>MW</span></div>
+                        <div class="card-delta green">+8.5% vs ayer</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-label">Requerido</div>
+                        <div class="card-value">720 <span>MW</span></div>
+                        <div class="card-delta">Por solicitudes</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="card-label">Balance</div>
+                        <div class="card-value">+40 <span>MW</span></div>
+                        <div class="card-delta green">Disponible para almacenar</div>
+                    </div>
+                </div>
+            </div>
+
+            <hr id="hrAbajo" />
+
+            <!-- ===== SECCIÓN DE PROYECCIONES ===== -->
+            <div class="projections-section">
+                <h3 class="section-title" id="TituloProyecciones">PROYECCIONES</h3>
+
+                <div class="projections-grid">
+                    <div class="projection-card">
+                        <div class="projection-header">
+                            <div class="projection-title">Producción Estimada</div>
+                            <span class="ann">Proyección mensual</span>
+                        </div>
+                        <div class="projection-value" id="produccionEstimada">0 <span>MW</span></div>
+                        <div class="projection-meta">
+                            <div class="meta-badge">
+                                <span class="badge-label">Turbinas Activas</span>
+                                <span class="badge-value" id="turbinasActivas">0</span>
+                            </div>
+                            <div class="meta-badge">
+                                <span class="badge-label">Mantenimientos</span>
+                                <span class="badge-value" id="mantenimientosAgendados">0</span>
+                            </div>
+                        </div>
+                        <div class="projection-delta green">+6.2% vs mes ant.</div>
+                    </div>
+
+                    <div class="projection-card">
+                        <div class="projection-header">
+                            <div class="projection-title">Almacenamiento Proyectado</div>
+                            <span class="ann">Proyección mensual</span>
+                        </div>
+                        <div class="projection-value">21,600 <span>MW</span></div>
+                        <div class="projection-meta">
+                            <div class="meta-label" style="font-size: 10px; color: #9ca3af;">Neto después de distribución</div>
+                        </div>
+                        <div class="projection-delta">Proyección confiable</div>
+                    </div>
+                </div>
+            </div>
+
+       
+
+        </main>
+
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="wf-footer">
+        <p>&copy; 2026 Alpha Energy. Todos los derechos reservados.</p>
+    </footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    $(document).ready(function () {
+    var vc = new AlmacenCentralViewController();
+    vc.InitView();
+    });
+</script>

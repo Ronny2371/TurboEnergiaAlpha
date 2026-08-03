@@ -1,0 +1,421 @@
+﻿/* ================== Titulo y Subtitulo ===========
+*/
+
+#AlmacenTitle{
+    font-size: 26px;
+}
+
+#AlmacenSubTitle{
+    font-size:14px;
+    color:#3D3D3D;
+}
+
+hr{
+    margin-bottom:15px;
+    opacity:0.38;
+}
+
+#hrAbajo{
+    margin-top:25px;
+}
+
+/* ===== TARJETA DE ALMACENADO ===== */
+.storage-card-wrapper {
+    background: #fff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 22px;
+}
+
+.storage-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.storage-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #525151;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 6px;
+}
+
+.storage-value {
+    font-size: 32px;
+    font-weight: 800;
+    color: #111;
+    letter-spacing: -0.5px;
+}
+
+    .storage-value span {
+        font-size: 16px;
+        font-weight: 500;
+        color: #6b7280;
+    }
+
+.storage-meta {
+    display: flex;
+    gap: 24px;
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.meta-label {
+    font-size: 10px;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+.meta-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+}
+
+/* ===== GRID DE GRÁFICOS ===== */
+.storage-charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 16px;
+    margin: 16px 0;
+}
+
+.chart-item {
+    background: #f9fafb;
+    padding: 12px;
+    border-radius: 6px;
+}
+
+.chart-title {
+    font-size: 10px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 8px;
+}
+
+.chart-wrapper {
+    margin: 0;
+    position: relative;
+    height: 180px;
+}
+
+.chart-wrapper-small {
+    position: relative;
+    height: 160px;
+}
+
+.chart-note {
+    font-size: 9px;
+    color: #9ca3af;
+    margin-top: 8px;
+    font-style: italic;
+}
+
+/* ===== GRÁFICO DE BARRAS HORIZONTALES ===== */
+.comparison-chart-wrapper {
+    background: #f9fafb;
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 14px;
+}
+
+/* ===== SECCIÓN ACTUAL ===== */
+.current-section {
+    margin-bottom: 28px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.section-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #404040;
+    margin: 0;
+}
+
+/* ===== TOGGLE DÍA/MES ===== */
+.toggle-group {
+    display: flex;
+    gap: 6px;
+    background: #f9fafb;
+    padding: 4px;
+    border-radius: 6px;
+    border: 1.5px solid #e5e7eb;
+}
+
+.toggle-btn {
+    padding: 6px 14px;
+    background: transparent;
+    border: none;
+    font-size: 11px;
+    font-weight: 600;
+    color: #9ca3af;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+    .toggle-btn:hover {
+        color: #6b7280;
+    }
+
+    .toggle-btn.active {
+        background: #fff;
+        color: #111;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+/* ===== GRID DE 3 TARJETAS ===== */
+.info-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+.info-card {
+    background: #fff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 18px 20px;
+}
+
+.card-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #525151;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+}
+
+.card-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: #111;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+}
+
+    .card-value span {
+        font-size: 12px;
+        font-weight: 500;
+        color: #6b7280;
+    }
+
+.card-delta {
+    font-size: 11px;
+    color: #6b7280;
+}
+
+    .card-delta.green {
+        color: #10b981;
+    }
+
+    .card-delta.orange {
+        color: #f59e0b;
+    }
+
+    .card-delta.red {
+        color: #ef4444;
+    }
+
+    .card-delta.gray {
+        color: #9ca3af;
+    }
+
+/* ===== SECCIÓN PROYECCIONES ===== */
+#TituloProyecciones{
+    margin-bottom: 20px;
+}
+.projections-section {
+    margin-bottom: 20px;
+}
+
+.projections-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+}
+
+.projection-card {
+    background: #fff;
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 18px 20px;
+}
+
+.projection-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.projection-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #111;
+}
+
+.projection-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: #111;
+    letter-spacing: -0.5px;
+    margin-bottom: 12px;
+}
+
+    .projection-value span {
+        font-size: 14px;
+        font-weight: 500;
+        color: #6b7280;
+    }
+
+.projection-meta {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding: 12px;
+    background: #f9fafb;
+    border-radius: 6px;
+}
+
+.meta-badge {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.badge-label {
+    font-size: 9px;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+.badge-value {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111;
+}
+
+.meta-item-row {
+    font-size: 10px;
+    color: #9ca3af;
+}
+
+.projection-delta {
+    font-size: 11px;
+    color: #6b7280;
+}
+
+    .projection-delta.green {
+        color: #10b981;
+    }
+
+    .projection-delta.red {
+        color: #ef4444;
+    }
+
+    .projection-delta.gray {
+        color: #9ca3af;
+    }
+
+/* ===== ANOTACIÓN ===== */
+.ann {
+    display: inline-block;
+    background: #fffbf0;
+    border: 1px dashed #f59e0b;
+    color: #92400e;
+    font-size: 8px;
+    padding: 2px 7px;
+    border-radius: 3px;
+    font-style: italic;
+}
+
+.ann-large {
+    display: inline-block;
+    background: #fffbf0;
+    border: 1px dashed #f59e0b;
+    color: #92400e;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-style: italic;
+}
+
+.annotation-section {
+    margin-top: 20px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 992px) {
+    .info-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .projections-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .storage-header {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .storage-meta {
+        width: 100%;
+        flex-direction: row;
+    }
+
+    .storage-charts-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .info-cards-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .toggle-group {
+        margin-top: 8px;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    
+    }
+
+    .storage-value {
+        font-size: 24px;
+    }
+
+    .projection-value {
+        font-size: 20px;
+    }
+
+    .chart-wrapper {
+        height: 150px;
+    }
+}
