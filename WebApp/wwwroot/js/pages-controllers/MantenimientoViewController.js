@@ -1,5 +1,4 @@
-﻿var filtroEstadoActual = "Todos";
-// reemplazar por el Id del usuario autenticado real cuando se implemente
+﻿// reemplazar por el Id del usuario autenticado real cuando se implemente
 // el manejo de sesión de momento igual que el resto de
 // las páginas del sistema que muestran "Ing. Operaciones" fijo en el header,
 // se usa un Id fijo de referencia.
@@ -8,11 +7,8 @@ function MantenimientoViewController() {
     this.API_ControllerName = "Mantenimiento";
     this.InitView = function () {
         this.LoadTable();
-        // Filtros por estado
-        $('.filter-btn[data-filtro]').click(function () {
-            $('.filter-btn[data-filtro]').removeClass('active');
-            $(this).addClass('active');
-            filtroEstadoActual = $(this).data('filtro');
+        // Filtros por Tipo y Estado
+        $('#selFiltroTipoMant, #selFiltroEstadoMant').on('change', function () {
             ApplyFiltersMant();
         });
         // Barra de búsqueda
@@ -22,6 +18,7 @@ function MantenimientoViewController() {
         // Abrir modal para registrar
         $('#btnRegistrarMantenimiento').click(function () {
             PoblarSelectTurbinas();
+            ToggleFechaFin();
             $('#modalOverlayMant').css('display', 'flex');
         });
         // Cerrar modal
@@ -34,6 +31,10 @@ function MantenimientoViewController() {
         // Guardar
         $('#btnGuardarMantenimiento').click(function () {
             GuardarMantenimiento();
+        });
+        // Mostrar/ocultar Fecha y Hora de Fin según el tipo elegido
+        $('input[name="tipoMantenimiento"]').change(function () {
+            ToggleFechaFin();
         });
         // Editar
         $('#tbodyMantenimientos').on('click', '.action-btn.edit', function () {
@@ -52,6 +53,7 @@ function MantenimientoViewController() {
             $('#modalTitleMant').text('Editar Mantenimiento');
             $('#btnGuardarMantenimiento').text('Actualizar');
             $('#btnGuardarMantenimiento').data('mantenimiento-id', id);
+            ToggleFechaFin();
             $('#modalOverlayMant').css('display', 'flex');
         });
         // Eliminar
@@ -68,6 +70,11 @@ function MantenimientoViewController() {
                     EliminarMantenimiento(id);
                 }
             });
+        });
+        // Finalizar manualmente (mantenimientos No planificados sin fecha de fin)
+        $('#tbodyMantenimientos').on('click', '.action-btn.finalizar', function () {
+            var id = $(this).data('id');
+            FinalizarMantenimiento(id);
         });
     }
     // Carga todo en paralelo y sincroniza estados
@@ -104,7 +111,6 @@ function MantenimientoViewController() {
 function SincronizarEstados(callback) {
     var ca = new ControlActions();
     var pendientes = [];
-
     // Paso 1: recalcular estado de cada mantenimiento
     $.each(window.mantenimientosList, function (i, m) {
         var estadoCalculado = CalcularEstadoPorFecha(m);
@@ -133,13 +139,11 @@ function SincronizarEstados(callback) {
             );
         }
     });
-
     // Paso 2: derivar el estado correcto de cada turbina a partir de TODOS los mantenimientos
     $.each(window.turbinasList, function (i, turbina) {
         var tieneMantenimientoEnProceso = window.mantenimientosList.some(function (m) {
             return m.turbinaId === turbina.id && m.estadoMantenimiento === "En Proceso";
         });
-
         if (tieneMantenimientoEnProceso && turbina.estado !== "Mantenimiento") {
             turbina.estado = "Mantenimiento";
             pendientes.push(
@@ -158,7 +162,6 @@ function SincronizarEstados(callback) {
             );
         }
     });
-
     if (pendientes.length > 0) {
         $.when.apply($, pendientes).always(function () {
             if (callback) callback();
@@ -216,8 +219,13 @@ function CombinarFechaHora(fechaStr, horaStr) {
 // Filtros y busqueda
 function ApplyFiltersMant() {
     var lista = window.mantenimientosList.slice();
-    if (filtroEstadoActual !== "Todos") {
-        lista = lista.filter(function (m) { return m.estadoMantenimiento === filtroEstadoActual; });
+    var filtroTipo = $('#selFiltroTipoMant').val();
+    if (filtroTipo) {
+        lista = lista.filter(function (m) { return m.tipoMantenimiento === filtroTipo; });
+    }
+    var filtroEstado = $('#selFiltroEstadoMant').val();
+    if (filtroEstado) {
+        lista = lista.filter(function (m) { return m.estadoMantenimiento === filtroEstado; });
     }
     var searchTerm = $('#searchInputMant').val() ? $('#searchInputMant').val().toLowerCase() : '';
     if (searchTerm) {
@@ -245,6 +253,14 @@ function RenderTablaMant(lstMantenimientos) {
         if (m.estadoMantenimiento === "Finalizado") badgeClass = "badge-green";
         var inicioTexto = FormatFechaHora(m.fechaInicio, m.horaInicio);
         var finTexto = (m.fechaFin && m.horaFin) ? FormatFechaHora(m.fechaFin, m.horaFin) : '—';
+        // Si es No planificado, esta En Proceso y no tiene fecha de fin,
+        // se muestra el boton de Finalizar en vez de la rayita vacia.
+        var esFinalizable = m.tipoMantenimiento === "No planificado" &&
+            m.estadoMantenimiento === "En Proceso" &&
+            !m.fechaFin;
+        if (esFinalizable) {
+            finTexto = '<button class="action-btn finalizar" data-id="' + m.id + '" title="Finalizar mantenimiento">Finalizar</button>';
+        }
         var accionesHtml = '<div class="action-buttons">' +
             '<button class="action-btn edit" data-id="' + m.id + '">✎</button>' +
             '<button class="action-btn delete" data-id="' + m.id + '">🗑</button>' +
@@ -295,6 +311,19 @@ function PoblarSelectTurbinas() {
     $.each(window.turbinasList, function (i, t) {
         $select.append('<option value="' + t.id + '">' + t.nombre + '</option>');
     });
+}
+// Muestra/oculta el bloque de Fecha y Hora de Fin segun el tipo elegido.
+// No planificado (emergencia) no permite estimar cuando termina, entonces
+// ese campo se oculta y se limpia para que no se mande vacio "por error".
+function ToggleFechaFin() {
+    var tipo = $('input[name="tipoMantenimiento"]:checked').val();
+    if (tipo === "No planificado") {
+        $('#grupoFechaFinMant').hide();
+        $('#txtFechaFinMant').val('');
+        $('#txtHoraFinMant').val('');
+    } else {
+        $('#grupoFechaFinMant').show();
+    }
 }
 // Guarda mantenimiento nuevo o el que se edito
 function GuardarMantenimiento() {
@@ -347,6 +376,52 @@ function GuardarMantenimiento() {
             vc.LoadTable();
         });
     }
+}
+// Finaliza manualmente un mantenimiento no planificado (no tiene fecha de fin
+// estimada porque fue una emergencia). Toma la fecha/hora actual como el
+// momento real en que termino, y reutiliza LoadTable para que la
+// sincronizacion normal reactive la turbina automaticamente.
+function FinalizarMantenimiento(id) {
+    var m = window.mantenimientosList.find(function (x) { return x.id === id; });
+    if (!m) return;
+    Swal.fire({
+        icon: 'question',
+        title: '¿Finalizar este mantenimiento?',
+        text: 'Se registrará la fecha y hora actual como el momento de finalización.',
+        showCancelButton: true,
+        confirmButtonText: 'Sí, finalizar',
+        cancelButtonText: 'Cancelar'
+    }).then(function (result) {
+        if (!result.isConfirmed) return;
+        var ahora = new Date();
+        var fechaFin = ahora.getFullYear() + '-' +
+            String(ahora.getMonth() + 1).padStart(2, '0') + '-' +
+            String(ahora.getDate()).padStart(2, '0');
+        var horaFin = String(ahora.getHours()).padStart(2, '0') + ':' +
+            String(ahora.getMinutes()).padStart(2, '0') + ':' +
+            String(ahora.getSeconds()).padStart(2, '0');
+        var mantenimientoDTO = {
+            id: m.id,
+            turbinaId: m.turbinaId,
+            usuarioId: m.usuarioId,
+            fechaInicio: m.fechaInicio,
+            horaInicio: m.horaInicio,
+            fechaFin: fechaFin,
+            horaFin: horaFin,
+            tipoMantenimiento: m.tipoMantenimiento,
+            estadoMantenimiento: "Finalizado"
+        };
+        var ca = new ControlActions();
+        ca.PutToAPI("Mantenimiento/Update?usuarioAccionId=" + ca.GetUsuarioActualId(), mantenimientoDTO, function () {
+            var vc = new MantenimientoViewController();
+            vc.LoadTable();
+            Swal.fire({
+                icon: 'success',
+                title: 'Mantenimiento Finalizado',
+                text: 'La turbina volverá a estado Activa.'
+            });
+        });
+    });
 }
 function EliminarMantenimiento(id) {
     var m = window.mantenimientosList.find(function (x) { return x.id === id; });

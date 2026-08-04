@@ -80,10 +80,17 @@
                     </svg>
                     <input id="searchInputMant" type="text" placeholder="Buscar por turbina o tipo..." />
                 </div>
-                <button class="filter-btn active" id="btnFilterTodos" data-filtro="Todos">Todos</button>
-                <button class="filter-btn" id="btnFilterEnProceso" data-filtro="En Proceso">En Proceso</button>
-                <button class="filter-btn" id="btnFilterProgramado" data-filtro="Programado">Programado</button>
-                <button class="filter-btn" id="btnFilterFinalizado" data-filtro="Finalizado">Finalizado</button>
+                <select id="selFiltroTipoMant" class="filter-btn">
+                    <option value="">Todos (Tipo)</option>
+                    <option value="Planificado">Planificado</option>
+                    <option value="No planificado">No planificado</option>
+                </select>
+                <select id="selFiltroEstadoMant" class="filter-btn">
+                    <option value="">Todos (Estado)</option>
+                    <option value="En Proceso">En Proceso</option>
+                    <option value="Programado">Programado</option>
+                    <option value="Finalizado">Finalizado</option>
+                </select>
             </div>
             <!-- ===== TABLA ===== -->
             <table class="wf-table">
@@ -115,7 +122,6 @@
     <footer class="wf-footer">
         <p>&copy; 2026 Alpha Energy. Todos los derechos reservados.</p>
     </footer>
-
     <!-- ===== MODAL: FORMULARIO DE MANTENIMIENTO ===== -->
     <div class="modal-overlay" id="modalOverlayMant" style="display:none;">
         <div class="modal-card">
@@ -123,7 +129,6 @@
                 <button type="button" class="modal-close" id="btnCerrarModalMant">x</button>
                 <h2 id="modalTitleMant">Registrar Mantenimiento</h2>
             </div>
-
             <!-- ===== SECCIÓN TURBINA ===== -->
             <div class="form-group">
                 <label class="field-label">Turbina</label>
@@ -135,7 +140,6 @@
                     <span class="ann">Regla:</span> Mínimo 1 mantenimiento por mes por turbina.
                 </div>
             </div>
-
             <!-- ===== SECCIÓN TIPO DE MANTENIMIENTO ===== -->
             <div class="form-group">
                 <label class="field-label">Tipo de Mantenimiento</label>
@@ -152,7 +156,6 @@
                 <div class="field-hint">Planificado: se registra con anticipación (otro día, semana o mes). No planificado: se registra al detectar una falla.</div>
             </div>
             <hr class="wf-divider">
-
             <!-- ===== SECCIÓN FECHAS ===== -->
             <div class="form-group">
                 <label class="field-label">Fecha y Hora de Inicio</label>
@@ -161,7 +164,7 @@
                     <input id="txtHoraInicioMant" type="time" class="field-input" />
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group" id="grupoFechaFinMant">
                 <label class="field-label">Fecha y Hora de Fin (estimada)</label>
                 <div class="date-row">
                     <input id="txtFechaFinMant" type="date" class="field-input" />
@@ -169,14 +172,12 @@
                 </div>
             </div>
             <hr class="wf-divider">
-
             <!-- ===== SECCIÓN DESCRIPCIÓN ===== -->
             <div class="form-group">
                 <label class="field-label">Descripción del Trabajo</label>
                 <textarea id="txtDescripcionMant" class="field-input textarea-field" placeholder="Describa los trabajos a realizar..." maxlength="500"></textarea>
                 <div class="field-hint">Máximo 500 caracteres</div>
             </div>
-
             <!-- ===== ANOTACIONES ===== -->
             <div class="annotation-group">
                 <div class="annotation-item">
@@ -189,7 +190,6 @@
                     <span class="ann">El estado (Programado / En Proceso / Finalizado) se calcula automáticamente según las fechas ingresadas.</span>
                 </div>
             </div>
-
             <!-- ===== BOTONES ===== -->
             <div class="buttons-row">
                 <button type="button" class="btn-primary" id="btnGuardarMantenimiento">Guardar</button>
