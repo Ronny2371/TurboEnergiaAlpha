@@ -49,6 +49,7 @@
         <main class="app-content">
 
             <!-- ===== TÍTULO ===== -->
+
             <div class="page-title-row">
                 <div>
                     <div class="page-title" id="AlmacenTitle">Almacén Central</div>
@@ -56,21 +57,29 @@
                 </div>
             </div>
 
+            <!-- ===== CONTROL DE DISPONIBILIDAD ===== -->
+            <!-- ===== CONTROL DE DISPONIBILIDAD ===== -->
+            <div class="corte-energia-control">
+                <label for="porcentajeCapacidad">Capacidad(%):</label>
+                <input type="number" id="porcentajeCapacidad" min="1" max="100" value="90">
+                <a asp-page="/HistorialCorteDeEnergia" class="btn-primary" style="text-decoration: none; margin-left: auto;">Ver Historial de Cortes</a>
+            </div>
+
             <!-- ===== TARJETA ALMACENADO CON GRÁFICOS ===== -->
             <div class="storage-card-wrapper">
                 <div class="storage-header">
                     <div>
                         <div class="storage-label">Energía Almacenada</div>
-                        <div class="storage-value">2,150 <span>MW</span></div>
+                        <div class="storage-value" id="storageValue"></div>
                     </div>
                     <div class="storage-meta">
                         <div class="meta-item">
                             <span class="meta-label">Capacidad máxima</span>
-                            <span class="meta-value">3,000 MW</span>
+                            <span class="meta-value">40,000 MW</span>
                         </div>
                         <div class="meta-item">
                             <span class="meta-label">Ocupación</span>
-                            <span class="meta-value">71.7%</span>
+                            <span class="meta-value" id="occupancyPercent">71.7%</span>
                         </div>
                     </div>
                 </div>
@@ -107,8 +116,8 @@
                 <div class="info-cards-grid">
                     <div class="info-card">
                         <div class="card-label">Producción</div>
-                        <div class="card-value">760 <span>MW</span></div>
-                        <div class="card-delta green">+8.5% vs ayer</div>
+                        <div class="card-value" id="pDiaria">760 <span>MW</span></div>
+             
                     </div>
                     <div class="info-card">
                         <div class="card-label">Requerido</div>
@@ -146,19 +155,15 @@
                                 <span class="badge-value" id="mantenimientosAgendados">0</span>
                             </div>
                         </div>
-                        <div class="projection-delta green">+6.2% vs mes ant.</div>
+                  
                     </div>
 
                     <div class="projection-card">
                         <div class="projection-header">
-                            <div class="projection-title">Almacenamiento Proyectado</div>
-                            <span class="ann">Proyección mensual</span>
+                            <div class="projection-title">Promedio Diario</div>
                         </div>
-                        <div class="projection-value">21,600 <span>MW</span></div>
-                        <div class="projection-meta">
-                            <div class="meta-label" style="font-size: 10px; color: #9ca3af;">Neto después de distribución</div>
-                        </div>
-                        <div class="projection-delta">Proyección confiable</div>
+                        <div class="projection-value" id="PromedioNum">21,600 <span>MW</span></div>
+  
                     </div>
                 </div>
             </div>
@@ -176,10 +181,3 @@
 
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-    $(document).ready(function () {
-    var vc = new AlmacenCentralViewController();
-    vc.InitView();
-    });
-</script>

@@ -16,6 +16,8 @@
 
   <ItemGroup>
     <Folder Include="DB Scripts\MantenimientoScripts\" />
+    <Folder Include="DB Scripts\CorteEnergia\" />
+    <Folder Include="DB Scripts\AlmacenCentralScripts\" />
   </ItemGroup>
 
 </Project>

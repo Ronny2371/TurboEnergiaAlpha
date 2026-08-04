@@ -335,7 +335,7 @@ function RenderStats(lstTurbinas) {
         var capacidadActualMW = (capacidadActivasKwh / 1000).toFixed(1);
         var porcentajeOperacion = Math.round((enOperacion / total) * 100);
         var porcentajeMantenimiento = Math.round((enMantenimiento / total) * 100);
-        $('#statCapacidadDelta').text('Capacidad actual: ' + capacidadActualMW + ' MW').css('color', '#9ca3af');
+        $('#statCapacidadDelta').text('Potencia actual: ' + capacidadActualMW + ' MW').css('color', '#9ca3af');
         $('#statOperacionDelta').text(porcentajeOperacion + '% del Total');
         $('#statMantenimientoDelta').text(porcentajeMantenimiento + '% del Total');
     }

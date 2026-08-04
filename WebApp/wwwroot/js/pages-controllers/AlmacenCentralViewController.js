@@ -11,77 +11,135 @@ function AlmacenCentralViewController() {
 
     this.LoadData = function () {
         var ca = new ControlActions();
+        var self = this;
 
-        $.ajax({
+        //Hacer los AJAX EN PARALELO (no anidados)
+        var ajaxAlmacen = $.ajax({
             type: "GET",
-            url: ca.GetUrlApiService("Turbina/RetrieveAll"),
-            success: function (lstTurbinas) {
-                var turbinasActivas = lstTurbinas.filter(function (t) {
-                    return t.estado === "Activa";
-                }).length;
+            url: ca.GetUrlApiService("Almacen/RetrieveAll")
+        });
 
-                $.ajax({
-                    type: "GET",
-                    url: ca.GetUrlApiService("Mantenimiento/RetrieveAll"),
-                    success: function (lstMantenimientos) {
-                        var hoy = new Date();
-                        var mesActual = hoy.getMonth();
-                        var anioActual = hoy.getFullYear();
+        var ajaxTurbinas = $.ajax({
+            type: "GET",
+            url: ca.GetUrlApiService("Turbina/RetrieveAll")
+        });
 
-                        var diasDelMes = new Date(anioActual, mesActual + 1, 0).getDate();
-                        var primerDiaDelMes = new Date(anioActual, mesActual, 1);
-                        var ultimoDiaDelMes = new Date(anioActual, mesActual + 1, 0);
+        var ajaxMantenimientos = $.ajax({
+            type: "GET",
+            url: ca.GetUrlApiService("Mantenimiento/RetrieveAll")
+        });
 
-                        var produccionTotal = 0;
+        var ajaxCortes = $.ajax({
+            type: "GET",
+            url: ca.GetUrlApiService("CorteEnergia/RetrieveAll")
+        })
 
-                        lstTurbinas.forEach(function (turbina) {
-                            var diasMantenimiento = 0;
+        //Esperar a que terminen TODOS
+        $.when(ajaxAlmacen, ajaxTurbinas, ajaxMantenimientos,ajaxCortes).done(function (almacenData, turbinasData, mantenimientosData,cortesData) {
 
-                            // Contar días de mantenimiento de esta turbina EN este mes
-                            lstMantenimientos.forEach(function (m) {
-                                if (m.turbinaId === turbina.id) {
-                                    var fechaInicio = new Date(m.fechaInicio);
-                                    var fechaFin = m.fechaFin ? new Date(m.fechaFin) : hoy;
+            var almacen = almacenData[0];
+            var lstTurbinas = turbinasData[0];
+            var lstMantenimientos = mantenimientosData[0];
+            var lstCortes = cortesData[0]
 
-                                    // Si el mantenimiento afecta este mes
-                                    if (fechaInicio <= ultimoDiaDelMes && fechaFin >= primerDiaDelMes) {
-                                        var diaInicio = fechaInicio < primerDiaDelMes ? 1 : fechaInicio.getDate();
-                                        var diaFin = fechaFin > ultimoDiaDelMes ? ultimoDiaDelMes.getDate() : fechaFin.getDate();
-                                        diasMantenimiento += diaFin - diaInicio + 1;
-                                    }
-                                }
-                            });
+            console.log('Todos los AJAX terminaron');
+            console.log('Almacén:', almacen);
+            console.log('Turbinas:', lstTurbinas.length);
+            console.log('Mantenimientos:', lstMantenimientos.length);
+            console.log('Cortes:', lstCortes.length);
 
-                            var diasOperacion = Math.max(0, diasDelMes - diasMantenimiento);
-                            produccionTotal += turbina.capacidadKwh * diasOperacion;
-                        });
+            //Procesar datos AQUÍ (una sola vez)
+            var turbinasActivas = lstTurbinas.filter(function (t) {
+                return t.estado === "Activa";
+            }).length;
 
-                     
-                        // Contar mantenimientos que afecten este mes (sin importar estado)
-                        var mantenimientosEnProgreso = lstMantenimientos.filter(function (m) {
-                            var fechaInicio = new Date(m.fechaInicio);
-                            var fechaFin = m.fechaFin ? new Date(m.fechaFin) : hoy;
+            var hoy = new Date();
+            var mesActual = hoy.getMonth();
+            var anioActual = hoy.getFullYear();
 
-                            // Si el mantenimiento está EN este mes
-                            return (fechaInicio <= ultimoDiaDelMes && fechaFin >= primerDiaDelMes);
-                        }).length;
+            var diasDelMes = new Date(anioActual, mesActual + 1, 0).getDate();
+            var primerDiaDelMes = new Date(anioActual, mesActual, 1);
+            var ultimoDiaDelMes = new Date(anioActual, mesActual + 1, 0);
 
-                        var produccionEstimada = Math.round((produccionTotal / 1000) * 0.9);
+            var produccionTotal = 0;
+            var produccionDiaria = 0;
 
-                        $('#turbinasActivas').text(turbinasActivas);
-                        $('#mantenimientosAgendados').text(mantenimientosEnProgreso);
-                        $('#produccionEstimada').html(produccionEstimada.toLocaleString() + ' <span>MW</span>');
+            lstTurbinas.forEach(function (turbina) {
+                if (turbina.estado === "Fuera de Servicio") {
+                    return;
+                }
+
+                var diasMantenimiento = 0;
+
+                lstMantenimientos.forEach(function (m) {
+                    if (m.turbinaId === turbina.id) {
+                        var fechaInicio = new Date(m.fechaInicio);
+                        var fechaFin = m.fechaFin ? new Date(m.fechaFin) : hoy;
+
+                        if (fechaInicio <= hoy && fechaFin >= hoy) {
+                            diasMantenimiento = 1;
+                        }
                     }
                 });
-            }
+
+                if (diasMantenimiento === 0 && turbina.estado != "Fuera de Servicio") {
+                    produccionDiaria += turbina.capacidadKwh;
+                }
+
+                var diasOperacion = Math.max(0, diasDelMes - diasMantenimiento);
+                produccionTotal += (turbina.capacidadKwh * 10) * diasOperacion;
+            });
+
+            var mantenimientosEnProgreso = lstMantenimientos.filter(function (m) {
+                var fechaInicio = new Date(m.fechaInicio);
+                var fechaFin = m.fechaFin ? new Date(m.fechaFin) : hoy;
+
+                return (fechaInicio <= ultimoDiaDelMes && fechaFin >= primerDiaDelMes);
+            }).length;
+
+
+            //=============logica del Promedio ====================
+            var promedio = 0;
+
+            lstCortes.forEach(function (corte) {
+                promedio += corte.energiaGenerada;
+            });
+
+            var promedioFinal = (promedio / lstCortes.length).toFixed(2);
+            $('#PromedioNum').html(promedioFinal.toLocaleString()+ ' <span>MWh</span>');
+
+            //==========================================================
+
+
+            var porcentajeDisponibilidad = parseInt($('#porcentajeCapacidad').val() || 90) / 100;
+
+            var produccionEstimada = Number(((produccionTotal / 1000000) * porcentajeDisponibilidad).toFixed(2));
+            produccionDiaria = (produccionDiaria * 10 * porcentajeDisponibilidad) / 1000;
+
+            // Actualizar UI
+            $('#storageValue').html(almacen.almacenado + ' <span>MWh</span>');
+            $('#occupancyPercent').text(Math.round((almacen.almacenado / 40000) * 100) + '%');
+            $('#pDiaria').html(produccionDiaria.toLocaleString() + ' <span>MWh</span>');
+            $('#turbinasActivas').text(turbinasActivas);
+            $('#mantenimientosAgendados').text(mantenimientosEnProgreso);
+            $('#produccionEstimada').html(produccionEstimada.toLocaleString() + ' <span>GWh</span>');
+
+            self.InitChart(almacen);
+            self.InitToggle();
+
+        }).fail(function () {
+            console.error('Error en uno de los AJAX');
         });
     };
 
-
-    this.InitChart = function () {
-        // Destruir gráficos anteriores si existen
+    this.InitChart = function (almacen) {
         if (charts.occupancy) charts.occupancy.destroy();
         if (charts.storage) charts.storage.destroy();
+
+        var almacenado = almacen ? almacen.almacenado : 435;
+        var capacidadMax = almacen ? almacen.capacidadMaxima : 40000;
+        var porcentajeUsado = (almacenado / capacidadMax) * 100;
+        var porcentajeDisponible = 100 - porcentajeUsado;
 
         var ctxOccupancy = document.getElementById('occupancyChart');
         if (ctxOccupancy) {
@@ -90,7 +148,7 @@ function AlmacenCentralViewController() {
                 data: {
                     labels: ['Usado', 'Disponible'],
                     datasets: [{
-                        data: [71.7, 28.3],
+                        data: [Math.round(porcentajeUsado * 10) / 10, Math.round(porcentajeDisponible * 10) / 10],
                         backgroundColor: ['#2563eb', '#e5e7eb'],
                         borderColor: ['#2563eb', '#e5e7eb'],
                         borderWidth: 0
@@ -121,7 +179,7 @@ function AlmacenCentralViewController() {
                     labels: ['Hace 3 meses', 'Hace 2 meses', 'Hace 1 mes', 'Hoy'],
                     datasets: [{
                         label: 'MWh Almacenado',
-                        data: [1800, 2000, 2100, 2150],
+                        data: [almacenado - 300, almacenado - 200, almacenado - 100, almacenado],
                         borderColor: '#2563eb',
                         backgroundColor: 'rgba(37, 99, 235, 0.1)',
                         borderWidth: 2,
@@ -142,7 +200,7 @@ function AlmacenCentralViewController() {
                     scales: {
                         y: {
                             beginAtZero: true,
-                            max: 3000,
+                            max: 40000,
                             grid: { color: '#f0f0f0', drawBorder: false },
                             ticks: { font: { size: 9 }, color: '#9ca3af' }
                         },
@@ -162,6 +220,20 @@ function AlmacenCentralViewController() {
             $('.toggle-btn').removeClass('active');
             $(this).addClass('active');
             currentView = $(this).data('view');
+        });
+
+        $('#porcentajeCapacidad').on('change', function () {
+            var valor = parseInt($(this).val());
+            if (valor < 1) valor = 1;
+            if (valor > 100) valor = 100;
+            $(this).val(valor);
+            $('#lblPorcentaje').text(valor + '%');
+
+            self.LoadData();
+        });
+
+        $('#btnHistorialCortes').click(function () {
+            window.location.href = '/HistorialCortes';
         });
     };
 }

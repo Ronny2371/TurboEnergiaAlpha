@@ -19,6 +19,56 @@ hr{
     margin-top:25px;
 }
 
+.corte-energia-control {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 12px;
+    background: #f9fafb;
+    border-radius: 8px;
+    border: 1.5px solid #e5e7eb;
+}
+
+    .corte-energia-control label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #6b7280;
+    }
+
+    .corte-energia-control input {
+        width: 70px;
+        padding: 6px 10px;
+        border: 1.5px solid #e5e7eb;
+        border-radius: 6px;
+        font-size: 12px;
+    }
+
+    .corte-energia-control span {
+        font-size: 12px;
+        font-weight: 600;
+        color: #374151;
+        min-width: 35px;
+    }
+
+    .corte-energia-control button {
+        padding: 6px 14px;
+        background: #111;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        margin-left: auto;
+    }
+
+        .corte-energia-control button:hover {
+            background: #2563eb;
+        }
+
+
 /* ===== TARJETA DE ALMACENADO ===== */
 .storage-card-wrapper {
     background: #fff;
@@ -419,3 +469,27 @@ hr{
         height: 150px;
     }
 }
+
+/* Estilos para btn-primary en <a> tag */
+a.btn-primary {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+    margin-left: auto;
+}
+
+    a.btn-primary:hover {
+        background: #1d4ed8;
+    }
+
+    a.btn-primary:active {
+        transform: scale(0.98);
+    }

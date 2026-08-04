@@ -6,7 +6,7 @@ namespace Entities_DTOs
 {
     public class AlmacenCentral : BaseDTO
     {
-        public decimal SaldoMWh { get; set; }
-        public DateOnly UltimaActualizacion { get; set; }
+        public decimal CapacidadMaxima { get; set; }
+        public decimal Almacenado { get; set; }
     }
 }

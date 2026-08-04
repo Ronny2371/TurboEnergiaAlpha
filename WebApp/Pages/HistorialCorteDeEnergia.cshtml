@@ -1,0 +1,132 @@
+﻿@page
+@model WebApp.Pages.HistorialCorteDeEnergiaModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Historial de Cortes de Energía";
+}
+
+<link rel="stylesheet" href="~/css/paneladministrador.css" />
+<link rel="stylesheet" href="~/css/cerrarsesion.css" />
+<link rel="stylesheet" href="~/css/historialcortes.css" />
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="~/js/ControlActions.js"></script>
+<script src="~/js/pages-controllers/HistorialCortesViewController.js"></script>
+
+<div class="dashboard-container">
+
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+        <div class="logo-mark">ALPHA <span>ENERGY</span></div>
+        <div class="user-chip">
+            <div class="avatar-circle">AD</div>
+            <div>
+                <div class="user-name">Admin Principal</div>
+                <div class="user-role">Administrador</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== LAYOUT ===== -->
+    <div class="app-layout">
+
+        <!-- ===== SIDEBAR ===== -->
+        <nav class="app-sidebar">
+            <div class="s-label">Menu</div>
+            <a class="s-item" asp-page="/PanelAdministrador">Dashboard</a>
+            <a class="s-item" asp-page="/GestionDeUsuarios">Usuarios</a>
+            <a class="s-item" asp-page="/GestionDeTurbinas">Turbinas</a>
+            <a class="s-item" asp-page="/RegistroDeMantenimiento">Mantenimiento</a>
+            <a class="s-item" asp-page="/PortalDistribuidor">Distribución</a>
+            <a class="s-item" asp-page="/AlmacenCentral">Almacén Central</a>
+            <a class="s-item" asp-page="/ReporteDeFacturacion">Reportes</a>
+            <a class="s-item" asp-page="/Auditoria">Auditoría</a>
+            <a class="s-item logout" href="/Login">Cerrar sesión</a>
+        </nav>
+
+        <!-- ===== CONTENIDO ===== -->
+        <main class="app-content">
+
+            <!-- ===== TÍTULO ===== -->
+            <div class="page-title-row">
+                <div>
+                    <div class="page-title" id="HistorialTitle">Historial de Cortes de Energía</div>
+                    <div class="page-sub" id="HistorialSubTitle">Registro diario de generación, solicitud y balance energético</div>
+                </div>
+            </div>
+
+
+            <!-- ===== CONTROL DE GENERACIÓN ===== -->
+            <div class="corte-energia-control">
+                <label for="porcentajeCapacidad">Capacidad(%):</label>
+                <input id="porcentajeCapacidad" type="number" min="1" max="100" value="90" />
+
+                <button id="btnGenerarCorte">Generar Corte Diario</button>
+            </div>
+
+            <!-- ===== FILTROS ===== -->
+            <div class="filters-row">
+                <div class="search-box-wrapper">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" class="search-icon">
+                        <circle cx="7" cy="7" r="5" stroke="#aaa" stroke-width="1.5" />
+                        <path d="M11 11l3 3" stroke="#aaa" stroke-width="1.5" stroke-linecap="round" />
+                    </svg>
+                    <input id="searchInput" type="text" placeholder="Buscar por fecha..." />
+                </div>
+
+                <!-- Dropdown de Meses -->
+                <select id="filterMes" class="filter-select">
+                    <option value="">Todos los meses</option>
+                    <option value="01">Enero</option>
+                    <option value="02">Febrero</option>
+                    <option value="03">Marzo</option>
+                    <option value="04">Abril</option>
+                    <option value="05">Mayo</option>
+                    <option value="06">Junio</option>
+                    <option value="07">Julio</option>
+                    <option value="08">Agosto</option>
+                    <option value="09">Septiembre</option>
+                    <option value="10">Octubre</option>
+                    <option value="11">Noviembre</option>
+                    <option value="12">Diciembre</option>
+                </select>
+            </div>
+
+            <!-- ===== TABLA DE CORTES ===== -->
+            <table class="wf-table">
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>Fecha</th>
+                        <th>Generada</th>
+                        <th>Solicitada</th>
+                        <th>Balance</th>
+                        <th>% Usado</th>
+                   
+                    </tr>
+                </thead>
+                <tbody id="tbodyCortes">
+                </tbody>
+            </table>
+
+            <!-- ===== PAGINACIÓN ===== -->
+            <div class="pagination-row">
+                <span class="pagination-info" id="paginationInfo">Mostrando 0 de 0 cortes</span>
+            </div>
+
+            <!-- ===== ANOTACIÓN ===== -->
+            <div class="annotation-section">
+                <span class="ann-large">⚡ Los cortes se generan automáticamente cada día basándose en la energía producida y solicitada</span>
+            </div>
+
+        </main>
+
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="wf-footer">
+        <p>&copy; 2026 Alpha Energy. Todos los derechos reservados.</p>
+    </footer>
+
+</div>
