@@ -9,6 +9,12 @@
 <link rel="stylesheet" href="~/css/paneladministrador.css" />
 <link rel="stylesheet" href="~/css/cerrarsesion.css" />
 <link rel="stylesheet" href="~/css/portaldistribuidor.css" />
+<link rel="stylesheet" href="~/css/gestiondeturbinas.css" />
+<link rel="stylesheet" href="~/css/registrodeusuario.css" />
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="~/js/ControlActions.js"></script>
+<script src="~/js/pages-controllers/SolicitudCompraViewController.js"></script>
 
 <div class="dashboard-container">
 
@@ -52,16 +58,25 @@
 
                 <div class="page-title-row">
                     <div></div>
-                    <button class="btn-primary">+ Nueva Solicitud</button>
+                    <button class="btn-primary" id="btnNuevaSolicitud">+ Nueva Solicitud</button>
                 </div>
 
-                <!-- ===== INFO CARD ===== -->
-                <div class="info-card">
-                    <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
-                        <circle cx="8" cy="8" r="7" stroke="#2563eb" stroke-width="1.5" />
-                        <path d="M8 7v4M8 5v1" stroke="#2563eb" stroke-width="1.5" stroke-linecap="round" />
-                    </svg>
-                    <span>Puede registrar un máximo de <strong>6</strong> solicitudes activas por año. Actualmente tiene <strong>3</strong> activas.</span>
+                <!-- ===== ESTADÍSTICAS ===== -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Solicitudes</div>
+                        <div class="stat-value" id="statTotalSolicitudes">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Pendientes</div>
+                        <div class="stat-value" id="statPendientes">0</div>
+                        <div class="stat-delta yellow" id="statPendientesDelta"></div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Aprobadas</div>
+                        <div class="stat-value" id="statAprobadas">0</div>
+                        <div class="stat-delta green" id="statAprobadasDelta"></div>
+                    </div>
                 </div>
 
                 <!-- ===== TABLA ===== -->
@@ -72,108 +87,14 @@
                             <th>Mes / Año</th>
                             <th>Cantidad Solicitada</th>
                             <th>Estado</th>
+                            <th>Solicitado por</th>
                             <th>Fecha Solicitud</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td style="color:#9ca3af;font-size:12px;">001</td>
-                            <td><strong>08 / 2026</strong></td>
-                            <td>120 MWh</td>
-                            <td>
-                                <span class="badge badge-yellow">
-                                    <span class="badge-dot badge-dot-yellow"></span>
-                                    Pendiente
-                                </span>
-                            </td>
-                            <td style="font-size:12px;color:#6b7280;">02/07/2026</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="action-btn view">👁 Ver</button>
-                                    <button class="action-btn cancel">✕ Anular</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="color:#9ca3af;font-size:12px;">002</td>
-                            <td><strong>09 / 2026</strong></td>
-                            <td>100 MWh</td>
-                            <td>
-                                <span class="badge badge-yellow">
-                                    <span class="badge-dot badge-dot-yellow"></span>
-                                    Pendiente
-                                </span>
-                            </td>
-                            <td style="font-size:12px;color:#6b7280;">05/07/2026</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="action-btn view">👁 Ver</button>
-                                    <button class="action-btn cancel">✕ Anular</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="color:#9ca3af;font-size:12px;">003</td>
-                            <td><strong>10 / 2026</strong></td>
-                            <td>150 MWh</td>
-                            <td>
-                                <span class="badge badge-green">
-                                    <span class="badge-dot badge-dot-green"></span>
-                                    Aprobada
-                                </span>
-                            </td>
-                            <td style="font-size:12px;color:#6b7280;">10/07/2026</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="action-btn view">👁 Ver</button>
-                                    <span class="action-disabled">---</span>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="color:#9ca3af;font-size:12px;">004</td>
-                            <td><strong>11 / 2026</strong></td>
-                            <td>80 MWh</td>
-                            <td>
-                                <span class="badge badge-yellow">
-                                    <span class="badge-dot badge-dot-yellow"></span>
-                                    Pendiente
-                                </span>
-                            </td>
-                            <td style="font-size:12px;color:#6b7280;">15/07/2026</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="action-btn view">👁 Ver</button>
-                                    <button class="action-btn cancel">✕ Anular</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="color:#9ca3af;font-size:12px;">005</td>
-                            <td><strong>12 / 2026</strong></td>
-                            <td>200 MWh</td>
-                            <td>
-                                <span class="badge badge-green">
-                                    <span class="badge-dot badge-dot-green"></span>
-                                    Aprobada
-                                </span>
-                            </td>
-                            <td style="font-size:12px;color:#6b7280;">20/07/2026</td>
-                            <td>
-                                <div class="action-buttons">
-                                    <button class="action-btn view">👁 Ver</button>
-                                    <span class="action-disabled">---</span>
-                                </div>
-                            </td>
-                        </tr>
+                    <tbody id="tbodySolicitudes">
                     </tbody>
                 </table>
-
-                <!-- ===== MAX NOTE ===== -->
-                <div class="max-note">
-                    (máx. 6 solicitudes activas por año — <strong>1</strong> espacio disponible)
-                </div>
 
                 <!-- ===== ANNOTATION ===== -->
                 <div class="annotation-section">
@@ -182,12 +103,7 @@
 
                 <!-- ===== PAGINACIÓN ===== -->
                 <div class="pagination-row">
-                    <span class="pagination-info">5 de 5 solicitudes</span>
-                    <div class="pagination-buttons">
-                        <button class="page-btn">‹</button>
-                        <button class="page-btn active">1</button>
-                        <button class="page-btn">›</button>
-                    </div>
+                    <span class="pagination-info" id="paginationInfo">Mostrando 0 de 0 solicitudes</span>
                 </div>
 
             </div>
@@ -200,5 +116,52 @@
     <footer class="wf-footer">
         <p>&copy; 2026 Alpha Energy. Todos los derechos reservados.</p>
     </footer>
+
+    <!-- ===== MODAL NUEVA/EDITAR SOLICITUD ===== -->
+    <div class="modal-overlay" id="modalOverlaySolicitud" style="display:none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <button type="button" class="modal-close" id="btnCerrarModalSolicitud">x</button>
+                <h2 id="modalTitleSolicitud">Nueva Solicitud</h2>
+            </div>
+            <div class="form-group">
+                <label class="field-label">Mes <span class="required">*</span></label>
+                <select id="selMesSolicitado" class="field-input">
+                    <option value="">Seleccione...</option>
+                    <option value="1">Enero</option>
+                    <option value="2">Febrero</option>
+                    <option value="3">Marzo</option>
+                    <option value="4">Abril</option>
+                    <option value="5">Mayo</option>
+                    <option value="6">Junio</option>
+                    <option value="7">Julio</option>
+                    <option value="8">Agosto</option>
+                    <option value="9">Septiembre</option>
+                    <option value="10">Octubre</option>
+                    <option value="11">Noviembre</option>
+                    <option value="12">Diciembre</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="field-label">Año <span class="required">*</span></label>
+                <input id="txtAnioSolicitado" type="number" class="field-input" placeholder="Ej: 2026" />
+            </div>
+            <div class="form-group">
+                <label class="field-label">Cantidad (MWh) <span class="required">*</span></label>
+                <input id="txtCantidadMWh" type="number" step="0.01" class="field-input" placeholder="Ej: 120" />
+            </div>
+            <div class="form-group">
+                <label class="field-label">Estado <span class="required">*</span></label>
+                <select id="selEstadoSolicitud" class="field-input">
+                    <option value="PENDIENTE">Pendiente</option>
+                    <option value="PROCESADA">Aprobada</option>
+                    <option value="BLOQUEADA">Bloqueada</option>
+                    <option value="CANCELADA">Cancelada</option>
+                </select>
+            </div>
+
+            <button type="button" class="btn-primary" id="btnCrearSolicitud">Crear</button>
+        </div>
+    </div>
 
 </div>

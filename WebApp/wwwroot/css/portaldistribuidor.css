@@ -306,3 +306,66 @@
         gap: 10px;
     }
 }
+/* ===== badge rojo (Bloqueada / Cancelada) ===== */
+.badge-red {
+    background: #fecaca;
+    color: #991b1b;
+}
+
+.badge-dot-red {
+    background: #ef4444;
+}
+
+/* ===== modal Nueva Solicitud ===== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px 24px;
+    width: 480px;
+    max-width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+    .modal-header h2 {
+        margin: 0;
+        font-size: 20px;
+    }
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 18px;
+    cursor: pointer;
+    color: #666;
+    line-height: 1;
+    padding: 4px;
+}
+
+    .modal-close:hover {
+        color: #000;
+    }
+
+.page-title-row .btn-primary {
+    width: auto;
+}
