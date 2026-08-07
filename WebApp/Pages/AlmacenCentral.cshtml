@@ -106,28 +106,25 @@
             <div class="current-section">
                 <div class="section-header">
                     <h3 class="section-title">SITUACION ACTUAL</h3>
-                    <div class="toggle-group">
-                        <button class="toggle-btn active" data-view="dia">DÍA</button>
-                        <button class="toggle-btn" data-view="mes">MES</button>
-                    </div>
+
                 </div>
 
                 <!-- ===== 3 TARJETAS DE INFO ===== -->
                 <div class="info-cards-grid">
                     <div class="info-card">
                         <div class="card-label">Producción</div>
-                        <div class="card-value" id="pDiaria">760 <span>MW</span></div>
+                        <div class="card-value" id="pDiaria">0 <span>MW</span></div>
              
                     </div>
                     <div class="info-card">
                         <div class="card-label">Requerido</div>
-                        <div class="card-value">720 <span>MW</span></div>
+                        <div class="card-value" id="solicitudesMW">0 <span>MW</span></div>
                         <div class="card-delta">Por solicitudes</div>
                     </div>
                     <div class="info-card">
                         <div class="card-label">Balance</div>
-                        <div class="card-value">+40 <span>MW</span></div>
-                        <div class="card-delta green">Disponible para almacenar</div>
+                        <div class="card-value" id="balanceValue">+40 <span>MW</span></div>
+                        <div class="card-delta" id="balanceDelta" class="green">Disponible para almacenar</div>
                     </div>
                 </div>
             </div>

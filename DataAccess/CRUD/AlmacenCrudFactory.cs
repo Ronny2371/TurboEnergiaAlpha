@@ -25,7 +25,7 @@ namespace DataAccess.CRUD
             var sqlOperation = new SqlOperation();
 
 
-            sqlOperation.ProcedureName = "UPD_ALMACENPR";
+            sqlOperation.ProcedureName = "UPD_ALMACEN_PR";
             sqlOperation.AddDecimalParameter("P_ALMACENADO", almacen.Almacenado);
 
             sqlDao.ExecuteProcedure(sqlOperation);

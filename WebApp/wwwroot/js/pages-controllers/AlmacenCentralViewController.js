@@ -13,10 +13,15 @@ function AlmacenCentralViewController() {
         var ca = new ControlActions();
         var self = this;
 
-        //Hacer los AJAX EN PARALELO (no anidados)
+        //Hacer los AJAX seguidos
         var ajaxAlmacen = $.ajax({
             type: "GET",
             url: ca.GetUrlApiService("Almacen/RetrieveAll")
+        });
+
+        var ajaxSolicitud = $.ajax({
+            type: "GET",
+            url: ca.GetUrlApiService("SolicitudCompra/RetrieveAll")
         });
 
         var ajaxTurbinas = $.ajax({
@@ -35,18 +40,20 @@ function AlmacenCentralViewController() {
         })
 
         //Esperar a que terminen TODOS
-        $.when(ajaxAlmacen, ajaxTurbinas, ajaxMantenimientos,ajaxCortes).done(function (almacenData, turbinasData, mantenimientosData,cortesData) {
+        $.when(ajaxAlmacen, ajaxTurbinas, ajaxMantenimientos,ajaxCortes,ajaxSolicitud).done(function (almacenData, turbinasData, mantenimientosData,cortesData, solicitudData) {
 
             var almacen = almacenData[0];
             var lstTurbinas = turbinasData[0];
             var lstMantenimientos = mantenimientosData[0];
-            var lstCortes = cortesData[0]
+            var lstCortes = cortesData[0];
+            var lstSolicitudes = solicitudData[0];
 
             console.log('Todos los AJAX terminaron');
             console.log('Almacén:', almacen);
             console.log('Turbinas:', lstTurbinas.length);
             console.log('Mantenimientos:', lstMantenimientos.length);
             console.log('Cortes:', lstCortes.length);
+            console.log('SOLICITUDES COMPLETAS:', lstSolicitudes);
 
             //Procesar datos AQUÍ (una sola vez)
             var turbinasActivas = lstTurbinas.filter(function (t) {
@@ -96,7 +103,16 @@ function AlmacenCentralViewController() {
 
                 return (fechaInicio <= ultimoDiaDelMes && fechaFin >= primerDiaDelMes);
             }).length;
+            //=============   Solicittudes ====================
 
+            var CantidadMwSolicitudes = 0;
+            lstSolicitudes.forEach(function (s) {
+                if (s.estado === "PROCESADA") {
+                    CantidadMwSolicitudes += s.cantidadMWh;
+                }
+            });
+
+            //console.log("Cantidad Solicitudes: ", CantidadMwSolicitudes);
 
             //=============logica del Promedio ====================
             var promedio = 0;
@@ -111,6 +127,7 @@ function AlmacenCentralViewController() {
             //==========================================================
 
 
+
             var porcentajeDisponibilidad = parseInt($('#porcentajeCapacidad').val() || 90) / 100;
 
             var produccionEstimada = Number(((produccionTotal / 1000000) * porcentajeDisponibilidad).toFixed(2));
@@ -120,9 +137,29 @@ function AlmacenCentralViewController() {
             $('#storageValue').html(almacen.almacenado + ' <span>MWh</span>');
             $('#occupancyPercent').text(Math.round((almacen.almacenado / 40000) * 100) + '%');
             $('#pDiaria').html(produccionDiaria.toLocaleString() + ' <span>MWh</span>');
+            $('#solicitudesMW').html(CantidadMwSolicitudes.toLocaleString() + ' <span>MWh</span>');
             $('#turbinasActivas').text(turbinasActivas);
             $('#mantenimientosAgendados').text(mantenimientosEnProgreso);
             $('#produccionEstimada').html(produccionEstimada.toLocaleString() + ' <span>GWh</span>');
+
+            ////==================== html y calculo de balance ===============================
+            var balance = produccionDiaria - CantidadMwSolicitudes;
+            var porcentajeBalance = Math.round((balance / produccionDiaria) * 100);
+            var balanceClass = balance >= 0 ? 'green' : 'red';
+            var balanceEmoji = balance >= 0 ? '✓' : '⚠';
+            var balanceSign = balance >= 0 ? '+' : '';
+            var balanceText = balance >= 0 ? 'Disponible' : 'Déficit';
+
+            //ACTUALIZAR TARJETA DE BALANCE
+            $('#balanceValue').html(
+                balanceSign + balance.toLocaleString() + ' <span>MW</span>' +
+                ' <span style="font-size: 12px; margin-left: 6px; font-weight: normal;">' +
+                porcentajeBalance + '%</span>'
+            );
+            $('#balanceDelta').html(' ' + balanceText + ' para almacenar');
+            $('#balanceDelta').attr('class', 'card-delta ' + balanceClass);
+
+            //================================================================================
 
             self.InitChart(almacen);
             self.InitToggle();

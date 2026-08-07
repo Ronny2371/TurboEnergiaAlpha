@@ -82,92 +82,198 @@
         $('#paginationInfo').text('Mostrando ' + this.filteredCortes.length + ' de ' + this.cortes.length + ' cortes');
     };
 
+
+
+
+
+
+
+
+
+    ////=================================GENERAR CORTE ==============================
     this.GenerarCorte = function () {
         var self = this;
         var ca = new ControlActions();
         var porcentaje = parseInt($('#porcentajeCapacidad').val() || 90);
         var hoy = new Date().toISOString().split('T')[0];
 
-        // Validar que no exista corte para hoy
-        var corteHoy = $.grep(this.cortes, function (c) {
-            return c.created.split('T')[0] === hoy;
+        //Hacer ambos AJAX en PARALELO
+
+        var ajaxAlmacen = $.ajax({
+            type: "GET",
+            url: ca.GetUrlApiService("Almacen/RetrieveAll")
+        });
+        var ajaxTurbinas = $.ajax({
+            type: "GET",
+            url: ca.GetUrlApiService("Turbina/RetrieveAll")
         });
 
-        if (corteHoy.length > 0) {
-            Swal.fire({
-                icon: 'warning',
-                title: 'Corte ya existe',
-                text: 'Ya existe un corte generado para hoy. Solo se permite uno por día.'
-            });
-            return;
-        }
-
-        // Obtener turbinas
-        $.ajax({
+        var ajaxCortes = $.ajax({
             type: "GET",
-            url: ca.GetUrlApiService("Turbina/RetrieveAll"),
-            success: function (lstTurbinas) {
-                var produccionDiaria = 0;
+            url: ca.GetUrlApiService("CorteEnergia/RetrieveAll")
+        });
 
-                // Calcular producción diaria - Solo turbinas activas
-                lstTurbinas.forEach(function (turbina) {
-                    if (turbina.estado === "Activa") {
-                        produccionDiaria += turbina.capacidadKwh;
-                    }
+        var ajaxSolicitud = $.ajax({
+            type: "GET",
+            url: ca.GetUrlApiService("SolicitudCompra/RetrieveAll")
+        });
+
+        //Esperar a que terminen AMBOS
+        $.when(ajaxTurbinas, ajaxCortes, ajaxAlmacen, ajaxSolicitud).done(function (turbinasData, cortesData, almacenData, solicitudData) {
+            var lstTurbinas = turbinasData[0];
+            var lstCortes = cortesData[0];
+            var almacen = almacenData[0];
+            var lstSolicitudes = solicitudData[0];
+
+            console.log('✓ AJAX terminados - Turbinas:', lstTurbinas.length, 'Cortes:', lstCortes.length, 'Almacen: ', almacen.almacenado);
+
+            // Validar que no exista corte para hoy
+            var corteHoy = $.grep(lstCortes, function (c) {
+                return c.created.split('T')[0] === hoy;
+            });
+
+            if (corteHoy.length > 0) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Corte ya existe',
+                    text: 'Ya existe un corte generado para hoy. Solo se permite uno por día.'
                 });
+                return;
+            }
 
-                // Aplicar porcentaje de disponibilidad y horas de operación
-                var porcentajeCapacidad = porcentaje / 100;
-                var energiaGenerada = (produccionDiaria * 10 * porcentajeCapacidad) / 1000;
+            //Calcular Total Solicitado
+            var CantidadMwSolicitudes = 0;
+            lstSolicitudes.forEach(function (s) {
+                if (s.estado === "PROCESADA") {
+                    CantidadMwSolicitudes += s.cantidadMWh;
+                }
+            });
 
-                // Energía solicitada
-                var energiaSolicitada = 0;
-                var balance = energiaGenerada - energiaSolicitada;
+            //Calcular producción diaria
+            var produccionDiaria = 0;
+            lstTurbinas.forEach(function (turbina) {
+                if (turbina.estado === "Activa") {
+                    produccionDiaria += turbina.capacidadKwh;
+                }
+            });
 
-                var request = {
-                    energiaGenerada: Math.round(energiaGenerada * 100) / 100,
-                    energiaSolicitada: Math.round(energiaSolicitada * 100) / 100,
-                    balance: Math.round(balance * 100) / 100,
-                    porcentaje: porcentaje,
-                    cantidadHoras: 10
-                };
+            var porcentajeCapacidad = porcentaje / 100;
+            var energiaGenerada = (produccionDiaria * 10 * porcentajeCapacidad) / 1000;
+            var energiaSolicitada = CantidadMwSolicitudes;
+            var balance = energiaGenerada - energiaSolicitada;
 
-                var urlEndPoint = self.API_ControllerName + "/Create";
+            var nuevoAlmacenado = almacen.almacenado + balance; 
 
-                $.ajax({
-                    type: 'POST',
-                    url: ca.GetUrlApiService(urlEndPoint),
-                    contentType: 'application/json',
-                    data: JSON.stringify(request),
-                    success: function (response) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Corte generado',
-                            text: 'Energía generada: ' + request.energiaGenerada + ' MWh',
-                            timer: 1500
-                        }).then(function () {
-                            self.LoadData();
-                        });
-                    },
-                    error: function (jqXHR) {
-                        var message = jqXHR.responseJSON ? jqXHR.responseJSON.error : "Error al crear el corte";
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: message
-                        });
-                    }
+            console.log('Nuevo almacenado:', nuevoAlmacenado);
+
+            //Validar que no exceda límites
+            if (nuevoAlmacenado > 40000) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Capacidad excedida',
+                    text: 'El almacén no puede exceder 40,000 MWh'
                 });
+                return;
+            }
+
+            if (nuevoAlmacenado < 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Almacén insuficiente',
+                    text: 'El almacén no puede ser negativo'
+                });
+                return;
+            }
+
+
+            var request = {
+                energiaGenerada: Math.round(energiaGenerada * 100) / 100,
+                energiaSolicitada: Math.round(energiaSolicitada * 100) / 100,
+                balance: Math.round(balance * 100) / 100,
+                porcentaje: porcentaje,
+                cantidadHoras: 10
+            };
+
+            console.log('→ Enviando corte:', request);
+
+        
+            self.CrearCorteEnAPI(request, nuevoAlmacenado);
+
+        }).fail(function () {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudieron cargar los datos necesarios'
+            });
+        });
+    };
+
+    this.CrearCorteEnAPI = function (request, nuevoAlmacenado) {
+        var self = this;
+        var ca = new ControlActions();
+        var urlEndPoint = this.API_ControllerName + "/Create";
+
+        $.ajax({
+            type: 'POST',
+            url: ca.GetUrlApiService(urlEndPoint),
+            contentType: 'application/json',
+            data: JSON.stringify(request),
+            success: function (response) {
+                console.log('✓ Corte creado:', response);
+
+                //ACTUALIZAR ALMACÉN en paralelo
+                self.ActualizarAlmacen(nuevoAlmacenado);
             },
             error: function (jqXHR) {
+                var message = jqXHR.responseJSON ? jqXHR.responseJSON.error : "Error al crear el corte";
                 Swal.fire({
                     icon: 'error',
                     title: 'Error',
-                    text: 'No se pudieron cargar las turbinas'
+                    text: message
                 });
             }
         });
     };
+
+
+
+
+    this.ActualizarAlmacen = function (nuevoAlmacenado) {
+        var self = this;
+        var ca = new ControlActions();
+
+        $.ajax({
+            type: 'PUT',
+            url: ca.GetUrlApiService("Almacen/Update"),
+            contentType: 'application/json',
+            data: JSON.stringify({ almacenado: nuevoAlmacenado }),
+            success: function (response) {
+                console.log('✓ Almacén actualizado a:', nuevoAlmacenado, 'MWh');
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Corte generado',
+                    text: 'Nuevo almacenado: ' + nuevoAlmacenado + ' MWh',
+                    timer: 2000
+                }).then(function () {
+                    self.LoadData();
+                });
+            },
+            error: function (jqXHR) {
+                var message = jqXHR.responseJSON ? jqXHR.responseJSON.error : "Error al actualizar almacén";
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Corte creado pero error en almacén',
+                    text: message
+                }).then(function () {
+                    self.LoadData();
+                });
+            }
+        });
+    };
+
+
+
 
     this.ValidarPorcentaje = function (input) {
         var valor = parseInt(input.val());
