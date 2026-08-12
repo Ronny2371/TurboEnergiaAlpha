@@ -17,8 +17,8 @@ namespace WebAPI.Controllers
             {
                 var am = new LogAuditoriaManager();
                 var lstResults = am.RetrieveAllLogs(entidad, fechaInicio, fechaFin);
-                return Ok(lstResults);
-            }
+                return Ok(lstResults);                                                                      
+            }                                                                                                // frontend, pide y muestra los datos)
             catch (Exception ex)
             {
                 return StatusCode(500, ex.Message);

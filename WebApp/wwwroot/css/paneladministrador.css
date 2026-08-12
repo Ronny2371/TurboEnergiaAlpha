@@ -255,7 +255,7 @@ body {
 /* ===== charts ===== */
 .charts-grid {
     display: grid;
-    grid-template-columns: 1.8fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     gap: 14px;
     margin-top: 14px;
 }
@@ -265,6 +265,11 @@ body {
     border: 1.5px solid #e5e7eb;
     border-radius: 6px;
     padding: 14px;
+}
+
+.chart-wrapper {
+    position: relative;
+    height: 220px;
 }
 
 .chart-title {

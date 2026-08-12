@@ -1,8 +1,10 @@
-﻿using DataAccess.CRUD;
+﻿using CoreApp_.Services;
+using DataAccess.CRUD;
 using Entities_DTOs;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CoreApp_
 {
@@ -20,7 +22,7 @@ namespace CoreApp_
             return sCrud.RetrieveById<SolicitudCompra>(id);
         }
 
-        public void CreateSolicitud(SolicitudCompra s, int usuarioAccionId)
+        public async Task CreateSolicitud(SolicitudCompra s, int usuarioAccionId, string connectionString)
         {
             Validate(s);
 
@@ -29,6 +31,20 @@ namespace CoreApp_
 
             var identificador = $"{s.MesSolicitado}/{s.AnioSolicitado} - {s.CantidadMWh} MWh";
             new LogAuditoriaManager().RegistrarEvento(usuarioAccionId, "SolicitudCompra", "Creación", "", identificador);
+
+            //Envío del correo de confirmación del pedido. Si falla, se loguea el error pero no se interrumpe la creación ya exitosa del pedido.
+            try
+            {
+                var usuario = new UserCrudFactory().RetrieveById<User>(s.Usuario.Id);
+                s.Usuario = usuario;
+
+                var emailService = new EmailService(connectionString);
+                await emailService.EnviarConfirmacionPedidoAsync(usuario.Correo, s);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al enviar el correo de confirmación del pedido {s.Id}: {ex.Message}");
+            }
         }
 
         public void UpdateSolicitud(SolicitudCompra s, int usuarioAccionId)
