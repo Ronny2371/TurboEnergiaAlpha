@@ -1,8 +1,4 @@
 
-// Hasta que exista sesion/login real (ver LoginViewController.js), se usa un Id fijo
-// de referencia para el distribuidor, igual que USUARIO_ACTUAL_ID en Mantenimiento.
-var USUARIO_ACTUAL_ID = 10;
-
 function ReporteFacturacionViewController() {
 
     this.API_ControllerName = "ReporteFacturacion";
@@ -11,32 +7,43 @@ function ReporteFacturacionViewController() {
         this.LoadReporte();
     }
 
+    this.ObtenerUsuarioActual = function () {
+        var data = sessionStorage.getItem('usuarioActual');
+        return data ? JSON.parse(data) : null;
+    }
+
     this.LoadReporte = function () {
         var ca = new ControlActions();
-        var urlEndPoint = this.API_ControllerName + "/RetrieveUltimo?usuarioId=" + USUARIO_ACTUAL_ID;
+        var usuario = this.ObtenerUsuarioActual();
+        var usuarioId = ca.GetUsuarioActualId();
+        var rolId = usuario && usuario.rol ? usuario.rol.id : 0;
 
-        $.ajax({
+        //Mismo endpoint para ambos roles; rolId indica que datos extra incluir
+        var urlEndPoint = this.API_ControllerName + "/RetrieveUltimo?usuarioId=" + usuarioId + "&rolId=" + rolId;
+
+        var ajaxReporte = $.ajax({
             type: "GET",
-            url: ca.GetUrlApiService(urlEndPoint),
-            success: function (reporte) {
-                if (!reporte) {
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'Sin datos',
-                        text: 'Todavía no hay reportes de facturación para este distribuidor.'
-                    });
-                    return;
-                }
-                RenderReporte(reporte);
-            },
-            error: function (jqXHR) {
-                var message = jqXHR.responseJSON ? jqXHR.responseJSON.mensaje : "No se pudo cargar el reporte de distribución.";
+            url: ca.GetUrlApiService(urlEndPoint)
+        });
+
+        $.when(ajaxReporte).done(function (reporte) {
+            if (!reporte) {
                 Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: message
+                    icon: 'info',
+                    title: 'Sin datos',
+                    text: 'Todavía no hay reportes de facturación para este distribuidor.'
                 });
+                return;
             }
+            RenderReporte(reporte);
+            RenderDistribuidorExtra(reporte, rolId);
+        }).fail(function (jqXHR) {
+            var message = jqXHR.responseJSON ? jqXHR.responseJSON.mensaje : "No se pudo cargar el reporte de distribución.";
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: message
+            });
         });
     }
 }
@@ -70,8 +77,7 @@ function RenderReporte(r) {
     RenderNotas(r);
 }
 
-// La tabla no tiene energia consumida, asi que el grafico muestra la composicion
-// real del total (Subtotal vs Impuesto) en vez de inventar un dato de consumo.
+// Grafico muestra composicion del total: Subtotal vs Impuesto
 function RenderChart(r) {
     var anchoTotal = 260;
     var xInicio = 10;
@@ -113,6 +119,43 @@ function RenderNotas(r) {
             '<div class="note-item"><span class="note-icon check">✓</span>Vence el ' + FormatDate(r.fechaVencimiento) + '</div>'
         );
     }
+}
+
+// Muestra la seccion extra solo si el rol es Distribuidor
+function RenderDistribuidorExtra(r, rolId) {
+    var ROL_DISTRIBUIDOR = 2;
+    if (rolId !== ROL_DISTRIBUIDOR) {
+        $('#distribuidorExtraSection').hide();
+        return;
+    }
+
+    $('#distribuidorExtraSection').show();
+
+    var activas = r.solicitudesActivasAnio || 0;
+    var limite = r.limiteSolicitudesAnio || 6;
+    $('#statSolicitudesActivas').text(activas);
+    $('#statSolicitudesLimite').text(activas + ' de ' + limite + ' del límite anual');
+    $('#statSolicitudesLimite').attr('class', 'stat-delta ' + (activas >= limite ? 'yellow' : 'green'));
+
+    $('#statVolumenDistribuido').html(Number(r.volumenTotalDistribuidoMWh || 0).toLocaleString() + ' <span style="font-size:11px;color:#9ca3af;">MWh</span>');
+
+    var nombresEstado = { PENDIENTE: 'Pendiente', PROCESADA: 'Aprobada', BLOQUEADA: 'Bloqueada', CANCELADA: 'Cancelada' };
+
+    var $tbodyHistorial = $('#tbodyHistorialSolicitudes');
+    $tbodyHistorial.empty();
+    (r.historialSolicitudes || []).forEach(function (s) {
+        $tbodyHistorial.append(
+            '<tr><td>' + s.mesSolicitado + '/' + s.anioSolicitado + '</td><td>' + s.cantidadMWh + ' MWh</td><td>' + (nombresEstado[s.estado] || s.estado) + '</td></tr>'
+        );
+    });
+
+    var $tbodyDetalle = $('#tbodyDetalleFacturacion');
+    $tbodyDetalle.empty();
+    (r.detalleFacturacionDistribucion || []).forEach(function (f) {
+        $tbodyDetalle.append(
+            '<tr><td>' + FormatPeriodo(f.periodo) + '</td><td>' + f.numeroFactura + '</td><td>' + f.estado + '</td><td>$ ' + FormatMoney(f.total) + '</td></tr>'
+        );
+    });
 }
 
 function FormatPeriodo(fechaIso) {

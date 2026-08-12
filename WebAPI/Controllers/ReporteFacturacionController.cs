@@ -42,15 +42,15 @@ namespace WebAPI.Controllers
             }
         }
 
-        //Retrieve el reporte mas reciente de un distribuidor (el que muestra la pagina de Reporte de Distribucion)
+        //Retrieve el reporte mas reciente del usuario logueado
         [HttpGet]
         [Route("RetrieveUltimo")]
-        public ActionResult RetrieveUltimo(int usuarioId)
+        public ActionResult RetrieveUltimo(int usuarioId, int rolId = 0)
         {
             try
             {
                 var rm = new ReporteFacturacionManager();
-                var reporte = rm.RetrieveUltimoReporte(usuarioId);
+                var reporte = rm.RetrieveUltimoReporte(usuarioId, rolId);
                 return Ok(reporte);
             }
             catch (Exception ex)

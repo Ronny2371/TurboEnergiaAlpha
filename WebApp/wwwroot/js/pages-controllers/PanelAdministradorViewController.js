@@ -10,7 +10,7 @@ function PanelAdministradorViewController() {
         var ca = new ControlActions();
         var self = this;
 
-        //Hacer los AJAX seguidos
+        // Hacer los AJAX seguidos
         var ajaxTurbinas = $.ajax({
             type: "GET",
             url: ca.GetUrlApiService("Turbina/RetrieveAll")
@@ -46,114 +46,114 @@ function PanelAdministradorViewController() {
             url: ca.GetUrlApiService("ReporteFacturacion/RetrieveAll")
         });
 
-        //Esperar a que terminen TODOS
+        // Esperar a que terminen TODOS
         $.when(ajaxTurbinas, ajaxMantenimientos, ajaxCortes, ajaxSolicitudes, ajaxAlmacen, ajaxUsuarios, ajaxReportes)
             .done(function (turbinasData, mantenimientosData, cortesData, solicitudesData, almacenData, usuariosData, reportesData) {
 
-            var lstTurbinas = turbinasData[0];
-            var lstMantenimientos = mantenimientosData[0];
-            var lstCortes = cortesData[0];
-            var lstSolicitudes = solicitudesData[0];
-            var almacen = almacenData[0];
-            var lstUsuarios = usuariosData[0];
-            var lstReportes = reportesData[0];
+                var lstTurbinas = turbinasData[0];
+                var lstMantenimientos = mantenimientosData[0];
+                var lstCortes = cortesData[0];
+                var lstSolicitudes = solicitudesData[0];
+                var almacen = almacenData[0];
+                var lstUsuarios = usuariosData[0];
+                var lstReportes = reportesData[0];
 
-            console.log('Todos los AJAX del Dashboard terminaron');
-            console.log('Turbinas:', lstTurbinas.length);
-            console.log('Mantenimientos:', lstMantenimientos.length);
-            console.log('Cortes:', lstCortes.length);
-            console.log('Solicitudes:', lstSolicitudes.length);
-            console.log('Almacén:', almacen);
-            console.log('Usuarios:', lstUsuarios.length);
-            console.log('Reportes:', lstReportes.length);
+                console.log('Todos los AJAX del Dashboard terminaron');
+                console.log('Turbinas:', lstTurbinas.length);
+                console.log('Mantenimientos:', lstMantenimientos.length);
+                console.log('Cortes:', lstCortes.length);
+                console.log('Solicitudes:', lstSolicitudes.length);
+                console.log('Almacén:', almacen);
+                console.log('Usuarios:', lstUsuarios.length);
+                console.log('Reportes:', lstReportes.length);
 
-            //Procesar datos AQUÍ (una sola vez)
-            var hoy = new Date();
-            var mesActual = hoy.getMonth();
-            var anioActual = hoy.getFullYear();
-            var nombresMesesLargo = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                // Procesar datos AQUÍ (una sola vez)
+                var hoy = new Date();
+                var mesActual = hoy.getMonth();
+                var anioActual = hoy.getFullYear();
+                var nombresMesesLargo = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
-            //==================== Turbinas ====================
-            var turbinasActivas = lstTurbinas.filter(function (t) {
-                return t.estado === "Activa";
-            }).length;
+                // Turbinas
+                var turbinasActivas = lstTurbinas.filter(function (t) {
+                    return t.estado === "Activa";
+                }).length;
 
-            var turbinasFueraServicio = lstTurbinas.filter(function (t) {
-                return t.estado === "Fuera de Servicio";
-            }).length;
+                var turbinasFueraServicio = lstTurbinas.filter(function (t) {
+                    return t.estado === "Fuera de Servicio";
+                }).length;
 
-            var totalTurbinas = lstTurbinas.length;
-            var turbinasMantenimiento = totalTurbinas - turbinasActivas - turbinasFueraServicio;
+                var totalTurbinas = lstTurbinas.length;
+                var turbinasMantenimiento = totalTurbinas - turbinasActivas - turbinasFueraServicio;
 
-            //==================== Producción Hoy ====================
-            var porcentajeDisponibilidadDefault = 0.9;
-            var capacidadActivaKwh = 0;
+                // Producción de hoy
+                var porcentajeDisponibilidadDefault = 0.9;
+                var capacidadActivaKwh = 0;
 
-            lstTurbinas.forEach(function (turbina) {
-                if (turbina.estado === "Activa") {
-                    capacidadActivaKwh += turbina.capacidadKwh;
-                }
+                lstTurbinas.forEach(function (turbina) {
+                    if (turbina.estado === "Activa") {
+                        capacidadActivaKwh += turbina.capacidadKwh;
+                    }
+                });
+
+                var produccionHoyMWh = Math.round((capacidadActivaKwh * 10 * porcentajeDisponibilidadDefault) / 1000);
+
+                // Mantenimientos en proceso
+                var mantenimientosEnProceso = lstMantenimientos.filter(function (m) {
+                    return m.estadoMantenimiento === "En Proceso";
+                }).length;
+
+                // Solicitudes pendientes
+                var solicitudesPendientes = lstSolicitudes.filter(function (s) {
+                    return s.estado === "PENDIENTE";
+                }).length;
+
+                // Ventas del mes
+                var reportesDelMes = lstReportes.filter(function (r) {
+                    var fecha = new Date(r.periodo);
+                    return fecha.getMonth() === mesActual && fecha.getFullYear() === anioActual;
+                });
+
+                var ventasDelMes = 0;
+                reportesDelMes.forEach(function (r) {
+                    ventasDelMes += r.total;
+                });
+
+                // Distribuidores activos
+                var distribuidoresActivos = lstUsuarios.filter(function (u) {
+                    return u.rol && u.rol.id === 2;
+                }).length;
+
+                // Ocupación del almacén
+                var porcentajeOcupacion = almacen.capacidadMaxima > 0 ? Math.round((almacen.almacenado / almacen.capacidadMaxima) * 100) : 0;
+
+                // Actualizar UI
+                $('#periodoActual').text(nombresMesesLargo[mesActual] + ' ' + anioActual);
+
+                $('#kpiProduccionHoy').html(produccionHoyMWh.toLocaleString() + ' <span>MWh</span>');
+                $('#kpiProduccionDelta').text(turbinasActivas + ' de ' + totalTurbinas + ' turbinas activas');
+
+                $('#kpiAlmacen').html(almacen.almacenado.toLocaleString() + ' <span>MWh</span>');
+                $('#kpiAlmacenDelta').text(porcentajeOcupacion + '% de ' + almacen.capacidadMaxima.toLocaleString() + ' MWh de capacidad');
+
+                $('#kpiTurbinasOperativas').html(turbinasActivas + ' <span style="font-size:11px;color:#9ca3af;">/ ' + totalTurbinas + '</span>');
+                $('#kpiTurbinasDelta').text(mantenimientosEnProceso + ' en mantenimiento');
+
+                $('#kpiVentasMes').html('$' + Math.round(ventasDelMes).toLocaleString());
+                $('#kpiVentasDelta').text(reportesDelMes.length + ' facturas · ' + solicitudesPendientes + ' solicitudes pendientes');
+
+                $('#kpiDistribuidoresActivos').text(distribuidoresActivos);
+
+                self.InitChart({
+                    turbinasActivas: turbinasActivas,
+                    turbinasMantenimiento: turbinasMantenimiento,
+                    turbinasFueraServicio: turbinasFueraServicio,
+                    lstReportes: lstReportes,
+                    lstCortes: lstCortes
+                });
+
+            }).fail(function () {
+                console.error('Error en uno de los AJAX del Dashboard');
             });
-
-            var produccionHoyMWh = Math.round((capacidadActivaKwh * 10 * porcentajeDisponibilidadDefault) / 1000);
-
-            //==================== Mantenimientos en proceso ====================
-            var mantenimientosEnProceso = lstMantenimientos.filter(function (m) {
-                return m.estadoMantenimiento === "En Proceso";
-            }).length;
-
-            //==================== Solicitudes pendientes ====================
-            var solicitudesPendientes = lstSolicitudes.filter(function (s) {
-                return s.estado === "PENDIENTE";
-            }).length;
-
-            //==================== Ventas del mes ====================
-            var reportesDelMes = lstReportes.filter(function (r) {
-                var fecha = new Date(r.periodo);
-                return fecha.getMonth() === mesActual && fecha.getFullYear() === anioActual;
-            });
-
-            var ventasDelMes = 0;
-            reportesDelMes.forEach(function (r) {
-                ventasDelMes += r.total;
-            });
-
-            //==================== Distribuidores activos ====================
-            var distribuidoresActivos = lstUsuarios.filter(function (u) {
-                return u.rol && u.rol.id === 2;
-            }).length;
-
-            //==================== Ocupación del almacén ====================
-            var porcentajeOcupacion = almacen.capacidadMaxima > 0 ? Math.round((almacen.almacenado / almacen.capacidadMaxima) * 100) : 0;
-
-            //Actualizar UI
-            $('#periodoActual').text(nombresMesesLargo[mesActual] + ' ' + anioActual);
-
-            $('#kpiProduccionHoy').html(produccionHoyMWh.toLocaleString() + ' <span>MWh</span>');
-            $('#kpiProduccionDelta').text(turbinasActivas + ' de ' + totalTurbinas + ' turbinas activas');
-
-            $('#kpiAlmacen').html(almacen.almacenado.toLocaleString() + ' <span>MWh</span>');
-            $('#kpiAlmacenDelta').text(porcentajeOcupacion + '% de ' + almacen.capacidadMaxima.toLocaleString() + ' MWh de capacidad');
-
-            $('#kpiTurbinasOperativas').html(turbinasActivas + ' <span style="font-size:11px;color:#9ca3af;">/ ' + totalTurbinas + '</span>');
-            $('#kpiTurbinasDelta').text(mantenimientosEnProceso + ' en mantenimiento');
-
-            $('#kpiVentasMes').html('$' + Math.round(ventasDelMes).toLocaleString());
-            $('#kpiVentasDelta').text(reportesDelMes.length + ' facturas · ' + solicitudesPendientes + ' solicitudes pendientes');
-
-            $('#kpiDistribuidoresActivos').text(distribuidoresActivos);
-
-            self.InitChart({
-                turbinasActivas: turbinasActivas,
-                turbinasMantenimiento: turbinasMantenimiento,
-                turbinasFueraServicio: turbinasFueraServicio,
-                lstReportes: lstReportes,
-                lstCortes: lstCortes
-            });
-
-        }).fail(function () {
-            console.error('Error en uno de los AJAX del Dashboard');
-        });
     };
 
     this.InitChart = function (datos) {
@@ -161,7 +161,7 @@ function PanelAdministradorViewController() {
         if (charts.ventasMensuales) charts.ventasMensuales.destroy();
         if (charts.cortesEnergia) charts.cortesEnergia.destroy();
 
-        //==================== Dona: Estado de Turbinas ====================
+        // Dona: estado de turbinas
         var ctxTurbinas = document.getElementById('turbinasEstadoChart');
         if (ctxTurbinas) {
             charts.turbinasEstado = new Chart(ctxTurbinas.getContext('2d'), {
@@ -188,7 +188,7 @@ function PanelAdministradorViewController() {
             });
         }
 
-        //==================== Barras: Ventas por Mes ====================
+        // Barras: ventas por mes
         var nombresMesesCorto = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
         var ventasPorMes = {};
 
@@ -240,7 +240,7 @@ function PanelAdministradorViewController() {
             });
         }
 
-        //==================== Línea: Generación vs. Solicitado ====================
+        // Línea: generación vs. solicitado
         var ultimosCortes = datos.lstCortes.slice(-8);
         var labelsCortes = ultimosCortes.map(function (c, i) {
             return 'Corte ' + (i + 1);

@@ -18,5 +18,12 @@ namespace Entities_DTOs
         public decimal Total { get; set; }
         public DateTime FechaEmision { get; set; }
         public DateTime FechaVencimiento { get; set; }
+
+        // Campos extra: solo se llenan para el rol Distribuidor
+        public List<SolicitudCompra> HistorialSolicitudes { get; set; }
+        public int SolicitudesActivasAnio { get; set; }
+        public int LimiteSolicitudesAnio { get; set; }
+        public decimal VolumenTotalDistribuidoMWh { get; set; }
+        public List<ReporteFacturacion> DetalleFacturacionDistribucion { get; set; }
     }
 }

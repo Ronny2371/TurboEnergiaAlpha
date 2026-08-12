@@ -9,6 +9,9 @@
 <link rel="stylesheet" href="~/css/reportedefacturacion.css" />
 <link rel="stylesheet" href="~/css/paneladministrador.css" />
 <link rel="stylesheet" href="~/css/cerrarsesion.css" />
+<!-- stats-grid/stat-card y wf-table ya definidos aqui, se reutilizan -->
+<link rel="stylesheet" href="~/css/gestiondeturbinas.css" />
+<link rel="stylesheet" href="~/css/portaldistribuidor.css" />
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="~/js/ControlActions.js"></script>
@@ -152,6 +155,52 @@
                             <div class="notes-list" id="notasList">
                             </div>
                         </div>
+                    </div>
+
+                </div>
+
+                <!-- ===== EXTRA DISTRIBUIDOR (solo visible para rol Distribuidor) ===== -->
+                <div id="distribuidorExtraSection" style="display:none;">
+
+                    <div class="stats-grid" style="margin-top:24px;">
+                        <div class="stat-card">
+                            <div class="stat-label">Solicitudes Activas del Año</div>
+                            <div class="stat-value" id="statSolicitudesActivas">0</div>
+                            <div class="stat-delta" id="statSolicitudesLimite"></div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Volumen Total Distribuido</div>
+                            <div class="stat-value" id="statVolumenDistribuido">0 <span style="font-size:11px;color:#9ca3af;">MWh</span></div>
+                        </div>
+                    </div>
+
+                    <div class="notes-card" style="margin-top:16px;">
+                        <div class="notes-title">Historial de Solicitudes de Compra</div>
+                        <table class="wf-table">
+                            <thead>
+                                <tr>
+                                    <th>Mes / Año</th>
+                                    <th>Cantidad (MWh)</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyHistorialSolicitudes"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="notes-card" style="margin-top:16px;">
+                        <div class="notes-title">Detalle de Facturación por Distribución</div>
+                        <table class="wf-table">
+                            <thead>
+                                <tr>
+                                    <th>Período</th>
+                                    <th>No. Factura</th>
+                                    <th>Estado</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tbodyDetalleFacturacion"></tbody>
+                        </table>
                     </div>
 
                 </div>

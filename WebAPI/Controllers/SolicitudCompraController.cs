@@ -8,6 +8,13 @@ namespace WebAPI.Controllers
     [ApiController]
     public class SolicitudCompraController : ControllerBase
     {
+        private readonly IConfiguration _config;
+
+        public SolicitudCompraController(IConfiguration config)
+        {
+            _config = config;
+        }
+
         //Retrieve all solicitudes
         [HttpGet]
         [Route("RetrieveAll")]
@@ -45,14 +52,16 @@ namespace WebAPI.Controllers
         //Crear Solicitud
         [HttpPost]
         [Route("Create")]
-        public ActionResult Create(SolicitudCompraRequest request, int usuarioAccionId)
+        public async Task<ActionResult> Create(SolicitudCompraRequest request, int usuarioAccionId)
         {
             try
             {
                 var solicitud = MapToEntity(request);
 
+                var connStr = _config["AzureCommunicationServices:ConnectionString"];
+
                 var sm = new SolicitudCompraManager();
-                sm.CreateSolicitud(solicitud, usuarioAccionId);
+                await sm.CreateSolicitud(solicitud, usuarioAccionId, connStr);
                 return Ok(solicitud);
             }
             catch (Exception ex)
