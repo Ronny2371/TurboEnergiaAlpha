@@ -1,11 +1,9 @@
 ﻿@page
 @model WebApp.Pages.ReporteDeFacturacionModel
-
 @{
     Layout = null;
     ViewData["Title"] = "Reporte de Facturación";
 }
-
 <link rel="stylesheet" href="~/css/reportedefacturacion.css" />
 <link rel="stylesheet" href="~/css/paneladministrador.css" />
 <link rel="stylesheet" href="~/css/cerrarsesion.css" />
@@ -15,10 +13,17 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="~/js/ControlActions.js"></script>
+<script>
+    var ca = new ControlActions();
+    if (ca.VerificarAccesoPagina([1, 2, 3])) {
+    $(document).ready(function () {
+    ca.AplicarPermisosSidebar();
+    ca.RellenarHeaderUsuario();
+    });
+    }
+</script>
 <script src="~/js/pages-controllers/ReporteFacturacionViewController.js"></script>
-
 <div class="dashboard-container">
-
     <!-- ===== HEADER ===== -->
     <header class="app-header">
         <div class="logo-mark">ALPHA <span>ENERGY</span></div>
@@ -30,34 +35,28 @@
             </div>
         </div>
     </header>
-
     <!-- ===== LAYOUT (sidebar + contenido lado a lado) ===== -->
     <div class="app-layout">
-
         <!-- ===== sidebar ===== -->
         <nav class="app-sidebar">
             <div class="s-label">Menu</div>
-            <a class="s-item" asp-page="/PanelAdministrador">Dashboard</a>
-            <a class="s-item" asp-page="/GestionDeUsuarios">Usuarios</a>
-            <a class="s-item" asp-page="/GestionDeTurbinas">Turbinas</a>
-            <a class="s-item" asp-page="/RegistroDeMantenimiento">Mantenimiento</a>
-            <a class="s-item" asp-page="/PortalDistribuidor">Distribución</a>
-            <a class="s-item" asp-page="/AlmacenCentral">Almacén Central</a>
-            <a class="s-item active" asp-page="/ReporteDeFacturacion">Reportes</a>
-            <a class="s-item" asp-page="/Auditoria">Auditoría</a>
+            <a class="s-item" asp-page="/PanelAdministrador" data-roles="1,3">Dashboard</a>
+            <a class="s-item" asp-page="/GestionDeUsuarios" data-roles="1,3">Usuarios</a>
+            <a class="s-item" asp-page="/GestionDeTurbinas" data-roles="1,3">Turbinas</a>
+            <a class="s-item" asp-page="/RegistroDeMantenimiento" data-roles="1,3">Mantenimiento</a>
+            <a class="s-item" asp-page="/PortalDistribuidor" data-roles="1,2,3">Distribución</a>
+            <a class="s-item" asp-page="/AlmacenCentral" data-roles="1,3">Almacén Central</a>
+            <a class="s-item active" asp-page="/ReporteDeFacturacion" data-roles="1,2,3">Reportes</a>
+            <a class="s-item" asp-page="/Auditoria" data-roles="1,3">Auditoría</a>
             <a class="s-item logout" href="/Login">Cerrar sesión</a>
         </nav>
-
         <!-- ===== CONTENIDO ===== -->
         <main class="app-content">
-
             <div class="facturacion-card" id="reporteContent">
-
                 <div class="facturacion-header">
                     <h1 class="facturacion-title">Reporte de Distribución</h1>
                     <p class="facturacion-desc">Resumen financiero del período facturado</p>
                 </div>
-
                 <!-- ===== BOTONES DE ACCIÓN ===== -->
                 <div class="action-bar no-print">
                     <button class="btn-outline btn-pdf" onclick="descargarPDF()">
@@ -76,7 +75,6 @@
                         Imprimir
                     </button>
                 </div>
-
                 <!-- ===== PERIOD HEADER CARD ===== -->
                 <div class="report-header-card">
                     <div>
@@ -101,14 +99,11 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- ===== GRID ===== -->
                 <div class="report-grid">
-
                     <!-- ===== Factura ===== -->
                     <div class="invoice-card">
                         <div class="invoice-title">Desglose de Cobros</div>
-
                         <div class="invoice-row">
                             <span class="lbl">Energía Asignada</span>
                             <span class="val" id="lblEnergiaAsignada">—</span>
@@ -125,17 +120,14 @@
                             <span class="lbl" id="lblImpuestoLabel">Impuesto</span>
                             <span class="val tax" id="lblImpuesto">—</span>
                         </div>
-
                         <div class="invoice-total">
                             <span>Total a Pagar</span>
                             <span id="lblTotal">—</span>
                         </div>
-
                         <div class="invoice-note">
                             <span class="ann">Precios definidos por administrador al aprobar solicitud</span>
                         </div>
                     </div>
-
                     <!-- ===== DETAllE ===== -->
                     <div>
                         <div class="chart-card">
@@ -149,19 +141,15 @@
                             </svg>
                             <div class="chart-note">Proporción de Subtotal e Impuesto dentro del Total a Pagar</div>
                         </div>
-
                         <div class="notes-card">
                             <div class="notes-title">Notas del Período</div>
                             <div class="notes-list" id="notasList">
                             </div>
                         </div>
                     </div>
-
                 </div>
-
                 <!-- ===== EXTRA DISTRIBUIDOR (solo visible para rol Distribuidor) ===== -->
                 <div id="distribuidorExtraSection" style="display:none;">
-
                     <div class="stats-grid" style="margin-top:24px;">
                         <div class="stat-card">
                             <div class="stat-label">Solicitudes Activas del Año</div>
@@ -173,7 +161,6 @@
                             <div class="stat-value" id="statVolumenDistribuido">0 <span style="font-size:11px;color:#9ca3af;">MWh</span></div>
                         </div>
                     </div>
-
                     <div class="notes-card" style="margin-top:16px;">
                         <div class="notes-title">Historial de Solicitudes de Compra</div>
                         <table class="wf-table">
@@ -187,7 +174,6 @@
                             <tbody id="tbodyHistorialSolicitudes"></tbody>
                         </table>
                     </div>
-
                     <div class="notes-card" style="margin-top:16px;">
                         <div class="notes-title">Detalle de Facturación por Distribución</div>
                         <table class="wf-table">
@@ -202,38 +188,28 @@
                             <tbody id="tbodyDetalleFacturacion"></tbody>
                         </table>
                     </div>
-
                 </div>
-
             </div>
-
         </main>
-
     </div>
-
     <!-- ===== FOOTER ===== -->
     <footer class="wf-footer">
         <p>&copy; 2026 Alpha Energy. Todos los derechos reservados.</p>
     </footer>
-
 </div>
-
 <!-- ===== SCRIPTS ===== -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
 <script>
     function descargarPDF() {
-        const elemento = document.getElementById('reporteContent');
-        const periodo = (window.distribucionActual ? $('#lblPeriodo').text() : 'Reporte').replace(/\s+/g, '');
-
-        const opciones = {
-            margin: 10,
-            filename: 'Reporte_Distribucion_' + periodo + '.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
-
-        html2pdf().set(opciones).from(elemento).save();
+    const elemento = document.getElementById('reporteContent');
+    const periodo = (window.distribucionActual ? $('#lblPeriodo').text() : 'Reporte').replace(/\s+/g, '');
+    const opciones = {
+    margin: 10,
+    filename: 'Reporte_Distribucion_' + periodo + '.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2, useCORS: true },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().set(opciones).from(elemento).save();
     }
 </script>

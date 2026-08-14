@@ -1,20 +1,25 @@
 ﻿@page
 @model WebApp.Pages.PanelAdministradorModel
-
 @{
     Layout = null;
     ViewData["Title"] = "Panel Administrador";
 }
-
 <link rel="stylesheet" href="~/css/paneladministrador.css" />
 <link rel="stylesheet" href="~/css/cerrarsesion.css" />
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="~/js/ControlActions.js"></script>
+<script>
+    var ca = new ControlActions();
+    if (ca.VerificarAccesoPagina([1, 3])) {
+    $(document).ready(function () {
+    ca.AplicarPermisosSidebar();
+    ca.RellenarHeaderUsuario();
+    });
+    }
+</script>
 <script src="~/js/pages-controllers/PanelAdministradorViewController.js"></script>
-
 <div class="dashboard-container">
-
     <!-- ===== header ===== -->
     <div class="app-header">
         <div class="logo-mark">ALPHA <span>ENERGY</span></div>
@@ -26,34 +31,29 @@
             </div>
         </div>
     </div>
-
     <!-- ===== layout ===== -->
     <div class="app-layout">
-
         <!-- ===== sidebar ===== -->
         <nav class="app-sidebar">
             <div class="s-label">Menu</div>
-            <a class="s-item active" asp-page="/PanelAdministrador">Dashboard</a>
-            <a class="s-item" asp-page="/GestionDeUsuarios">Usuarios</a>
-            <a class="s-item" asp-page="/GestionDeTurbinas">Turbinas</a>
-            <a class="s-item" asp-page="/RegistroDeMantenimiento">Mantenimiento</a>
-            <a class="s-item" asp-page="/PortalDistribuidor">Distribución</a>
-            <a class="s-item" asp-page="/AlmacenCentral">Almacén Central</a>
-            <a class="s-item" asp-page="/ReporteDeFacturacion">Reportes</a>
-            <a class="s-item" asp-page="/Auditoria">Auditoría</a>
+            <a class="s-item active" asp-page="/PanelAdministrador" data-roles="1,3">Dashboard</a>
+            <a class="s-item" asp-page="/GestionDeUsuarios" data-roles="1,3">Usuarios</a>
+            <a class="s-item" asp-page="/GestionDeTurbinas" data-roles="1,3">Turbinas</a>
+            <a class="s-item" asp-page="/RegistroDeMantenimiento" data-roles="1,3">Mantenimiento</a>
+            <a class="s-item" asp-page="/PortalDistribuidor" data-roles="1,2,3">Distribución</a>
+            <a class="s-item" asp-page="/AlmacenCentral" data-roles="1,3">Almacén Central</a>
+            <a class="s-item" asp-page="/ReporteDeFacturacion" data-roles="1,3">Reportes</a>
+            <a class="s-item" asp-page="/Auditoria" data-roles="1,3">Auditoría</a>
             <a class="s-item logout" href="/Login">Cerrar sesión</a>
         </nav>
-
         <!-- ===== content ===== -->
-        <div class="app-content"> 
-
+        <div class="app-content">
             <!-- ===== título ===== -->
             <div class="page-title-row">
                 <div>
                 </div>
                 <div class="period-badge" id="periodoActual">Cargando...</div>
             </div>
-
             <!-- ===== kpis ===== -->
             <div class="kpi-grid">
                 <div class="kpi-card">
@@ -77,17 +77,14 @@
                     <div class="kpi-delta" id="kpiVentasDelta">Cargando...</div>
                 </div>
             </div>
-
             <!-- ===== distribuidores ===== -->
             <div class="distribuidores-strip">
                 <div class="distribuidores-label">Distribuidores Activos</div>
                 <div class="distribuidores-value" id="kpiDistribuidoresActivos">0</div>
                 <span class="ann" style="font-size:9px;">Valor actualizado en tiempo real</span>
             </div>
-
             <!-- ===== gráficos ===== -->
             <div class="charts-grid">
-
                 <!-- gráfico dona: estado de turbinas -->
                 <div class="chart-card">
                     <div class="chart-title">Estado de Turbinas</div>
@@ -95,7 +92,6 @@
                         <canvas id="turbinasEstadoChart"></canvas>
                     </div>
                 </div>
-
                 <!-- gráfico barras: ventas por mes -->
                 <div class="chart-card">
                     <div class="chart-title">Ventas por Mes</div>
@@ -103,7 +99,6 @@
                         <canvas id="ventasMensualesChart"></canvas>
                     </div>
                 </div>
-
                 <!-- gráfico línea: cortes de energía -->
                 <div class="chart-card">
                     <div class="chart-title">Generación vs. Solicitado</div>
@@ -111,16 +106,11 @@
                         <canvas id="cortesEnergiaChart"></canvas>
                     </div>
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
     <!-- ===== footer ===== -->
     <div class="wf-footer">
         &copy; 2026 Alpha Energy. Todos los derechos reservados.
     </div>
-
 </div>
