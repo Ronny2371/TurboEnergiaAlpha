@@ -1,8 +1,16 @@
-﻿function SolicitudCompraViewController() {
+﻿var PRECIO_POR_MWH = 145.50;
+var PORCENTAJE_IMPUESTO = 13;
+
+function SolicitudCompraViewController() {
 
     this.API_ControllerName = "SolicitudCompra";
     this.InitView = function () {
         this.LoadTable();
+
+        $('#tbodySolicitudes').on('click', '.action-btn.factura', function () {
+            var id = $(this).data('id');
+            VerDesgloseCobro(id);
+        });
 
         $('#tbodySolicitudes').on('click', '.action-btn.edit', function () {
             var id = $(this).data('id');
@@ -121,6 +129,47 @@ function GetEstadoBadge(estado) {
     }
 }
 
+function FormatMoney(valor) {
+    return '$' + valor.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function VerDesgloseCobro(id) {
+    var solicitud = window.solicitudesList.find(function (s) { return s.id === id; });
+    if (!solicitud) return;
+
+    var subtotal = solicitud.cantidadMWh * PRECIO_POR_MWH;
+    var impuesto = subtotal * (PORCENTAJE_IMPUESTO / 100);
+    var total = subtotal + impuesto;
+
+    var html =
+        '<div style="text-align:left;">' +
+        '<div style="font-weight:700;font-size:15px;margin-bottom:10px;">Desglose de Cobros</div>' +
+        '<hr style="border:none;border-top:1px solid #e5e7eb;margin:0 0 4px;">' +
+        '<div style="display:flex;justify-content:space-between;padding:8px 0;color:#6b7280;font-size:13px;">' +
+        '<span>Energía Asignada</span><strong style="color:#111;">' + solicitud.cantidadMWh + ' MWh</strong>' +
+        '</div>' +
+        '<div style="display:flex;justify-content:space-between;padding:8px 0;color:#6b7280;font-size:13px;border-top:1px solid #f0f0f0;">' +
+        '<span>Precio por MWh</span><strong style="color:#111;">' + FormatMoney(PRECIO_POR_MWH) + '</strong>' +
+        '</div>' +
+        '<div style="display:flex;justify-content:space-between;padding:8px 0;color:#6b7280;font-size:13px;border-top:1px solid #f0f0f0;">' +
+        '<span>Subtotal</span><strong style="color:#111;">' + FormatMoney(subtotal) + '</strong>' +
+        '</div>' +
+        '<div style="display:flex;justify-content:space-between;padding:8px 0;color:#6b7280;font-size:13px;border-top:1px solid #f0f0f0;">' +
+        '<span>Impuesto (' + PORCENTAJE_IMPUESTO + '%)</span><strong style="color:#dc2626;">' + FormatMoney(impuesto) + '</strong>' +
+        '</div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;background:#111;color:#fff;padding:14px 16px;border-radius:8px;margin-top:12px;">' +
+        '<span style="font-weight:600;">Total a Pagar</span><strong style="font-size:16px;">' + FormatMoney(total) + '</strong>' +
+        '</div>' +
+        '</div>';
+
+    Swal.fire({
+        html: html,
+        showConfirmButton: true,
+        confirmButtonText: 'Cerrar',
+        width: 420
+    });
+}
+
 function RenderTabla(lstSolicitudes) {
     window.solicitudesList = lstSolicitudes;
     var $tbody = $('#tbodySolicitudes');
@@ -132,6 +181,12 @@ function RenderTabla(lstSolicitudes) {
         var mesAnio = String(solicitud.mesSolicitado).padStart(2, '0') + ' / ' + solicitud.anioSolicitado;
         var cantidad = solicitud.cantidadMWh + ' MWh';
         var fecha = FormatDate(solicitud.created);
+
+        var subtotal = solicitud.cantidadMWh * PRECIO_POR_MWH;
+        var total = subtotal * (1 + PORCENTAJE_IMPUESTO / 100);
+        var precioFinal =
+            '<strong>' + FormatMoney(total) + '</strong> ' +
+            '<button class="action-btn factura" data-id="' + solicitud.id + '" title="Ver desglose de cobro">🧾</button>';
 
         var acciones = '<button class="action-btn edit" data-id="' + solicitud.id + '" title="Editar">✎</button>';
 
@@ -146,6 +201,7 @@ function RenderTabla(lstSolicitudes) {
             '<td style="color:#9ca3af;font-size:12px;">' + numero + '</td>' +
             '<td><strong>' + mesAnio + '</strong></td>' +
             '<td>' + cantidad + '</td>' +
+            '<td>' + precioFinal + '</td>' +
             '<td><span class="badge ' + badge.badgeClass + '"><span class="badge-dot ' + badge.dotClass + '"></span>' + badge.label + '</span></td>' +
             '<td style="font-size:12px;color:#374151;">' + GetNombreSolicitante(solicitud) + '</td>' +
             '<td style="font-size:12px;color:#6b7280;">' + fecha + '</td>' +

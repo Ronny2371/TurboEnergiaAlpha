@@ -72,5 +72,28 @@ namespace CoreApp_.Services
             //Envía el correo electrónico
             await emailClient.SendAsync(WaitUntil.Started, emailMessage);
         }
+
+    public async Task EnviarFacturaAsync(string destinatario, ReporteFacturacion factura) {
+            var emailClient = new EmailClient(_connectionString);
+
+            var asunto = "Nueva factura generada - TurboEnergía";
+            var contenidoHtml = $@"
+                <h2>Factura {factura.NumeroFactura}</h2>
+                <p>Se generó una nueva factura asociada a tu solicitud de compra.</p>
+                <ul>
+                    <li><strong>Período:</strong> {factura.Periodo:MM/yyyy}</li>
+                    <li><strong>Energía Asignada:</strong> {factura.EnergiaAsignada} MWh</li>
+                    <li><strong>Total a Pagar:</strong> ${factura.Total:N2}</li>
+                    <li><strong>Fecha de Vencimiento:</strong> {factura.FechaVencimiento:dd/MM/yyyy}</li>
+                </ul>";
+
+            var emailMessage = new EmailMessage(
+                senderAddress: SenderAddress,
+                content: new EmailContent(asunto) { Html = contenidoHtml },
+                recipients: new EmailRecipients(new List<EmailAddress> { new EmailAddress(destinatario) })
+            );
+
+            await emailClient.SendAsync(WaitUntil.Started, emailMessage);
+        }
     }
 }

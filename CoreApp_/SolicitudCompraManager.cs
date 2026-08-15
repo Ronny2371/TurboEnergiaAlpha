@@ -10,6 +10,9 @@ namespace CoreApp_
 {
     public class SolicitudCompraManager
     {
+        private const decimal PRECIO_POR_MWH = 145.50m;
+        private const decimal PORCENTAJE_IMPUESTO = 0.13m;
+
         public List<SolicitudCompra> RetrieveAllSolicitudes()
         {
             var sCrud = new SolicitudCompraCrudFactory();
@@ -22,7 +25,7 @@ namespace CoreApp_
             return sCrud.RetrieveById<SolicitudCompra>(id);
         }
 
-        public async Task CreateSolicitud(SolicitudCompra s, int usuarioAccionId, string connectionString)
+        public async Task CreateSolicitud(SolicitudCompra s, int usuarioAccionId, string connStr)
         {
             Validate(s);
 
@@ -32,19 +35,7 @@ namespace CoreApp_
             var identificador = $"{s.MesSolicitado}/{s.AnioSolicitado} - {s.CantidadMWh} MWh";
             new LogAuditoriaManager().RegistrarEvento(usuarioAccionId, "SolicitudCompra", "Creación", "", identificador);
 
-            //Envío del correo de confirmación del pedido. Si falla, se loguea el error pero no se interrumpe la creación ya exitosa del pedido.
-            try
-            {
-                var usuario = new UserCrudFactory().RetrieveById<User>(s.Usuario.Id);
-                s.Usuario = usuario;
-
-                var emailService = new EmailService(connectionString);
-                await emailService.EnviarConfirmacionPedidoAsync(usuario.Correo, s);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error al enviar el correo de confirmación del pedido {s.Id}: {ex.Message}");
-            }
+            await CrearFacturaAutomatica(s, connStr);
         }
 
         public void UpdateSolicitud(SolicitudCompra s, int usuarioAccionId)
@@ -66,6 +57,40 @@ namespace CoreApp_
 
             var identificador = $"{s.MesSolicitado}/{s.AnioSolicitado} - {s.CantidadMWh} MWh";
             new LogAuditoriaManager().RegistrarEvento(usuarioAccionId, "SolicitudCompra", "Eliminación", identificador, "");
+        }
+
+        //Genera automaticamente la factura asociada a la solicitud recien creada, y le avisa por correo al distribuidor
+        private async Task CrearFacturaAutomatica(SolicitudCompra s, string connStr)
+        {
+            var uCrud = new UserCrudFactory();
+            var usuario = uCrud.RetrieveById<User>(s.Usuario.Id);
+
+            var subtotal = s.CantidadMWh * PRECIO_POR_MWH;
+            var impuesto = subtotal * PORCENTAJE_IMPUESTO;
+
+            var reporte = new ReporteFacturacion
+            {
+                UsuarioId = s.Usuario.Id,
+                Distribuidor = usuario != null ? (usuario.Nombre + " " + usuario.Apellido1) : "Distribuidor",
+                NumeroFactura = "AE-" + s.AnioSolicitado + "-" + new Random().Next(1000, 9999),
+                Periodo = new DateTime(s.AnioSolicitado, s.MesSolicitado, 1),
+                Estado = "Pendiente",
+                EnergiaAsignada = s.CantidadMWh,
+                PrecioMWh = PRECIO_POR_MWH,
+                Subtotal = subtotal,
+                Impuesto = impuesto,
+                Total = subtotal + impuesto,
+                FechaEmision = DateTime.Now,
+                FechaVencimiento = DateTime.Now.AddDays(30)
+            };
+
+            new ReporteFacturacionManager().CreateReporte(reporte);
+
+            if (usuario != null && !string.IsNullOrWhiteSpace(usuario.Correo) && !string.IsNullOrWhiteSpace(connStr))
+            {
+                var emailService = new EmailService(connStr);
+                await emailService.EnviarFacturaAsync(usuario.Correo, reporte);
+            }
         }
 
         private void RegistrarCambios(SolicitudCompra anterior, SolicitudCompra nuevo, int usuarioAccionId)
