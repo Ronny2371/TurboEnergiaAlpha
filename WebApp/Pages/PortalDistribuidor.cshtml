@@ -78,6 +78,36 @@
                         <div class="stat-delta green" id="statAprobadasDelta"></div>
                     </div>
                 </div>
+                <!-- ===== DISTRIBUCIÓN DE ENERGÍA (RECORTE PROPORCIONAL) ===== -->
+                <div class="recorte-card">
+                    <div class="recorte-header">
+                        <div class="recorte-title">Distribución de Energía a Solicitudes Pendientes</div>
+                    </div>
+
+                    <div class="recorte-stats">
+                        <div class="recorte-stat">
+                            <span class="recorte-stat-label">Demanda Total Pendiente</span>
+                            <span class="recorte-stat-value" id="demandaTotalPendiente">0 MWh</span>
+                        </div>
+                        <div class="recorte-stat">
+                            <span class="recorte-stat-label">Energía Disponible</span>
+                            <span class="recorte-stat-value" id="energiaDisponibleRecorte">0 MWh</span>
+                        </div>
+                        <div class="recorte-stat" id="recorteSugeridoWrapper" style="display:none;">
+                            <span class="recorte-stat-label">Porcentaje Sugerido</span>
+                            <span class="recorte-stat-value" id="porcentajeSugerido" style="color:#dc2626;">0%</span>
+                        </div>
+                    </div>
+
+                    <div class="recorte-control-row">
+                        <label for="porcentajeCapacidad">Porcentaje a distribuir (%):</label>
+                        <input type="number" id="porcentajeCapacidad" min="1" max="100" value="100">
+                        <button class="btn-primary" id="btnAplicarRecorte">Aplicar a Solicitudes Pendientes</button>
+                        <button class="btn-outline-small" id="btnRevertirRecorte">Volver a Valores Originales</button>
+                    </div>
+
+                    <div class="recorte-nota" id="recorteMensaje"></div>
+                </div>
                 <!-- ===== TABLA ===== -->
                 <table class="wf-table">
                     <thead>

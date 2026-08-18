@@ -10,6 +10,7 @@ namespace Entities_DTOs
         public int MesSolicitado { get; set; }
         public int AnioSolicitado { get; set; }
         public decimal CantidadMWh { get; set; }
+        public decimal CantidadMWhOriginal { get; set; }
         public EstadoSolicitud Estado { get; set; }
     }
 }

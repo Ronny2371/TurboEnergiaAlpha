@@ -46,6 +46,18 @@ namespace DataAccess.CRUD
             sqlDao.ExecuteProcedure(sqlOperation);
         }
 
+        //Actualiza SOLO la cantidad actual, sin tocar CantidadMWhOriginal - lo usa el recorte proporcional
+        public void UpdateCantidad(int id, decimal nuevaCantidad)
+        {
+            var sqlOperation = new SqlOperation();
+            sqlOperation.ProcedureName = "UPD_SOLICITUD_COMPRA_CANTIDAD_PR";
+
+            sqlOperation.AddIntParameter("P_ID", id);
+            sqlOperation.AddDecimalParameter("P_CANTIDAD_MWH", nuevaCantidad);
+
+            sqlDao.ExecuteProcedure(sqlOperation);
+        }
+
         public override void Delete(BaseDTO baseDTO)
         {
             var solicitud = baseDTO as SolicitudCompra;
@@ -106,6 +118,7 @@ namespace DataAccess.CRUD
                 MesSolicitado = (int)row["MesSolicitado"],
                 AnioSolicitado = (int)row["AnioSolicitado"],
                 CantidadMWh = (decimal)row["CantidadMWh"],
+                CantidadMWhOriginal = (decimal)row["CantidadMWhOriginal"],
                 Estado = Enum.Parse<EstadoSolicitud>((string)row["Estado"]),
                 Usuario = new User() { Id = (int)row["UsuarioId"] }
             };

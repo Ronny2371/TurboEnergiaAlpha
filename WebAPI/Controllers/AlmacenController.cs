@@ -8,7 +8,6 @@ namespace WebApp.Controllers
     [ApiController]
     public class AlmacenController : ControllerBase
     {
- 
         [HttpGet]
         [Route("RetrieveAll")]
         public ActionResult RetrieveAll()
@@ -25,7 +24,6 @@ namespace WebApp.Controllers
             }
         }
 
-        // Retrieve By Id
         [HttpGet]
         [Route("RetrieveById")]
         public ActionResult RetrieveById(int id)
@@ -42,7 +40,6 @@ namespace WebApp.Controllers
             }
         }
 
-        // Actualizar Almacenado
         [HttpPut]
         [Route("Update")]
         public ActionResult Update(AlmacenCentral almacen, int usuarioAccionId)
@@ -59,7 +56,6 @@ namespace WebApp.Controllers
             }
         }
 
-        // Get Ocupación Porcentaje
         [HttpGet]
         [Route("GetOcupacion")]
         public ActionResult GetOcupacion()
@@ -85,7 +81,6 @@ namespace WebApp.Controllers
             }
         }
 
-        // Verificar si puede almacenar energía
         [HttpPost]
         [Route("PuedeAlmacenar")]
         public ActionResult PuedeAlmacenar(decimal energiaAAlmacenar)
@@ -100,6 +95,40 @@ namespace WebApp.Controllers
                     puedeAlmacenar = puedeAlmacenar,
                     energiaRequerida = energiaAAlmacenar
                 });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        //Aplica el recorte proporcional a todas las solicitudes pendientes
+        [HttpPost]
+        [Route("AplicarRecorte")]
+        public ActionResult AplicarRecorte(decimal porcentaje)
+        {
+            try
+            {
+                var am = new AlmacenManager();
+                am.AplicarRecorteProporcional(porcentaje);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        //Revierte el recorte, volviendo cada solicitud pendiente a su cantidad original
+        [HttpPost]
+        [Route("RevertirRecorte")]
+        public ActionResult RevertirRecorte()
+        {
+            try
+            {
+                var am = new AlmacenManager();
+                am.RevertirRecorte();
+                return Ok();
             }
             catch (Exception ex)
             {
