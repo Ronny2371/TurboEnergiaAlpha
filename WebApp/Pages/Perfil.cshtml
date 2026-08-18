@@ -1,0 +1,155 @@
+@page
+@model WebApp.Pages.PerfilModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Mi Perfil";
+}
+
+<link rel="stylesheet" href="~/css/paneladministrador.css" />
+<link rel="stylesheet" href="~/css/GestionDeUsuarios.css" />
+<link rel="stylesheet" href="~/css/cerrarsesion.css" />
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="~/js/ControlActions.js"></script>
+
+<style>
+    .perfil-card {
+        max-width: 640px;
+    }
+
+    .perfil-avatar-row {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .perfil-avatar-row .avatar-circle {
+        width: 56px;
+        height: 56px;
+        font-size: 18px;
+    }
+
+    .perfil-info-badge {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 600;
+        color: #2563eb;
+        background: #eff6ff;
+        border-radius: 4px;
+        padding: 3px 10px;
+        margin-top: 4px;
+    }
+
+    .perfil-meta {
+        font-size: 11px;
+        color: #9ca3af;
+        margin-top: 2px;
+    }
+</style>
+
+<div class="dashboard-container">
+
+    <!-- ===== header ===== -->
+    <div class="app-header">
+        <div class="logo-mark">ALPHA <span>ENERGY</span></div>
+        <div class="user-chip">
+            <div class="avatar-circle" id="headerAvatar">--</div>
+            <div>
+                <div class="user-name" id="headerNombre">Cargando...</div>
+                <div class="user-role" id="headerRol"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== layout ===== -->
+    <div class="app-layout">
+
+        <!-- ===== sidebar (construido según el rol del usuario) ===== -->
+        <nav class="app-sidebar" id="sidebarMenu">
+            <div class="s-label">Menu</div>
+        </nav>
+
+        <!-- ===== content ===== -->
+        <div class="app-content">
+
+            <!-- ===== título ===== -->
+            <div class="page-title-row">
+                <div>
+                    <div class="page-title">Mi Perfil</div>
+                    <div class="page-sub">Datos de tu cuenta</div>
+                </div>
+            </div>
+
+            <div class="chart-card perfil-card">
+
+                <div class="perfil-avatar-row">
+                    <div class="avatar-circle" id="perfilAvatar">--</div>
+                    <div>
+                        <div id="perfilNombreCompleto" style="font-size:15px;font-weight:700;color:#111;">Cargando...</div>
+                        <div class="perfil-info-badge" id="perfilRolBadge">-</div>
+                        <div class="perfil-meta" id="perfilMiembroDesde"></div>
+                    </div>
+                </div>
+
+                <form id="formPerfil">
+                    <div class="form-group">
+                        <label class="field-label">Identificación</label>
+                        <input id="txtIdentificacion" class="field-input" disabled />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="field-label">Nombre</label>
+                            <input id="txtNombre" class="field-input" />
+                        </div>
+                        <div class="form-group">
+                            <label class="field-label">Primer Apellido</label>
+                            <input id="txtApellido1" class="field-input" />
+                        </div>
+                        <div class="form-group">
+                            <label class="field-label">Segundo Apellido</label>
+                            <input id="txtApellido2" class="field-input" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="field-label">Correo</label>
+                            <input id="txtCorreo" type="email" class="field-input" />
+                        </div>
+                        <div class="form-group">
+                            <label class="field-label">Teléfono</label>
+                            <input id="txtTelefono" class="field-input" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="field-label">Fecha de Nacimiento</label>
+                            <input id="txtFechaNacimiento" type="date" class="field-input" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="field-label">Foto de Perfil (URL)</label>
+                        <input id="txtFotoPerfil" class="field-input" />
+                    </div>
+
+                    <div class="modal-footer" style="padding:16px 0 0;">
+                        <a href="/CambiarContrasenia" class="btn-outline">Cambiar contraseña</a>
+                        <button id="btnGuardarPerfil" type="submit" class="btn-primary">Guardar Cambios</button>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===== footer ===== -->
+    <div class="wf-footer">
+        &copy; 2026 Alpha Energy. Todos los derechos reservados.
+    </div>
+
+</div>
+
+<script src="~/js/pages-controllers/PerfilViewController.js"></script>

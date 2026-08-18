@@ -54,7 +54,13 @@ function AuditoriaViewController() {
         columns[4] = { data: 'valorAnterior', title: 'Valor Anterior' };
         columns[5] = { data: 'valorNuevo', title: 'Valor Nuevo' };
         columns[6] = { data: 'fechaEvento', title: 'Fecha' };
-        columns[7] = { data: 'horaEvento', title: 'Hora' };
+        columns[7] = {
+            data: 'horaEvento', title: 'Hora',
+            render: function (horaEvento) {
+                if (!horaEvento) return '';
+                return horaEvento.substring(0, 5);
+            }
+        };
 
         $("#tblAuditoria").dataTable({
             "ajax": {

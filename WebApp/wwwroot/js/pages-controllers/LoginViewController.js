@@ -86,7 +86,9 @@
                     title: '¡Bienvenido!',
                     text: 'Inicio de sesión exitoso.'
                 }).then(function () {
-                    window.location.href = "/PanelAdministrador";
+                    //Redirige según el rol del usuario (1 = Administrador, 2 = Distribuidor)
+                    var rolId = self.currentUser && self.currentUser.rol ? self.currentUser.rol.id : null;
+                    window.location.href = rolId === 2 ? "/DashboardDistribuidor" : "/PanelAdministrador";
                 });
             },
             error: function (jqXHR) {

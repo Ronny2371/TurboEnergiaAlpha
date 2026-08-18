@@ -1,0 +1,172 @@
+@page
+@model WebApp.Pages.DashboardDistribuidorModel
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Dashboard Distribuidor";
+}
+
+<link rel="stylesheet" href="~/css/paneladministrador.css" />
+<link rel="stylesheet" href="~/css/cerrarsesion.css" />
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="~/js/ControlActions.js"></script>
+<script src="~/js/pages-controllers/DashboardDistribuidorViewController.js"></script>
+
+<style>
+    /* ===== tabla últimas solicitudes (paneladministrador.css no trae estilos de tabla) ===== */
+    .solicitudes-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+        .solicitudes-table th {
+            text-align: left;
+            font-size: 9px;
+            font-weight: 700;
+            color: #9ca3af;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            padding: 8px 6px;
+            border-bottom: 1.5px solid #e5e7eb;
+        }
+
+        .solicitudes-table td {
+            font-size: 11px;
+            color: #1a1a1a;
+            padding: 8px 6px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+    .estado-tag {
+        display: inline-block;
+        font-size: 9px;
+        font-weight: 600;
+        padding: 3px 8px;
+        border-radius: 4px;
+    }
+
+        .estado-tag.estado-pendiente {
+            background: #fffbeb;
+            color: #92400e;
+        }
+
+        .estado-tag.estado-procesada {
+            background: #ecfdf5;
+            color: #065f46;
+        }
+
+        .estado-tag.estado-bloqueada {
+            background: #fef2f2;
+            color: #991b1b;
+        }
+
+        .estado-tag.estado-cancelada {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+</style>
+
+<div class="dashboard-container">
+
+    <!-- ===== header ===== -->
+    <div class="app-header">
+        <div class="logo-mark">ALPHA <span>ENERGY</span></div>
+        <div class="user-chip">
+            <div class="avatar-circle">DI</div>
+            <div>
+                <div class="user-name">Distribuidor</div>
+                <div class="user-role">Distribuidor</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== layout ===== -->
+    <div class="app-layout">
+
+        <!-- ===== sidebar ===== -->
+        <nav class="app-sidebar">
+            <div class="s-label">Menu</div>
+            <a class="s-item active" asp-page="/DashboardDistribuidor">Dashboard</a>
+            <a class="s-item" asp-page="/PortalDistribuidor">Mis Solicitudes</a>
+            <a class="s-item" asp-page="/ReporteDeFacturacion">Reportes</a>
+            <a class="s-item" asp-page="/Perfil">Mi Perfil</a>
+            <a class="s-item logout" href="/Login">Cerrar sesión</a>
+        </nav>
+
+        <!-- ===== content ===== -->
+        <div class="app-content">
+
+            <!-- ===== título ===== -->
+            <div class="page-title-row">
+                <div>
+                    <div class="page-title">Panel del Distribuidor</div>
+                    <div class="page-sub">Resumen de tus solicitudes de compra de energía</div>
+                </div>
+                <div class="period-badge" id="periodoActual">Cargando...</div>
+            </div>
+
+            <!-- ===== kpis ===== -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-label">Solicitudes Activas</div>
+                    <div class="kpi-value" id="kpiSolicitudesActivas">0 <span style="font-size:11px;color:#9ca3af;">/ 6</span></div>
+                    <div class="kpi-delta" id="kpiSolicitudesActivasDelta">Cargando...</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Cupo Disponible</div>
+                    <div class="kpi-value" id="kpiCupoDisponible">0 <span>solicitudes</span></div>
+                    <div class="kpi-delta gray" id="kpiCupoDisponibleDelta">Cargando...</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Energía Comprada (Año)</div>
+                    <div class="kpi-value" id="kpiEnergiaComprada">0 <span>MWh</span></div>
+                    <div class="kpi-delta" id="kpiEnergiaCompradaDelta">Cargando...</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Última Solicitud</div>
+                    <div class="kpi-value" id="kpiUltimaSolicitud">N/D</div>
+                    <div class="kpi-delta" id="kpiUltimaSolicitudDelta">Cargando...</div>
+                </div>
+            </div>
+
+            <!-- ===== gráfico + tabla ===== -->
+            <div class="charts-grid" style="grid-template-columns: 1.2fr 1fr;">
+
+                <!-- gráfico barras: MWh solicitados por mes -->
+                <div class="chart-card">
+                    <div class="chart-title">MWh Solicitados por Mes</div>
+                    <div class="chart-wrapper">
+                        <canvas id="mwhSolicitadosChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- tabla: últimas solicitudes -->
+                <div class="chart-card">
+                    <div class="chart-title">Últimas Solicitudes</div>
+                    <table class="solicitudes-table">
+                        <thead>
+                            <tr>
+                                <th>Periodo</th>
+                                <th>Cantidad</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbodyUltimasSolicitudes">
+                            <tr><td colspan="3" style="text-align:center;color:#9ca3af;">Cargando...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- ===== footer ===== -->
+    <div class="wf-footer">
+        &copy; 2026 Alpha Energy. Todos los derechos reservados.
+    </div>
+
+</div>
