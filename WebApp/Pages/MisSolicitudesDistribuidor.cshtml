@@ -1,0 +1,167 @@
+﻿@page
+@model WebApp.Pages.MisSolicitudesDistribuidorModel
+@{
+    Layout = null;
+    ViewData["Title"] = "Mis Solicitudes";
+}
+<link rel="stylesheet" href="~/css/paneladministrador.css" />
+<link rel="stylesheet" href="~/css/cerrarsesion.css" />
+<link rel="stylesheet" href="~/css/portaldistribuidor.css" />
+<link rel="stylesheet" href="~/css/gestiondeturbinas.css" />
+<link rel="stylesheet" href="~/css/registrodeusuario.css" />
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="~/js/ControlActions.js"></script>
+<script>
+    var ca = new ControlActions();
+    if (ca.VerificarAccesoPagina([2])) {
+    $(document).ready(function () {
+    ca.AplicarPermisosSidebar();
+    ca.RellenarHeaderUsuario();
+    });
+    }
+</script>
+<script src="~/js/pages-controllers/MisSolicitudesDistribuidorViewController.js"></script>
+
+<div class="dashboard-container">
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+        <div class="logo-mark">ALPHA <span>ENERGY</span></div>
+        <div class="user-chip">
+            <div class="avatar-circle">DI</div>
+            <div>
+                <div class="user-name">Distribuidor</div>
+                <div class="user-role">Distribuidor</div>
+            </div>
+        </div>
+    </header>
+    <!-- ===== LAYOUT (sidebar + contenido) ===== -->
+    <div class="app-layout">
+        <!-- ===== sidebar ===== -->
+        <nav class="app-sidebar">
+            <div class="s-label">Menu</div>
+            <a class="s-item" asp-page="/PanelAdministrador" data-roles="1,3">Dashboard</a>
+            <a class="s-item" asp-page="/GestionDeUsuarios" data-roles="1,3">Usuarios</a>
+            <a class="s-item" asp-page="/GestionDeTurbinas" data-roles="1,3">Turbinas</a>
+            <a class="s-item" asp-page="/RegistroDeMantenimiento" data-roles="1,3">Mantenimiento</a>
+            <a class="s-item" asp-page="/PortalDistribuidor" data-roles="1,2,3">Distribución</a>
+            <a class="s-item active" asp-page="/MisSolicitudesDistribuidor" data-roles="2">Mis Solicitudes</a>
+            <a class="s-item" asp-page="/AlmacenCentral" data-roles="1,3">Almacén Central</a>
+            <a class="s-item" asp-page="/ReporteDeFacturacion" data-roles="1,2,3">Reportes</a>
+            <a class="s-item" asp-page="/Auditoria" data-roles="1,3">Auditoría</a>
+            <a class="s-item" asp-page="/Perfil" data-roles="1,2,3">Mi Perfil</a>
+            <a class="s-item logout" href="/Login">Cerrar sesión</a>
+        </nav>
+        <!-- ===== CONTENIDO ===== -->
+        <main class="app-content">
+            <div class="distribuidor-card">
+                <div class="distribuidor-header">
+                    <h1 class="distribuidor-title">Mis Solicitudes de Compra</h1>
+                    <p class="distribuidor-desc">Consulte las solicitudes que usted ha creado y actualice la cantidad de energía solicitada</p>
+                </div>
+                <div class="page-title-row">
+                    <div></div>
+                    <button class="btn-primary" id="btnNuevaSolicitud">+ Nueva Solicitud</button>
+                </div>
+                <!-- ===== ESTADÍSTICAS ===== -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Solicitudes</div>
+                        <div class="stat-value" id="statTotalSolicitudes">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Pendientes</div>
+                        <div class="stat-value" id="statPendientes">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Aprobadas</div>
+                        <div class="stat-value" id="statAprobadas">0</div>
+                    </div>
+                </div>
+                <!-- ===== TABLA ===== -->
+                <table class="wf-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Mes / Año</th>
+                            <th>Cantidad Solicitada</th>
+                            <th>Estado</th>
+                            <th>Fecha Solicitud</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyMisSolicitudes">
+                    </tbody>
+                </table>
+                <!-- ===== ANNOTATION ===== -->
+
+                <!-- ===== PAGINACIÓN ===== -->
+                <div class="pagination-row">
+                    <span class="pagination-info" id="paginationInfo">Mostrando 0 de 0 solicitudes</span>
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- ===== FOOTER ===== -->
+    <footer class="wf-footer">
+        <p>&copy; 2026 Alpha Energy. Todos los derechos reservados.</p>
+    </footer>
+    <!-- ===== MODAL EDITAR CANTIDAD ===== -->
+    <div class="modal-overlay" id="modalOverlayEditarCantidad" style="display:none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <button type="button" class="modal-close" id="btnCerrarModalEditar">x</button>
+                <h2>Editar Cantidad de Energía</h2>
+            </div>
+            <div class="form-group">
+                <label class="field-label">Mes / Año</label>
+                <input id="txtMesAnioReadonly" type="text" class="field-input" disabled />
+            </div>
+            <div class="form-group">
+                <label class="field-label">Estado</label>
+                <input id="txtEstadoReadonly" type="text" class="field-input" disabled />
+            </div>
+            <div class="form-group">
+                <label class="field-label">Cantidad (MWh) <span class="required">*</span></label>
+                <input id="txtCantidadMWhEditar" type="number" step="0.01" class="field-input" placeholder="Ej: 120" />
+            </div>
+            <button type="button" class="btn-primary" id="btnGuardarCantidad">Guardar Cambios</button>
+        </div>
+    </div>
+    <!-- ===== MODAL NUEVA SOLICITUD ===== -->
+    <div class="modal-overlay" id="modalOverlayNuevaSolicitud" style="display:none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <button type="button" class="modal-close" id="btnCerrarModalNueva">x</button>
+                <h2>Nueva Solicitud</h2>
+            </div>
+            <div class="form-group">
+                <label class="field-label">Mes <span class="required">*</span></label>
+                <select id="selMesSolicitado" class="field-input">
+                    <option value="">Seleccione...</option>
+                    <option value="1">Enero</option>
+                    <option value="2">Febrero</option>
+                    <option value="3">Marzo</option>
+                    <option value="4">Abril</option>
+                    <option value="5">Mayo</option>
+                    <option value="6">Junio</option>
+                    <option value="7">Julio</option>
+                    <option value="8">Agosto</option>
+                    <option value="9">Septiembre</option>
+                    <option value="10">Octubre</option>
+                    <option value="11">Noviembre</option>
+                    <option value="12">Diciembre</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="field-label">Año <span class="required">*</span></label>
+                <input id="txtAnioSolicitado" type="number" class="field-input" placeholder="Ej: 2026" />
+            </div>
+            <div class="form-group">
+                <label class="field-label">Cantidad (MWh) <span class="required">*</span></label>
+                <input id="txtCantidadMWhNueva" type="number" step="0.01" class="field-input" placeholder="Ej: 120" />
+            </div>
+            <button type="button" class="btn-primary" id="btnCrearSolicitud">Crear</button>
+        </div>
+    </div>
+</div>
