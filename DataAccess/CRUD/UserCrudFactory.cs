@@ -36,9 +36,8 @@ namespace DataAccess.CRUD
             var sqlOperation = new SqlOperation();
             sqlOperation.ProcedureName = "CRE_USER_PR";
 
-
-            
             string passwordHash = ConvertirSHA256(user.Contrasena);
+            int rolId = user.Rol != null ? user.Rol.Id : 2;
 
             sqlOperation.AddIntParameter("P_IDENTIFICACION", user.Identificacion);
             sqlOperation.AddStringParameter("P_NOMBRE", user.Nombre);
@@ -49,9 +48,9 @@ namespace DataAccess.CRUD
             sqlOperation.AddDateTimeParameter("P_FECHA_NACIMIENTO", user.FechaNacimiento.ToDateTime(TimeOnly.MinValue));
             sqlOperation.AddStringParameter("P_FOTO_PERFIL", user.FotoPerfil);
             sqlOperation.AddStringParameter("P_CONTRASENA", passwordHash);
+            sqlOperation.AddIntParameter("P_ROL_ID", rolId);
 
             sqlDao.ExecuteProcedure(sqlOperation);
-
         }
 
         public override void Delete(BaseDTO baseDTO)
@@ -113,6 +112,7 @@ namespace DataAccess.CRUD
             sqlOperation.ProcedureName = "UPD_USER_PR";
 
             string passwordHash = ConvertirSHA256(user.Contrasena);
+            int rolId = user.Rol != null ? user.Rol.Id : 2;
 
             sqlOperation.AddIntParameter("P_ID", user.Id);
             sqlOperation.AddIntParameter("P_IDENTIFICACION", user.Identificacion);
@@ -124,6 +124,7 @@ namespace DataAccess.CRUD
             sqlOperation.AddDateTimeParameter("P_FECHA_NACIMIENTO", user.FechaNacimiento.ToDateTime(TimeOnly.MinValue));
             sqlOperation.AddStringParameter("P_FOTO_PERFIL", user.FotoPerfil);
             sqlOperation.AddStringParameter("P_CONTRASENA", passwordHash);
+            sqlOperation.AddIntParameter("P_ROL_ID", rolId);
 
             sqlDao.ExecuteProcedure(sqlOperation);
         }

@@ -46,6 +46,7 @@
         $('#txtFechaNacimiento').val('');
         $('#txtFotoPerfil').val('');
         $('#txtContrasena').val('');
+        $('#selRolModal').val('2');
     }
 
     this.LoadTable = function () {
@@ -64,7 +65,13 @@
         columns[5] = { 'data': 'correo', title: 'Correo' }
         columns[6] = { 'data': 'telefono', title: 'Telefono' }
         columns[7] = { 'data': 'fechaNacimiento', title: 'Fec Nacimiento' }
-        columns[8] = { 'data': 'created', title: 'Registro' }
+        columns[8] = {
+            'data': 'created',
+            title: 'Registro',
+            render: function (data) {
+                return data ? data.split('T')[0] : '';
+            }
+        }
         columns[9] = {
             'data': null,
             title: 'Acciones',
@@ -178,6 +185,7 @@
         $('#txtTelefono').val(userDTO.telefono);
         $('#txtFotoPerfil').val(userDTO.fotoPerfil);
         $('#txtContrasena').val("");
+        $('#selRolModal').val(userDTO.rol ? userDTO.rol.id : '2');
 
         var onlyDate = userDTO.fechaNacimiento.split("T");
         $('#txtFechaNacimiento').val(onlyDate[0]);
@@ -195,6 +203,7 @@
         userDTO.fechaNacimiento = $('#txtFechaNacimiento').val();
         userDTO.fotoPerfil = $('#txtFotoPerfil').val();
         userDTO.contrasena = $('#txtContrasena').val();
+        userDTO.rol = { id: parseInt($('#selRolModal').val()) };
 
         var ca = new ControlActions();
         var urlEndPoint = this.API_ControllerName + "/Create?usuarioAccionId=" + ca.GetUsuarioActualId();
@@ -222,6 +231,7 @@
         userDTO.fechaNacimiento = $('#txtFechaNacimiento').val();
         userDTO.fotoPerfil = $('#txtFotoPerfil').val();
         userDTO.contrasena = $('#txtContrasena').val();
+        userDTO.rol = { id: parseInt($('#selRolModal').val()) };
 
         var ca = new ControlActions();
         var urlEndPoint = this.API_ControllerName + "/Update?usuarioAccionId=" + ca.GetUsuarioActualId();

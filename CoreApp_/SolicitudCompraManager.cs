@@ -3,6 +3,7 @@ using DataAccess.CRUD;
 using Entities_DTOs;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -48,6 +49,8 @@ namespace CoreApp_
             sCrud.Update(s);
 
             RegistrarCambios(anterior, s, usuarioAccionId);
+
+            ActualizarFacturaAsociada(s);
         }
 
         public void DeleteSolicitud(SolicitudCompra s, int usuarioAccionId)
@@ -91,6 +94,25 @@ namespace CoreApp_
                 var emailService = new EmailService(connStr);
                 await emailService.EnviarFacturaAsync(usuario.Correo, reporte);
             }
+        }
+
+        //Busca la factura asociada (por UsuarioId + mes/año) y recalcula sus montos con la cantidad actual de la solicitud
+        private void ActualizarFacturaAsociada(SolicitudCompra s)
+        {
+            var rCrud = new ReporteFacturacionCrudFactory();
+            var reporte = rCrud.RetrieveAll<ReporteFacturacion>().FirstOrDefault(r =>
+                r.UsuarioId == s.Usuario.Id &&
+                r.Periodo.Month == s.MesSolicitado &&
+                r.Periodo.Year == s.AnioSolicitado);
+
+            if (reporte == null) return;
+
+            reporte.EnergiaAsignada = s.CantidadMWh;
+            reporte.Subtotal = s.CantidadMWh * reporte.PrecioMWh;
+            reporte.Impuesto = reporte.Subtotal * PORCENTAJE_IMPUESTO;
+            reporte.Total = reporte.Subtotal + reporte.Impuesto;
+
+            rCrud.Update(reporte);
         }
 
         private void RegistrarCambios(SolicitudCompra anterior, SolicitudCompra nuevo, int usuarioAccionId)

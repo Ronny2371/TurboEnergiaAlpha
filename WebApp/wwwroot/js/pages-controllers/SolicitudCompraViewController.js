@@ -154,13 +154,16 @@ function RenderRecorte(lstSolicitudes) {
     var pendientes = lstSolicitudes.filter(function (s) { return s.estado === "PENDIENTE"; });
 
     var demandaTotal = 0;
+    var demandaActual = 0;
     pendientes.forEach(function (s) {
         demandaTotal += s.cantidadMWhOriginal;
+        demandaActual += s.cantidadMWh;
     });
 
     var almacenado = window.almacenActual ? window.almacenActual.almacenado : 0;
 
     $('#demandaTotalPendiente').text(demandaTotal.toLocaleString() + ' MWh');
+    $('#demandaActualAsignada').text(demandaActual.toLocaleString() + ' MWh');
     $('#energiaDisponibleRecorte').text(almacenado.toLocaleString() + ' MWh');
 
     if (demandaTotal > 0 && almacenado < demandaTotal) {

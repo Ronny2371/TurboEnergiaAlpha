@@ -51,7 +51,10 @@ namespace CoreApp_
                 u.Contrasena = anterior.Contrasena;
             }
 
-
+            if (u.Rol == null)
+            {
+                u.Rol = anterior.Rol;
+            }
 
             ValidateFields(u);
 
@@ -117,6 +120,9 @@ namespace CoreApp_
             //La contraseña nunca se audita con su valor real, solo se deja constancia de que cambió
             if (anterior.Contrasena != nuevo.Contrasena)
                 logManager.RegistrarEvento(usuarioAccionId, "Usuario", "Contrasena", "(oculto)", "(oculto)");
+
+            if ((anterior.Rol?.Id ?? 0) != (nuevo.Rol?.Id ?? 0))
+                logManager.RegistrarEvento(usuarioAccionId, "Usuario", "RolId", (anterior.Rol?.Id ?? 0).ToString(), (nuevo.Rol?.Id ?? 0).ToString());
         }
 
 
