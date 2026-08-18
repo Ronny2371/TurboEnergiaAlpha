@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Identity;
 
 namespace CoreApp_
 {
@@ -51,6 +52,8 @@ namespace CoreApp_
                 u.Contrasena = anterior.Contrasena;
             }
 
+
+
             ValidateFields(u);
 
             if (EmailTaken(u.Correo, u.Id))
@@ -83,6 +86,7 @@ namespace CoreApp_
 
         private void RegistrarCambios(User anterior, User nuevo, int usuarioAccionId)
         {
+
             if (anterior == null) return;
 
             var logManager = new LogAuditoriaManager();
