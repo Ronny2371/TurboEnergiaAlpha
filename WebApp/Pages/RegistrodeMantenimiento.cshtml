@@ -12,6 +12,15 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="~/js/ControlActions.js"></script>
+<script>
+    var ca = new ControlActions();
+    if (ca.VerificarAccesoPagina([1, 3])) {
+    $(document).ready(function () {
+    ca.AplicarPermisosSidebar();
+    ca.RellenarHeaderUsuario();
+    });
+    }
+</script>
 <script src="~/js/pages-controllers/MantenimientoViewController.js"></script>
 <div class="dashboard-container">
     <!-- ===== HEADER ===== -->
@@ -30,15 +39,15 @@
         <!-- ===== sidebar ===== -->
         <nav class="app-sidebar">
             <div class="s-label">Menu</div>
-            <a class="s-item" asp-page="/PanelAdministrador">Dashboard</a>
-            <a class="s-item" asp-page="/GestionDeUsuarios">Usuarios</a>
-            <a class="s-item" asp-page="/GestionDeTurbinas">Turbinas</a>
-            <a class="s-item active" asp-page="/RegistroDeMantenimiento">Mantenimiento</a>
-            <a class="s-item" asp-page="/PortalDistribuidor">Distribución</a>
-            <a class="s-item" asp-page="/AlmacenCentral">Almacén Central</a>
-            <a class="s-item" asp-page="/ReporteDeFacturacion">Reportes</a>
-            <a class="s-item" asp-page="/Auditoria">Auditoría</a>
-            <a class="s-item" asp-page="/Perfil">Mi Perfil</a>
+            <a class="s-item" asp-page="/PanelAdministrador" data-roles="1,3">Dashboard</a>
+            <a class="s-item" asp-page="/GestionDeUsuarios" data-roles="1,3">Usuarios</a>
+            <a class="s-item" asp-page="/GestionDeTurbinas" data-roles="1,3">Turbinas</a>
+            <a class="s-item active" asp-page="/RegistroDeMantenimiento" data-roles="1,3">Mantenimiento</a>
+            <a class="s-item" asp-page="/PortalDistribuidor" data-roles="1,2,3">Distribución</a>
+            <a class="s-item" asp-page="/AlmacenCentral" data-roles="1,3">Almacén Central</a>
+            <a class="s-item" asp-page="/ReporteDeFacturacion" data-roles="1,2,3">Reportes</a>
+            <a class="s-item" asp-page="/Auditoria" data-roles="1,3">Auditoría</a>
+            <a class="s-item" asp-page="/Perfil" data-roles="1,2,3">Mi Perfil</a>
             <a class="s-item logout" href="/Login">Cerrar sesión</a>
         </nav>
         <!-- ===== CONTENIDO ===== -->

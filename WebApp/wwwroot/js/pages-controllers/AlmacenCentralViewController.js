@@ -144,7 +144,13 @@ function AlmacenCentralViewController() {
 
             ////==================== html y calculo de balance ===============================
             var balance = produccionDiaria - CantidadMwSolicitudes;
-            var porcentajeBalance = Math.round((balance / produccionDiaria) * 100);
+            var porcentajeBalance;
+            if (balance >= 0) {
+                porcentajeBalance = Math.round((balance / produccionDiaria) * 100);
+            } else {
+                porcentajeBalance = -1*(100 - (Math.round((produccionDiaria / CantidadMwSolicitudes) * 100)));
+            }
+            
             var balanceClass = balance >= 0 ? 'green' : 'red';
             var balanceEmoji = balance >= 0 ? '✓' : '⚠';
             var balanceSign = balance >= 0 ? '+' : '';

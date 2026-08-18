@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Xml.Linq;
+using System.Security.Cryptography;
 
 namespace DataAccess.CRUD
 {
@@ -16,12 +17,28 @@ namespace DataAccess.CRUD
             sqlDao = SqlDao.GetInstance();
         }
 
+        public static string ConvertirSHA256(string texto)
+        {
+            
+            byte[] bytesEntrada = Encoding.UTF8.GetBytes(texto);
+
+            
+            byte[] bytesHash = SHA256.HashData(bytesEntrada);
+
+
+            return Convert.ToHexString(bytesHash);
+        }
+
         public override void Create(BaseDTO baseDTO)
         {
             var user = baseDTO as User;
 
             var sqlOperation = new SqlOperation();
             sqlOperation.ProcedureName = "CRE_USER_PR";
+
+
+            
+            string passwordHash = ConvertirSHA256(user.Contrasena);
 
             sqlOperation.AddIntParameter("P_IDENTIFICACION", user.Identificacion);
             sqlOperation.AddStringParameter("P_NOMBRE", user.Nombre);
@@ -31,7 +48,7 @@ namespace DataAccess.CRUD
             sqlOperation.AddIntParameter("P_TELEFONO", user.Telefono);
             sqlOperation.AddDateTimeParameter("P_FECHA_NACIMIENTO", user.FechaNacimiento.ToDateTime(TimeOnly.MinValue));
             sqlOperation.AddStringParameter("P_FOTO_PERFIL", user.FotoPerfil);
-            sqlOperation.AddStringParameter("P_CONTRASENA", user.Contrasena);
+            sqlOperation.AddStringParameter("P_CONTRASENA", passwordHash);
 
             sqlDao.ExecuteProcedure(sqlOperation);
 
@@ -95,6 +112,8 @@ namespace DataAccess.CRUD
             var sqlOperation = new SqlOperation();
             sqlOperation.ProcedureName = "UPD_USER_PR";
 
+            string passwordHash = ConvertirSHA256(user.Contrasena);
+
             sqlOperation.AddIntParameter("P_ID", user.Id);
             sqlOperation.AddIntParameter("P_IDENTIFICACION", user.Identificacion);
             sqlOperation.AddStringParameter("P_NOMBRE", user.Nombre);
@@ -104,7 +123,7 @@ namespace DataAccess.CRUD
             sqlOperation.AddIntParameter("P_TELEFONO", user.Telefono);
             sqlOperation.AddDateTimeParameter("P_FECHA_NACIMIENTO", user.FechaNacimiento.ToDateTime(TimeOnly.MinValue));
             sqlOperation.AddStringParameter("P_FOTO_PERFIL", user.FotoPerfil);
-            sqlOperation.AddStringParameter("P_CONTRASENA", user.Contrasena);
+            sqlOperation.AddStringParameter("P_CONTRASENA", passwordHash);
 
             sqlDao.ExecuteProcedure(sqlOperation);
         }
@@ -177,7 +196,10 @@ namespace DataAccess.CRUD
             sqlOperation.ProcedureName = "UPD_PASSWORD_PR";
 
             sqlOperation.AddIntParameter("P_ID", userId);
-            sqlOperation.AddStringParameter("P_CONTRASENA", nuevaContrasena);
+
+            string passwordHash = ConvertirSHA256(nuevaContrasena);
+
+            sqlOperation.AddStringParameter("P_CONTRASENA", passwordHash);
 
             sqlDao.ExecuteProcedure(sqlOperation);
         }
