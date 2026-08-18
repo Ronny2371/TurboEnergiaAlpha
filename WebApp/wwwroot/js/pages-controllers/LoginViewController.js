@@ -22,10 +22,18 @@
         // se guarda una referencia a la instancia actual del controlador
         var self = this;
         var correo = $('#txtCorreo').val();
+
         var contrasena = $('#txtContrasena').val();
+
+        const encoder = new TextEncoder();
+        const data = encoder.encode(contrasena);
+
+        const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+
+        
         var ca = new ControlActions();
         //Codifica el correo y contrasena para ser mas seguro
-        var urlEndPoint = this.API_ControllerName + "/Login/" + encodeURIComponent(correo) + "/" + encodeURIComponent(contrasena);
+        var urlEndPoint = this.API_ControllerName + "/Login/" + encodeURIComponent(correo) + "/" + encodeURIComponent(hashBuffer);
         //Usamos GetToApi ya que es una consulta, no una creación/modificación
         $.ajax({
             type: "POST",

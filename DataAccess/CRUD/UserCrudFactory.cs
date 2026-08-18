@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Xml.Linq;
-using Microsoft.AspNetCore.Identity;
+using System.Security.Cryptography;
 
 namespace DataAccess.CRUD
 {
@@ -17,6 +17,18 @@ namespace DataAccess.CRUD
             sqlDao = SqlDao.GetInstance();
         }
 
+        public static string ConvertirSHA256(string texto)
+        {
+            
+            byte[] bytesEntrada = Encoding.UTF8.GetBytes(texto);
+
+            
+            byte[] bytesHash = SHA256.HashData(bytesEntrada);
+
+
+            return Convert.ToHexString(bytesHash);
+        }
+
         public override void Create(BaseDTO baseDTO)
         {
             var user = baseDTO as User;
@@ -24,10 +36,9 @@ namespace DataAccess.CRUD
             var sqlOperation = new SqlOperation();
             sqlOperation.ProcedureName = "CRE_USER_PR";
 
-            var passwordHasher = new PasswordHasher<object>();
 
             
-            string passwordHash = passwordHasher.HashPassword(null, user.Contrasena);
+            string passwordHash = ConvertirSHA256(user.Contrasena);
 
             sqlOperation.AddIntParameter("P_IDENTIFICACION", user.Identificacion);
             sqlOperation.AddStringParameter("P_NOMBRE", user.Nombre);
@@ -101,10 +112,7 @@ namespace DataAccess.CRUD
             var sqlOperation = new SqlOperation();
             sqlOperation.ProcedureName = "UPD_USER_PR";
 
-            var passwordHasher = new PasswordHasher<object>();
-
-
-            string passwordHash = passwordHasher.HashPassword(null, user.Contrasena);
+            string passwordHash = ConvertirSHA256(user.Contrasena);
 
             sqlOperation.AddIntParameter("P_ID", user.Id);
             sqlOperation.AddIntParameter("P_IDENTIFICACION", user.Identificacion);
@@ -189,10 +197,7 @@ namespace DataAccess.CRUD
 
             sqlOperation.AddIntParameter("P_ID", userId);
 
-            var passwordHasher = new PasswordHasher<object>();
-
-
-            string passwordHash = passwordHasher.HashPassword(null, nuevaContrasena);
+            string passwordHash = ConvertirSHA256(nuevaContrasena);
 
             sqlOperation.AddStringParameter("P_CONTRASENA", passwordHash);
 
