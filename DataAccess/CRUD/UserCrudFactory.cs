@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Xml.Linq;
+using Microsoft.AspNetCore.Identity;
 
 namespace DataAccess.CRUD
 {
@@ -23,6 +24,11 @@ namespace DataAccess.CRUD
             var sqlOperation = new SqlOperation();
             sqlOperation.ProcedureName = "CRE_USER_PR";
 
+            var passwordHasher = new PasswordHasher<object>();
+
+            
+            string passwordHash = passwordHasher.HashPassword(null, user.Contrasena);
+
             sqlOperation.AddIntParameter("P_IDENTIFICACION", user.Identificacion);
             sqlOperation.AddStringParameter("P_NOMBRE", user.Nombre);
             sqlOperation.AddStringParameter("P_APELLIDO1", user.Apellido1);
@@ -31,7 +37,7 @@ namespace DataAccess.CRUD
             sqlOperation.AddIntParameter("P_TELEFONO", user.Telefono);
             sqlOperation.AddDateTimeParameter("P_FECHA_NACIMIENTO", user.FechaNacimiento.ToDateTime(TimeOnly.MinValue));
             sqlOperation.AddStringParameter("P_FOTO_PERFIL", user.FotoPerfil);
-            sqlOperation.AddStringParameter("P_CONTRASENA", user.Contrasena);
+            sqlOperation.AddStringParameter("P_CONTRASENA", passwordHash);
 
             sqlDao.ExecuteProcedure(sqlOperation);
 
@@ -95,6 +101,11 @@ namespace DataAccess.CRUD
             var sqlOperation = new SqlOperation();
             sqlOperation.ProcedureName = "UPD_USER_PR";
 
+            var passwordHasher = new PasswordHasher<object>();
+
+
+            string passwordHash = passwordHasher.HashPassword(null, user.Contrasena);
+
             sqlOperation.AddIntParameter("P_ID", user.Id);
             sqlOperation.AddIntParameter("P_IDENTIFICACION", user.Identificacion);
             sqlOperation.AddStringParameter("P_NOMBRE", user.Nombre);
@@ -104,7 +115,7 @@ namespace DataAccess.CRUD
             sqlOperation.AddIntParameter("P_TELEFONO", user.Telefono);
             sqlOperation.AddDateTimeParameter("P_FECHA_NACIMIENTO", user.FechaNacimiento.ToDateTime(TimeOnly.MinValue));
             sqlOperation.AddStringParameter("P_FOTO_PERFIL", user.FotoPerfil);
-            sqlOperation.AddStringParameter("P_CONTRASENA", user.Contrasena);
+            sqlOperation.AddStringParameter("P_CONTRASENA", passwordHash);
 
             sqlDao.ExecuteProcedure(sqlOperation);
         }
