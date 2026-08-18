@@ -188,7 +188,13 @@ namespace DataAccess.CRUD
             sqlOperation.ProcedureName = "UPD_PASSWORD_PR";
 
             sqlOperation.AddIntParameter("P_ID", userId);
-            sqlOperation.AddStringParameter("P_CONTRASENA", nuevaContrasena);
+
+            var passwordHasher = new PasswordHasher<object>();
+
+
+            string passwordHash = passwordHasher.HashPassword(null, nuevaContrasena);
+
+            sqlOperation.AddStringParameter("P_CONTRASENA", passwordHash);
 
             sqlDao.ExecuteProcedure(sqlOperation);
         }
