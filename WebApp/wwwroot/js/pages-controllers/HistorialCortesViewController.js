@@ -58,7 +58,32 @@
         var tbody = $('#tbodyCortes');
         tbody.empty();
 
-        $.each(this.filteredCortes, function (index, corte) {
+        var cortesConSaldo = [];
+        var cortesOrdenados = this.filteredCortes.slice().reverse();
+        var saldoActual = 0;
+
+        // CALCULAR SALDOS
+        $.each(cortesOrdenados, function (index, corte) {
+            saldoActual += corte.balance;
+            if (saldoActual < 0) saldoActual = 0;
+
+            // 
+            var corteConSaldo = {
+                id: corte.id,
+                created: corte.created,
+                energiaGenerada: corte.energiaGenerada,
+                energiaSolicitada: corte.energiaSolicitada,
+                balance: corte.balance,
+                porcentaje: corte.porcentaje,
+                saldoCalculado: saldoActual
+            };
+            cortesConSaldo.push(corteConSaldo);
+        });
+
+        // INVERTIR PARA MOSTRAR
+        cortesConSaldo.reverse();
+
+        $.each(cortesConSaldo, function (index, corte) {
             var balanceClass = corte.balance >= 0 ? 'value-positive' : 'value-negative';
             var balanceText = corte.balance >= 0 ? '+' + corte.balance : corte.balance;
             var fecha = new Date(corte.created);
@@ -67,13 +92,22 @@
             var anio = fecha.getFullYear();
             var fechaFormato = dia + ' / ' + mes + ' / ' + anio;
 
+            saldoActual += corte.balance;
+            if (saldoActual < 0) {
+                saldoActual = 0;
+            }
+
+            var saldoText = corte.saldoCalculado;
+
             var row = $('<tr>');
             row.append('<td>' + corte.id + '</td>');
             row.append('<td>' + fechaFormato + '</td>');
             row.append('<td class="value-positive">' + corte.energiaGenerada + ' MWh</td>');
+            row.append('<td>' + corte.porcentaje + '%</td>');
             row.append('<td>' + corte.energiaSolicitada + ' MWh</td>');
             row.append('<td class="' + balanceClass + '">' + balanceText + ' MWh</td>');
-            row.append('<td>' + corte.porcentaje + '%</td>');
+            row.append('<td>' + saldoText + ' MWh</td>'); 
+            
       
 
             tbody.append(row);

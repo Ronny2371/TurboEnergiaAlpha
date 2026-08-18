@@ -493,3 +493,61 @@ a.btn-primary {
     a.btn-primary:active {
         transform: scale(0.98);
     }
+/* ========================= info card =================*/
+
+.info-container-hover{
+    position: relative;
+    diaplay: inline-block;
+}
+
+.info-icon-hover {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: help;
+    font-size: 10px;
+    font-weight: bold;
+    border: 1px solid;
+    border-radius: 50%;
+
+    color: #C7C7C7;
+    border-color: #C7C7C7;
+}
+
+.info-icon-hover:hover {
+    color: #9E9D9D;
+    border-color: #9E9D9D; 
+}
+
+.info-card-hover {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12.4px;
+    width: 250px;
+    font-size: 13px;
+    padding: 12px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease;
+}
+
+.info-container-hover:hover .info-card-hover {
+    opacity: 1;
+    visibility: visible
+}
+
+.projection-header {
+    display: flex;
+    justify-content: flex-start; /* ✅ CAMBIA A ESTO */
+    align-items: center;
+    gap: 8px; /* ✅ AGREGA ESTO */
+    margin-bottom: 12px;
+}
