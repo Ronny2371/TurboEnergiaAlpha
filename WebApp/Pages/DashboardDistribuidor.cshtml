@@ -13,6 +13,16 @@
 <script src="~/js/ControlActions.js"></script>
 <script src="~/js/pages-controllers/DashboardDistribuidorViewController.js"></script>
 
+<script>
+    var ca = new ControlActions();
+    if (ca.VerificarAccesoPagina([1, 2, 3])) {
+        $(document).ready(function () {
+            ca.AplicarPermisosSidebar();
+            ca.RellenarHeaderUsuario();
+        });
+    }
+</script>
+
 <style>
     /* ===== tabla últimas solicitudes (paneladministrador.css no trae estilos de tabla) ===== */
     .solicitudes-table {
@@ -88,7 +98,7 @@
         <nav class="app-sidebar">
             <div class="s-label">Menu</div>
             <a class="s-item active" asp-page="/DashboardDistribuidor">Dashboard</a>
-            <a class="s-item" asp-page="/PortalDistribuidor">Mis Solicitudes</a>
+            <a class="s-item" asp-page="/MisSolicitudesDistribuidor" data-roles="1,2,3">Mis Solicitudes</a>
             <a class="s-item" asp-page="/ReporteDeFacturacion">Reportes</a>
             <a class="s-item" asp-page="/Perfil">Mi Perfil</a>
             <a class="s-item logout" href="/Login">Cerrar sesión</a>

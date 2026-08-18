@@ -1,26 +1,6 @@
 function PerfilViewController() {
 
     this.API_ControllerName = "Users";
-    this.ROL_ADMIN = 1;
-    this.ROL_DISTRIBUIDOR = 2;
-    this.nombresRol = { 1: 'Administrador', 2: 'Distribuidor' };
-
-    this.menuAdmin = [
-        { texto: 'Dashboard', pagina: '/PanelAdministrador' },
-        { texto: 'Usuarios', pagina: '/GestionDeUsuarios' },
-        { texto: 'Turbinas', pagina: '/GestionDeTurbinas' },
-        { texto: 'Mantenimiento', pagina: '/RegistroDeMantenimiento' },
-        { texto: 'Distribución', pagina: '/PortalDistribuidor' },
-        { texto: 'Almacén Central', pagina: '/AlmacenCentral' },
-        { texto: 'Reportes', pagina: '/ReporteDeFacturacion' },
-        { texto: 'Auditoría', pagina: '/Auditoria' }
-    ];
-
-    this.menuDistribuidor = [
-        { texto: 'Dashboard', pagina: '/DashboardDistribuidor' },
-        { texto: 'Mis Solicitudes', pagina: '/PortalDistribuidor' },
-        { texto: 'Reportes', pagina: '/ReporteDeFacturacion' }
-    ];
 
     this.InitView = function () {
         var self = this;
@@ -34,13 +14,37 @@ function PerfilViewController() {
 
         self.usuario = usuario;
 
-        self.RenderSidebar(usuario);
-        self.RenderHeader(usuario);
+        self.RenderPerfilLateral(usuario);
         self.CargarPerfil(usuario.id);
 
         $('#formPerfil').submit(function (e) {
             e.preventDefault();
             self.GuardarCambios();
+        });
+
+        $('#btnCambiarContrasena').click(function () {
+            self.AbrirModalContrasena();
+        });
+
+        $('#btnCerrarModalContrasena').click(function () {
+            self.CerrarModalContrasena();
+        });
+
+        $('#btnCancelarContrasena').click(function () {
+            self.CerrarModalContrasena();
+        });
+
+        $('#btnEnviarCodigoOtp').click(function () {
+            self.EnviarCodigoOtp();
+        });
+
+        $('#btnReenviarCodigoPerfil').click(function (e) {
+            e.preventDefault();
+            self.EnviarCodigoOtp(true);
+        });
+
+        $('#btnConfirmarCambioContrasena').click(function () {
+            self.ConfirmarCambioContrasena();
         });
     };
 
@@ -49,30 +53,11 @@ function PerfilViewController() {
         return data ? JSON.parse(data) : null;
     };
 
-    this.RenderSidebar = function (usuario) {
-        var self = this;
-        var rolId = usuario.rol ? usuario.rol.id : null;
-        var menu = rolId === self.ROL_DISTRIBUIDOR ? self.menuDistribuidor : self.menuAdmin;
-
-        var $sidebar = $('#sidebarMenu');
-
-        menu.forEach(function (item) {
-            $sidebar.append('<a class="s-item" href="' + item.pagina + '">' + item.texto + '</a>');
-        });
-
-        $sidebar.append('<a class="s-item active" href="/Perfil">Mi Perfil</a>');
-        $sidebar.append('<a class="s-item logout" href="/Login">Cerrar sesión</a>');
-    };
-
-    this.RenderHeader = function (usuario) {
-        var self = this;
+    //Llena solo la tarjeta lateral (avatar grande, nombre, badge de rol) - el header de arriba ya lo llena ca.RellenarHeaderUsuario()
+    this.RenderPerfilLateral = function (usuario) {
         var nombreCompleto = ((usuario.nombre || '') + ' ' + (usuario.apellido1 || '')).trim();
         var iniciales = ((usuario.nombre ? usuario.nombre[0] : '') + (usuario.apellido1 ? usuario.apellido1[0] : '')).toUpperCase();
-        var rolNombre = (usuario.rol && self.nombresRol[usuario.rol.id]) || '';
-
-        $('#headerAvatar').text(iniciales || '--');
-        $('#headerNombre').text(nombreCompleto || '-');
-        $('#headerRol').text(rolNombre);
+        var rolNombre = (usuario.rol && usuario.rol.nombreRol) || '';
 
         $('#perfilAvatar').text(iniciales || '--');
         $('#perfilNombreCompleto').text(nombreCompleto || '-');
@@ -121,6 +106,7 @@ function PerfilViewController() {
         userDTO.telefono = $('#txtTelefono').val();
         userDTO.fechaNacimiento = $('#txtFechaNacimiento').val();
         userDTO.fotoPerfil = $('#txtFotoPerfil').val();
+        userDTO.contrasena = '';
 
         var urlEndPoint = self.API_ControllerName + "/Update?usuarioAccionId=" + self.usuario.id;
 
@@ -132,7 +118,95 @@ function PerfilViewController() {
             self.usuario.correo = userDTO.correo;
 
             sessionStorage.setItem('usuarioActual', JSON.stringify(self.usuario));
-            self.RenderHeader(self.usuario);
+
+            var ca2 = new ControlActions();
+            ca2.RellenarHeaderUsuario();
+        });
+    };
+
+    //===== Cambiar contraseña con OTP (modal) =====
+
+    this.AbrirModalContrasena = function () {
+        var self = this;
+
+        $('#correoDestinoOtp').text(self.usuario.correo);
+        $('#pasoSolicitarOtp').show();
+        $('#pasoConfirmarOtp').hide();
+        $('#txtOtpPerfil').val('');
+        $('#txtNuevaContrasenaPerfil').val('');
+        $('#txtConfirmarContrasenaPerfil').val('');
+
+        $('#modalCambiarContrasena').css('display', 'flex');
+    };
+
+    this.CerrarModalContrasena = function () {
+        $('#modalCambiarContrasena').css('display', 'none');
+    };
+
+    this.EnviarCodigoOtp = function (esReenvio) {
+        var self = this;
+        var ca = new ControlActions();
+        var urlEndPoint = self.API_ControllerName + "/SolicitarCambioContrasena/" + encodeURIComponent(self.usuario.correo);
+
+        $.ajax({
+            type: "POST",
+            url: ca.GetUrlApiService(urlEndPoint),
+            success: function () {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Código enviado',
+                    text: 'Revisa tu correo electrónico.'
+                });
+
+                if (!esReenvio) {
+                    $('#pasoSolicitarOtp').hide();
+                    $('#pasoConfirmarOtp').show();
+                }
+            },
+            error: function (jqXHR) {
+                var message = jqXHR.responseJSON ? jqXHR.responseJSON.mensaje : "No se pudo enviar el código.";
+                Swal.fire({ icon: 'error', title: 'Oops...', text: message });
+            }
+        });
+    };
+
+    this.ConfirmarCambioContrasena = function () {
+        var self = this;
+
+        var otp = $('#txtOtpPerfil').val();
+        var nuevaContrasena = $('#txtNuevaContrasenaPerfil').val();
+        var confirmarContrasena = $('#txtConfirmarContrasenaPerfil').val();
+
+        if (!otp || !nuevaContrasena || !confirmarContrasena) {
+            Swal.fire({ icon: 'warning', title: 'Campos incompletos', text: 'Completa el código y la nueva contraseña.' });
+            return;
+        }
+
+        if (nuevaContrasena !== confirmarContrasena) {
+            Swal.fire({ icon: 'warning', title: 'Las contraseñas no coinciden', text: 'Verifica que ambas contraseñas sean iguales.' });
+            return;
+        }
+
+        var ca = new ControlActions();
+        var urlEndPoint = self.API_ControllerName + "/ConfirmarCambioContrasena/"
+            + encodeURIComponent(self.usuario.correo) + "/" + otp + "/" + encodeURIComponent(nuevaContrasena);
+
+        $.ajax({
+            type: "POST",
+            url: ca.GetUrlApiService(urlEndPoint),
+            success: function () {
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Listo!',
+                    text: 'Tu contraseña fue actualizada correctamente.'
+                });
+
+                self.CerrarModalContrasena();
+            },
+            error: function (jqXHR) {
+                var message = jqXHR.responseJSON ? jqXHR.responseJSON.mensaje : "No se pudo cambiar la contraseña.";
+                Swal.fire({ icon: 'error', title: 'Error', text: message });
+            }
         });
     };
 }

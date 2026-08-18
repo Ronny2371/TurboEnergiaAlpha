@@ -22,11 +22,8 @@
         // se guarda una referencia a la instancia actual del controlador
         var self = this;
         var correo = $('#txtCorreo').val();
-
         var contrasena = $('#txtContrasena').val();
 
-        
-        
         var ca = new ControlActions();
         //Codifica el correo y contrasena para ser mas seguro
         var urlEndPoint = this.API_ControllerName + "/Login/" + encodeURIComponent(correo) + "/" + encodeURIComponent(contrasena);

@@ -163,7 +163,7 @@ function FormatPeriodo(fechaIso) {
     var d = new Date(fechaIso);
     return meses[d.getUTCMonth()] + ' ' + d.getUTCFullYear();
 }
-v
+
 function FormatDate(fechaIso) {
     var d = new Date(fechaIso);
     var dia = String(d.getUTCDate()).padStart(2, '0');
