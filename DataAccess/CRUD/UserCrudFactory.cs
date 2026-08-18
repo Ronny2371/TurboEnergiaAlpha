@@ -25,8 +25,8 @@ namespace DataAccess.CRUD
             
             byte[] bytesHash = SHA256.HashData(bytesEntrada);
 
-
-            return Convert.ToHexString(bytesHash);
+            string resultado = Convert.ToHexString(bytesHash);
+            return resultado.Substring(0, 10);
         }
 
         public override void Create(BaseDTO baseDTO)

@@ -234,7 +234,7 @@ namespace CoreApp_
             if (user == null)
                 throw new Exception("Correo o contraseña incorrectos.");
 
-            if (user.Contrasena != contrasena)
+            if (user.Contrasena != UserCrudFactory.ConvertirSHA256(contrasena))
                 throw new Exception("Correo o contraseña incorrectos.");
 
             await GenerarOtp(user.Id, connectionString);
