@@ -57,7 +57,6 @@ namespace WebAPI.Controllers
             try
             {
                 var solicitud = MapToEntity(request);
-
                 var connStr = _config["AzureCommunicationServices:ConnectionString"];
 
                 var sm = new SolicitudCompraManager();

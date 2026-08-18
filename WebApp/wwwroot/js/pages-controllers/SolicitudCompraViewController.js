@@ -1,8 +1,16 @@
-﻿function SolicitudCompraViewController() {
+﻿var PRECIO_POR_MWH = 145.50;
+var PORCENTAJE_IMPUESTO = 13;
+
+function SolicitudCompraViewController() {
 
     this.API_ControllerName = "SolicitudCompra";
     this.InitView = function () {
         this.LoadTable();
+
+        $('#tbodySolicitudes').on('click', '.action-btn.factura', function () {
+            var id = $(this).data('id');
+            VerDesgloseCobro(id);
+        });
 
         $('#tbodySolicitudes').on('click', '.action-btn.edit', function () {
             var id = $(this).data('id');
@@ -49,6 +57,16 @@
         $('#btnCrearSolicitud').click(function () {
             GuardarSolicitud();
         });
+
+        var self = this;
+
+        $('#btnAplicarRecorte').click(function () {
+            AplicarRecorte(self);
+        });
+
+        $('#btnRevertirRecorte').click(function () {
+            RevertirRecorte(self);
+        });
     }
 
     this.LoadTable = function () {
@@ -60,8 +78,13 @@
             url: ca.GetUrlApiService(urlEndPoint),
             success: function (lstSolicitudes) {
                 CargarUsuarios(function () {
-                    RenderTabla(lstSolicitudes);
-                    RenderStats(lstSolicitudes);
+                    CargarReportes(function () {
+                        CargarAlmacen(function () {
+                            RenderTabla(lstSolicitudes);
+                            RenderStats(lstSolicitudes);
+                            RenderRecorte(lstSolicitudes);
+                        });
+                    });
                 });
             },
             error: function (jqHRX) {
@@ -93,6 +116,143 @@ function CargarUsuarios(callback) {
     });
 }
 
+function CargarReportes(callback) {
+    var ca = new ControlActions();
+
+    $.ajax({
+        type: "GET",
+        url: ca.GetUrlApiService("ReporteFacturacion/RetrieveAll"),
+        success: function (lstReportes) {
+            window.reportesList = lstReportes;
+            callback();
+        },
+        error: function () {
+            window.reportesList = [];
+            callback();
+        }
+    });
+}
+
+function CargarAlmacen(callback) {
+    var ca = new ControlActions();
+
+    $.ajax({
+        type: "GET",
+        url: ca.GetUrlApiService("Almacen/RetrieveAll"),
+        success: function (almacen) {
+            window.almacenActual = almacen;
+            callback();
+        },
+        error: function () {
+            window.almacenActual = null;
+            callback();
+        }
+    });
+}
+
+function RenderRecorte(lstSolicitudes) {
+    var pendientes = lstSolicitudes.filter(function (s) { return s.estado === "PENDIENTE"; });
+
+    var demandaTotal = 0;
+    pendientes.forEach(function (s) {
+        demandaTotal += s.cantidadMWhOriginal;
+    });
+
+    var almacenado = window.almacenActual ? window.almacenActual.almacenado : 0;
+
+    $('#demandaTotalPendiente').text(demandaTotal.toLocaleString() + ' MWh');
+    $('#energiaDisponibleRecorte').text(almacenado.toLocaleString() + ' MWh');
+
+    if (demandaTotal > 0 && almacenado < demandaTotal) {
+        var sugerido = Math.floor((almacenado / demandaTotal) * 100);
+        $('#porcentajeSugerido').text(sugerido + '%');
+        $('#recorteSugeridoWrapper').show();
+        $('#recorteMensaje').text('La energía disponible no alcanza para cubrir toda la demanda pendiente. Se sugiere aplicar ' + sugerido + '%.');
+        $('#porcentajeCapacidad').val(sugerido);
+    } else {
+        $('#recorteSugeridoWrapper').hide();
+        $('#recorteMensaje').text('La energía disponible alcanza para cubrir el 100% de la demanda pendiente.');
+        $('#porcentajeCapacidad').val(100);
+    }
+}
+
+function AplicarRecorte(vc) {
+    var porcentaje = parseInt($('#porcentajeCapacidad').val());
+
+    if (!porcentaje || porcentaje < 1 || porcentaje > 100) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Porcentaje inválido',
+            text: 'Ingresa un porcentaje entre 1 y 100.'
+        });
+        return;
+    }
+
+    Swal.fire({
+        icon: 'warning',
+        title: '¿Aplicar recorte del ' + porcentaje + '%?',
+        text: 'Esto va a reducir la cantidad de energía de todas las solicitudes pendientes y actualizar sus facturas.',
+        showCancelButton: true,
+        confirmButtonText: 'Si, aplicar',
+        cancelButtonText: 'Cancelar'
+    }).then(function (result) {
+        if (!result.isConfirmed) return;
+
+        var ca = new ControlActions();
+
+        $.ajax({
+            type: "POST",
+            url: ca.GetUrlApiService("Almacen/AplicarRecorte?porcentaje=" + porcentaje),
+            success: function () {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Recorte aplicado',
+                    text: 'Las solicitudes pendientes fueron actualizadas.'
+                });
+
+                vc.LoadTable();
+            },
+            error: function (jqXHR) {
+                var message = jqXHR.responseJSON ? jqXHR.responseJSON.mensaje : "No se pudo aplicar el recorte.";
+                Swal.fire({ icon: 'error', title: 'Error', text: message });
+            }
+        });
+    });
+}
+
+function RevertirRecorte(vc) {
+    Swal.fire({
+        icon: 'question',
+        title: '¿Volver a los valores originales?',
+        text: 'Esto va a restaurar la cantidad pedida originalmente en cada solicitud pendiente recortada.',
+        showCancelButton: true,
+        confirmButtonText: 'Si, revertir',
+        cancelButtonText: 'Cancelar'
+    }).then(function (result) {
+        if (!result.isConfirmed) return;
+
+        var ca = new ControlActions();
+
+        $.ajax({
+            type: "POST",
+            url: ca.GetUrlApiService("Almacen/RevertirRecorte"),
+            success: function () {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Valores restaurados',
+                    text: 'Las solicitudes pendientes volvieron a su cantidad original.'
+                });
+
+                vc.LoadTable();
+            },
+            error: function (jqXHR) {
+                var message = jqXHR.responseJSON ? jqXHR.responseJSON.mensaje : "No se pudo revertir el recorte.";
+                Swal.fire({ icon: 'error', title: 'Error', text: message });
+            }
+        });
+    });
+}
+
 function GetNombreSolicitante(solicitud) {
     var usuarioId = solicitud.usuario ? solicitud.usuario.id : null;
     if (!usuarioId) return 'Usuario desconocido';
@@ -104,6 +264,46 @@ function GetNombreSolicitante(solicitud) {
     }
 
     return 'Usuario #' + usuarioId;
+}
+
+function GetReporteParaSolicitud(solicitud) {
+    var usuarioId = solicitud.usuario ? solicitud.usuario.id : null;
+    if (!usuarioId) return null;
+
+    return (window.reportesList || []).find(function (r) {
+        var periodo = new Date(r.periodo);
+        return r.usuarioId === usuarioId &&
+            (periodo.getMonth() + 1) === solicitud.mesSolicitado &&
+            periodo.getFullYear() === solicitud.anioSolicitado;
+    }) || null;
+}
+
+function GetDesgloseCobro(solicitud) {
+    var reporte = GetReporteParaSolicitud(solicitud);
+
+    if (reporte) {
+        var porcentaje = reporte.subtotal > 0 ? Math.round((reporte.impuesto / reporte.subtotal) * 100) : PORCENTAJE_IMPUESTO;
+        return {
+            precioMWh: reporte.precioMWh,
+            subtotal: reporte.subtotal,
+            impuesto: reporte.impuesto,
+            total: reporte.total,
+            porcentajeImpuesto: porcentaje,
+            esReal: true
+        };
+    }
+
+    var subtotal = solicitud.cantidadMWh * PRECIO_POR_MWH;
+    var impuesto = subtotal * (PORCENTAJE_IMPUESTO / 100);
+
+    return {
+        precioMWh: PRECIO_POR_MWH,
+        subtotal: subtotal,
+        impuesto: impuesto,
+        total: subtotal + impuesto,
+        porcentajeImpuesto: PORCENTAJE_IMPUESTO,
+        esReal: false
+    };
 }
 
 function GetEstadoBadge(estado) {
@@ -121,6 +321,49 @@ function GetEstadoBadge(estado) {
     }
 }
 
+function FormatMoney(valor) {
+    return '$' + valor.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function VerDesgloseCobro(id) {
+    var solicitud = window.solicitudesList.find(function (s) { return s.id === id; });
+    if (!solicitud) return;
+
+    var d = GetDesgloseCobro(solicitud);
+
+    var notaEstimado = d.esReal ? '' :
+        '<div style="font-size:11px;color:#9ca3af;font-style:italic;margin-bottom:10px;">Estimado — todavía no hay factura generada para esta solicitud.</div>';
+
+    var html =
+        '<div style="text-align:left;">' +
+        '<div style="font-weight:700;font-size:15px;margin-bottom:6px;">Desglose de Cobros</div>' +
+        notaEstimado +
+        '<hr style="border:none;border-top:1px solid #e5e7eb;margin:0 0 4px;">' +
+        '<div style="display:flex;justify-content:space-between;padding:8px 0;color:#6b7280;font-size:13px;">' +
+        '<span>Energía Asignada</span><strong style="color:#111;">' + solicitud.cantidadMWh + ' MWh</strong>' +
+        '</div>' +
+        '<div style="display:flex;justify-content:space-between;padding:8px 0;color:#6b7280;font-size:13px;border-top:1px solid #f0f0f0;">' +
+        '<span>Precio por MWh</span><strong style="color:#111;">' + FormatMoney(d.precioMWh) + '</strong>' +
+        '</div>' +
+        '<div style="display:flex;justify-content:space-between;padding:8px 0;color:#6b7280;font-size:13px;border-top:1px solid #f0f0f0;">' +
+        '<span>Subtotal</span><strong style="color:#111;">' + FormatMoney(d.subtotal) + '</strong>' +
+        '</div>' +
+        '<div style="display:flex;justify-content:space-between;padding:8px 0;color:#6b7280;font-size:13px;border-top:1px solid #f0f0f0;">' +
+        '<span>Impuesto (' + d.porcentajeImpuesto + '%)</span><strong style="color:#dc2626;">' + FormatMoney(d.impuesto) + '</strong>' +
+        '</div>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;background:#111;color:#fff;padding:14px 16px;border-radius:8px;margin-top:12px;">' +
+        '<span style="font-weight:600;">Total a Pagar</span><strong style="font-size:16px;">' + FormatMoney(d.total) + '</strong>' +
+        '</div>' +
+        '</div>';
+
+    Swal.fire({
+        html: html,
+        showConfirmButton: true,
+        confirmButtonText: 'Cerrar',
+        width: 420
+    });
+}
+
 function RenderTabla(lstSolicitudes) {
     window.solicitudesList = lstSolicitudes;
     var $tbody = $('#tbodySolicitudes');
@@ -132,6 +375,11 @@ function RenderTabla(lstSolicitudes) {
         var mesAnio = String(solicitud.mesSolicitado).padStart(2, '0') + ' / ' + solicitud.anioSolicitado;
         var cantidad = solicitud.cantidadMWh + ' MWh';
         var fecha = FormatDate(solicitud.created);
+
+        var d = GetDesgloseCobro(solicitud);
+        var precioFinal =
+            '<strong>' + FormatMoney(d.total) + '</strong> ' +
+            '<button class="action-btn factura" data-id="' + solicitud.id + '" title="Ver desglose de cobro">🧾</button>';
 
         var acciones = '<button class="action-btn edit" data-id="' + solicitud.id + '" title="Editar">✎</button>';
 
@@ -146,6 +394,7 @@ function RenderTabla(lstSolicitudes) {
             '<td style="color:#9ca3af;font-size:12px;">' + numero + '</td>' +
             '<td><strong>' + mesAnio + '</strong></td>' +
             '<td>' + cantidad + '</td>' +
+            '<td>' + precioFinal + '</td>' +
             '<td><span class="badge ' + badge.badgeClass + '"><span class="badge-dot ' + badge.dotClass + '"></span>' + badge.label + '</span></td>' +
             '<td style="font-size:12px;color:#374151;">' + GetNombreSolicitante(solicitud) + '</td>' +
             '<td style="font-size:12px;color:#6b7280;">' + fecha + '</td>' +
